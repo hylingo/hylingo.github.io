@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { ArticleItem, StudyLang } from '@/types'
+import type { ArticleItem, GrammarPoint, StudyLang } from '@/types'
 
 export interface DataItem {
   id: number
@@ -145,6 +145,8 @@ export const useAppStore = defineStore('app', () => {
   const data = ref<AppData>({ nouns: [], verbs: [], kana: KANA_DATA })
   /** 精读文章（短文 / 对话）：日语 ja_articles.json，英语 en_articles.json */
   const articles = ref<ArticleItem[]>([])
+  /** 语法点（按 id 索引） */
+  const grammarMap = ref<Record<string, GrammarPoint>>({})
   const isDataLoaded = ref(false)
 
   // --- 本篇练习：按 format 分别存储（essay / dialogue 各一篇） ---
@@ -236,12 +238,9 @@ export const useAppStore = defineStore('app', () => {
     switchMode('practice')
   }
 
-  /** 云端拉取后从 localStorage 刷新练习状态到 Pinia */
+  /** 云端拉取后从 localStorage 刷新练习状态到 Pinia（仅恢复数据，不切模式） */
   function restorePracticeArticleFromLS() {
     syncSlotToCat()
-    if (practiceArticleId.value) {
-      currentMode.value = 'practice'
-    }
   }
 
   function switchMode(mode: string) {
@@ -271,25 +270,27 @@ export const useAppStore = defineStore('app', () => {
       const verbPath = ja ? 'data/verbs.json' : ''
       const artPath = ja ? 'data/ja_articles.json' : 'data/en_articles.json'
 
-      const [nouns, verbsRes, articlesData] = await Promise.all([
+      const [nouns, verbsRes, articlesData, grammarData] = await Promise.all([
         fetch(`${base}${nounPath}`).then(r => r.json()),
         verbPath
           ? fetch(`${base}${verbPath}`).then(r => r.json())
           : Promise.resolve([]),
         fetch(`${base}${artPath}`).then(r => r.json()),
+        fetch(`${base}data/grammar.json`).then(r => r.json()).catch(() => ({ items: [] })),
       ])
       data.value.nouns = nouns
       data.value.verbs = Array.isArray(verbsRes) ? verbsRes : []
       articles.value = Array.isArray(articlesData?.items) ? articlesData.items : []
+      const gMap: Record<string, GrammarPoint> = {}
+      for (const g of grammarData?.items ?? []) gMap[g.id] = g
+      grammarMap.value = gMap
       isDataLoaded.value = true
 
-      // 恢复上次未完成的本篇练习
+      // 恢复上次未完成的本篇练习（仅恢复数据，不自动切到 practice 模式）
       syncSlotToCat()
       if (practiceArticleId.value) {
         const art = articles.value.find((a) => a.id === practiceArticleId.value)
-        if (art) {
-          currentMode.value = 'practice'
-        } else {
+        if (!art) {
           clearArticlePractice()
         }
       }
@@ -306,6 +307,7 @@ export const useAppStore = defineStore('app', () => {
     currentCat,
     data,
     articles,
+    grammarMap,
     isDataLoaded,
     practiceArticleId,
     practiceArticleTitle,

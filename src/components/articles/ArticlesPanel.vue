@@ -4,7 +4,7 @@ import { useAppStore } from '@/stores/app'
 import { useLang } from '@/i18n'
 import { audioEl } from '@/composables/useAudio'
 import { useLoopPlayer } from '@/composables/useLoopPlayer'
-import type { ArticleItem, ArticleEssay, ArticleDialogue, ArticleSegment } from '@/types'
+import type { ArticleItem, ArticleEssay, ArticleDialogue, ArticleSegment, GrammarPoint } from '@/types'
 import RubyText from '@/components/common/RubyText.vue'
 import type { DataItem } from '@/stores/app'
 import { readArticlePrefRaw, writeArticlePrefRaw } from '@/learning/learnStorage'
@@ -135,12 +135,34 @@ watch(
   },
 )
 
-const list = computed(() => store.articles.filter((a) => a.format === props.filterFormat))
+const levelOrder: Record<string, number> = { N5: 0, N4: 1, N3: 2, N2: 3, N1: 4 }
+function levelSortKey(level: string): number {
+  // "N5–N3" → take first (easiest) level; "N2" → N2
+  const m = level.match(/N[1-5]/g)
+  if (!m) return 9
+  return Math.min(...m.map(l => levelOrder[l] ?? 9))
+}
+const list = computed(() =>
+  store.articles
+    .filter((a) => a.format === props.filterFormat)
+    .slice()
+    .sort((a, b) => levelSortKey(a.level) - levelSortKey(b.level)),
+)
 
 const selected = computed(() => {
   if (!selectedId.value) return null
   return list.value.find((a) => a.id === selectedId.value) ?? null
 })
+
+/** 当前文章的语法点列表 */
+const articleGrammar = computed((): GrammarPoint[] => {
+  const art = selected.value
+  if (!art?.grammar?.length) return []
+  const map = store.grammarMap
+  return art.grammar.map(id => map[id]).filter(Boolean)
+})
+
+const showGrammar = ref(false)
 
 /**
  * 短文按「段」分组显示：细切 segment 合并为一段，长段保持单段一段。
@@ -533,6 +555,37 @@ onUnmounted(() => {
           </section>
         </article>
       </template>
+
+      <!-- ====== 本文句型 ====== -->
+      <div v-if="articleGrammar.length" class="mt-4">
+        <button
+          type="button"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer"
+          :class="
+            showGrammar
+              ? 'bg-[#e8735a]/15 border-[#e8735a]/40 text-[#c45a3e]'
+              : 'theme-muted border-[var(--border)] bg-transparent hover:theme-text'
+          "
+          @click="showGrammar = !showGrammar"
+        >
+          {{ t('grammarTitle') }}
+          <span class="opacity-60">{{ articleGrammar.length }}</span>
+          <svg class="w-3 h-3 transition-transform" :class="showGrammar ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/></svg>
+        </button>
+        <div v-if="showGrammar" class="mt-3 rounded-2xl theme-surface p-4 md:p-5 shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
+          <div class="flex flex-wrap gap-2">
+            <div
+              v-for="g in articleGrammar"
+              :key="g.id"
+              class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs border border-[var(--border)] hover:border-[#e8735a]/30 transition-colors"
+            >
+              <span class="font-mono text-[10px] leading-none px-1 py-0.5 rounded bg-[var(--bg)] theme-muted">{{ g.level }}</span>
+              <span class="font-medium text-content-original">{{ g.pattern }}</span>
+              <span class="theme-muted">{{ currentLang === 'en' ? g.meaningEn : g.meaning }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

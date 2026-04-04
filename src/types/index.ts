@@ -65,6 +65,15 @@ export interface ArticleEssay {
   titleZh: string
   titleRuby?: RubyToken[]
   segments: ArticleSegment[]
+  grammar?: string[]
+}
+
+export interface GrammarPoint {
+  id: string
+  pattern: string
+  level: string
+  meaning: string
+  meaningEn: string
 }
 
 export interface ArticleDialogue {
@@ -77,6 +86,7 @@ export interface ArticleDialogue {
   titleZh: string
   titleRuby?: RubyToken[]
   sections: ArticleDialogueSection[]
+  grammar?: string[]
 }
 
 export type ArticleItem = ArticleEssay | ArticleDialogue
