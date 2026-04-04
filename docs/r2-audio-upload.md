@@ -38,6 +38,23 @@ endpoint = https://<你的账户子域>.r2.cloudflarestorage.com
 acl = private
 ```
 
+### 非交互：用环境变量一键写入 `rclone.conf`
+
+我无法代你填写密钥，但仓库里有脚本可在**本机**生成与上文等价的配置（密钥只出现在你终端的 `export` 里，不进 Git）：
+
+1. 在 [Cloudflare 控制台](https://dash.cloudflare.com/) → **R2** → **管理 R2 API 令牌** → 创建令牌，记下 **Access Key ID**、**Secret Access Key**，以及 **S3 API** 的 **Endpoint**（完整 URL，形如 `https://<账户子域>.r2.cloudflarestorage.com`）。
+2. 在终端执行（把值换成你自己的）：
+
+```bash
+export R2_ACCESS_KEY_ID='你的_Key_ID'
+export R2_SECRET_ACCESS_KEY='你的_Secret'
+export R2_ENDPOINT='https://xxxx.r2.cloudflarestorage.com'
+
+bash scripts/setup_rclone_r2.sh
+```
+
+默认会创建名为 **`r2`** 的 remote。若已存在同名配置，脚本会提示先用 `rclone config delete r2` 再建。完成后按脚本末尾提示用 `rclone copy` 上传即可。
+
 ## 上传命令
 
 ### 上传整个 audio 目录
@@ -62,6 +79,25 @@ rclone copy audio/en/ r2:hylingo-audio/en/ --transfers 64 --no-check-dest --prog
 
 ```bash
 rclone copyto audio/jp/xxxx.mp3 r2:hylingo-audio/jp/xxxx.mp3
+```
+
+## 精读日文：新增句子批量 TTS
+
+当 `ja_articles.json` 里新段缺少 `audio` / `audioMale` 时（仅处理**原先缺字段**的句，不会重录全书）：
+
+1. 安装依赖：`pip install -r requirements-edge-tts.txt`（可用项目 `.venv`）
+2. 生成 MP3 并写回 `audio_map.json`、`article_audio_map_male.json`、`ja_articles.json`：
+
+```bash
+.venv/bin/python scripts/generate_ja_article_audio_missing.py
+```
+
+文件输出到 **`audio/jp/`**（目录在 `.gitignore` 中），与上文 `rclone copy audio/jp/` 一致。
+
+3. 配置好 `rclone` 后上传：
+
+```bash
+rclone copy audio/jp/ r2:hylingo-audio/jp/ --transfers 32 --progress
 ```
 
 ## 验证
