@@ -1,0 +1,13 @@
+.claude/
+.venv/
+node_modules/
+dist/
+audio/
+!public/audio/
+*.local
+*.bak
+.DS_Store
+*.py
+!scripts/*.py
+translation_cache.json
+.wrangler/

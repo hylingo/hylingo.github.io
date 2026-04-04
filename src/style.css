@@ -1,0 +1,580 @@
+@import "tailwindcss";
+
+/* 移动端 Chrome 等：地址栏显隐时 100vh 会变化，导致整页与 fixed 底栏「晃」；用 svh 更稳 */
+html {
+  overflow-x: clip;
+  overflow-y: auto;
+  overscroll-behavior-y: none;
+}
+
+/* iOS 点击输入框时防止页面缩放：font-size < 16px 会触发自动缩放 */
+input, select, textarea {
+  font-size: 16px !important;
+}
+
+:root {
+  --bg: #f5f0eb;
+  --card: #ffffff;
+  --primary: #e8735a;
+  --primary-light: #fdf0ed;
+  --primary-dark: #c9563f;
+  --accent: #5b8a72;
+  --accent-light: #eef5f0;
+  --text: #2d2d2d;
+  --text-secondary: #777;
+  --border: #e8e2dc;
+  --shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.10);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --header-grad: linear-gradient(135deg, #e8735a 0%, #e8a05a 100%);
+  --header-title: rgba(255, 245, 240, 0.92);
+  /* 实心按钮 / Tab 渐变（与顶栏 header-grad 同系） */
+  --grad-primary: linear-gradient(135deg, #e8735a 0%, #eca866 100%);
+  --grad-primary-pressed: linear-gradient(135deg, #c9563f 0%, #d97852 100%);
+  --grad-accent: linear-gradient(135deg, #5b8a72 0%, #7aad8f 100%);
+  --grad-tab-solid: linear-gradient(180deg, #ffffff 0%, #fff8f4 48%, #ffece5 100%);
+  --grad-nav-pill: linear-gradient(135deg, #fff6f2 0%, #fde8e0 100%);
+  --grad-kana-tab: linear-gradient(135deg, #fff8f4 0%, #ffe8df 100%);
+  /* 下拉遮罩：Teleport 到 body 的元素不能受下方 #app 规则误伤 */
+  --overlay-scrim: rgba(20, 18, 16, 0.2);
+  --kana-cell: #faf7f4;
+  --kana-cell-hover: #fdf0ed;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+  background: var(--bg) url('/bg.jpg') center / 600px repeat;
+  color: var(--text);
+  min-height: 100vh; /* 旧浏览器回退 */
+  min-height: 100svh;
+  overflow-x: clip;
+  overscroll-behavior-y: none;
+}
+
+:root.theme-dark {
+  --bg: #161819;
+  --card: #222527;
+  --text: #f1f1f1;
+  --text-secondary: #a9b0b6;
+  --border: #373b3f;
+  --primary: #ef8f79;
+  --primary-light: #3b2a25;
+  --primary-dark: #cf6b56;
+  --accent: #7ec9a0;
+  --accent-light: #2a3d32;
+  --header-grad: linear-gradient(135deg, #2c3237 0%, #22272c 100%);
+  --header-title: rgba(235, 232, 228, 0.9);
+  --grad-primary: linear-gradient(135deg, #ef8f79 0%, #c97a55 100%);
+  --grad-primary-pressed: linear-gradient(135deg, #cf6b56 0%, #a86848 100%);
+  --grad-accent: linear-gradient(135deg, #5a9a78 0%, #3d7a62 100%);
+  --grad-tab-solid: linear-gradient(180deg, var(--card) 0%, color-mix(in srgb, var(--primary) 12%, var(--card)) 100%);
+  --grad-nav-pill: linear-gradient(135deg, color-mix(in srgb, var(--primary) 16%, var(--card)) 0%, color-mix(in srgb, var(--primary) 8%, var(--card)) 100%);
+  --grad-kana-tab: linear-gradient(135deg, color-mix(in srgb, var(--primary) 14%, var(--card)) 0%, color-mix(in srgb, var(--primary) 7%, var(--card)) 100%);
+  --overlay-scrim: rgba(0, 0, 0, 0.48);
+  --kana-cell: #2a2d30;
+  --kana-cell-hover: #33373b;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(245, 240, 235, 0.75);
+  z-index: 0;
+  pointer-events: none;
+}
+
+:root.theme-dark body {
+  background-image: none;
+}
+
+:root.theme-dark body::before {
+  background: rgba(14, 16, 18, 0.62);
+}
+
+/* 只抬升主应用层，避免 `body > *` 把 Teleport 遮罩的 position:fixed 打成 relative（遮罩会失效且看不见） */
+#app {
+  position: relative;
+  z-index: 1;
+}
+
+/* 顶部分类 Tab（句子/单词/50音）：浅色用暖杏底 + 主色勾边，避免灰轨 */
+.category-tab-rail {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--primary) 12%, #ffffff) 0%,
+    color-mix(in srgb, var(--primary) 6%, #fffaf6) 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--primary) 26%, #e8dfd6);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 65%, transparent),
+    0 1px 3px color-mix(in srgb, var(--primary) 9%, transparent);
+}
+
+:root.theme-dark .category-tab-rail {
+  background: color-mix(in srgb, var(--text) 5.5%, transparent);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+
+.category-tab-btn--active {
+  background: var(--grad-tab-solid);
+  color: var(--text);
+  box-shadow:
+    var(--shadow),
+    0 0 0 1px color-mix(in srgb, var(--primary) 14%, transparent);
+}
+
+:root.theme-dark .category-tab-btn--active {
+  box-shadow: var(--shadow);
+}
+
+.category-tab-btn--inactive {
+  color: color-mix(in srgb, var(--primary) 36%, #342e2a);
+}
+
+.category-tab-btn--inactive:hover {
+  color: var(--text);
+}
+
+:root.theme-dark .category-tab-btn--inactive {
+  color: var(--text-secondary);
+}
+
+:root.theme-dark .category-tab-btn--inactive:hover {
+  color: var(--text);
+}
+
+.category-tab-count {
+  opacity: 0.5;
+}
+
+:root.theme-dark .category-tab-count {
+  opacity: 0.42;
+}
+
+/* 列表筛选胶囊（全部 / 级别 / 分类）：浅色暖白底 + 珊瑚色边，未选不中灰 */
+.filter-chip {
+  border-width: 1px;
+  border-style: solid;
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filter-chip--on {
+  background: var(--grad-primary);
+  color: #fff;
+  border-color: color-mix(in srgb, #ffffff 26%, var(--primary));
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--primary) 32%, transparent);
+}
+
+.filter-chip--off {
+  background: color-mix(in srgb, var(--primary) 5%, #ffffff);
+  border-color: color-mix(in srgb, var(--primary) 28%, #eadfd4);
+  color: color-mix(in srgb, var(--primary) 30%, #2c2622);
+}
+
+.filter-chip--off:hover {
+  border-color: color-mix(in srgb, var(--primary) 50%, #e8d5cc);
+  color: var(--primary-dark);
+  background: color-mix(in srgb, var(--primary) 9%, #ffffff);
+}
+
+:root.theme-dark .filter-chip--off {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+
+:root.theme-dark .filter-chip--off:hover {
+  border-color: color-mix(in srgb, var(--primary) 38%, var(--border));
+  color: var(--text);
+}
+
+/* 3D Card Flip */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeUp {
+  animation: fadeUp 0.3s ease-out;
+}
+
+.theme-header {
+  background: var(--header-grad);
+  color: var(--header-title);
+}
+
+/* Study language toggle (in stats panel) */
+.study-lang-toggle {
+  display: flex;
+  gap: 4px;
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+  border-radius: 999px;
+  padding: 3px;
+}
+
+.study-lang-toggle-btn {
+  width: 36px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 999px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.study-lang-toggle-btn--active {
+  background: var(--card);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.study-lang-toggle-btn--text {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.study-lang-toggle-btn--text.study-lang-toggle-btn--active {
+  color: var(--primary);
+}
+
+.theme-card {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+}
+
+.theme-nav-mobile,
+.theme-nav-desktop {
+  background: var(--card);
+  border-color: var(--border);
+}
+
+/* 移动底栏单独成层，减轻与地址栏联动时的闪动（仍无法禁止浏览器自身隐藏地址栏） */
+.theme-nav-mobile {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.theme-loop-panel {
+  background: var(--card);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+}
+
+.theme-switch {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #d7dce1;
+  cursor: pointer;
+  transition: background-color .2s ease;
+}
+
+.theme-switch--on {
+  background: var(--grad-primary);
+}
+
+.theme-switch__thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform .2s ease;
+}
+
+.theme-switch--on .theme-switch__thumb {
+  transform: translateX(20px);
+}
+
+.theme-surface {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.theme-text {
+  color: var(--text);
+}
+
+.theme-muted {
+  color: var(--text-secondary);
+}
+
+.theme-soft {
+  background: var(--primary-light);
+}
+
+.kana-cell {
+  background: var(--kana-cell);
+}
+.kana-cell:hover {
+  background: var(--kana-cell-hover);
+}
+
+.theme-tab-active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+/* 主色 / 辅色实心按钮（珊瑚、绿渐变） */
+.btn-grad-primary {
+  background: var(--grad-primary);
+  color: #fff;
+  border: 2px solid color-mix(in srgb, #ffffff 22%, var(--primary));
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--primary) 28%, transparent);
+  transition: filter 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-grad-primary:hover {
+  filter: brightness(1.04);
+}
+
+.btn-grad-primary:active {
+  filter: brightness(0.96);
+}
+
+.btn-grad-primary--pressed {
+  background: var(--grad-primary-pressed);
+  border-color: color-mix(in srgb, #ffffff 18%, var(--primary-dark));
+  box-shadow: 0 3px 12px color-mix(in srgb, var(--primary) 22%, transparent);
+}
+
+.btn-grad-primary--borderless {
+  border: none;
+  box-shadow: 0 4px 18px color-mix(in srgb, var(--primary) 26%, transparent);
+}
+
+.btn-grad-accent {
+  background: var(--grad-accent);
+  color: #fff;
+  border: 2px solid color-mix(in srgb, #ffffff 20%, var(--accent));
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--accent) 28%, transparent);
+  transition: filter 0.15s ease;
+}
+
+.btn-grad-accent:hover {
+  filter: brightness(1.04);
+}
+
+.btn-grad-accent:active {
+  filter: brightness(0.96);
+}
+
+.btn-grad-accent--borderless {
+  border: none;
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
+/* Nav flag background decoration */
+.nav-flag-bg {
+  position: absolute;
+  bottom: -60px;
+  right: -160px;
+  width: 600px;
+  height: 400px;
+  pointer-events: none;
+  opacity: 0.03;
+  transform: rotate(-27deg);
+  transition: opacity 0.3s ease;
+}
+
+.nav-flag-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.06));
+}
+
+:root.theme-dark .nav-flag-bg {
+  opacity: 0.07;
+}
+
+/* 侧栏当前项、假名平/片假名 Tab：软实心渐变 */
+.app-nav-pill--active {
+  background: var(--grad-nav-pill);
+  color: var(--primary);
+}
+
+.kana-tab-pill--active {
+  border-color: var(--primary);
+  background: var(--grad-kana-tab);
+  color: var(--primary);
+}
+
+/* 喇叭按钮按下 */
+.speak-btn:active {
+  background: var(--grad-primary);
+  color: #fff;
+}
+
+.stat-card {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card--practice {
+  background: linear-gradient(135deg, #d96a53 0%, #e28a61 100%);
+}
+
+.stat-card--listen {
+  background: linear-gradient(135deg, #bc5642 0%, #d8735c 100%);
+}
+
+.stat-card--days {
+  background: linear-gradient(135deg, #8b6ed9 0%, #6f87dc 100%);
+}
+
+:root.theme-dark .stat-card--practice {
+  background: linear-gradient(135deg, #6f372c 0%, #834836 100%);
+}
+
+:root.theme-dark .stat-card--listen {
+  background: linear-gradient(135deg, #5e2d24 0%, #733b31 100%);
+}
+
+:root.theme-dark .stat-card--days {
+  background: linear-gradient(135deg, #382f6b 0%, #33457a 100%);
+}
+
+.stat-card--read {
+  background: linear-gradient(135deg, #5a7ab0 0%, #6b8ec4 100%);
+}
+
+.stat-card--mastered {
+  background: linear-gradient(135deg, #4f7a5e 0%, #5b8a6a 100%);
+}
+
+:root.theme-dark .stat-card--read {
+  background: linear-gradient(135deg, #2d3d58 0%, #364a68 100%);
+}
+
+:root.theme-dark .stat-card--mastered {
+  background: linear-gradient(135deg, #2a4032 0%, #304838 100%);
+}
+
+/* 次要操作：退出登录等，低对比不刺眼 */
+.btn-soft-secondary {
+  margin-top: 0.75rem;
+  padding: 0.375rem 1rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--text) 4%, var(--card));
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-soft-secondary:hover {
+  background: color-mix(in srgb, var(--text) 8%, var(--card));
+  color: var(--text);
+}
+
+/* 危险操作弱化展示：清除数据主按钮 */
+.btn-soft-danger {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, #7a4444 22%, var(--border));
+  background: color-mix(in srgb, #7a4444 6%, var(--card));
+  color: #6b3f3f;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-soft-danger:hover {
+  background: color-mix(in srgb, #7a4444 10%, var(--card));
+  border-color: color-mix(in srgb, #7a4444 32%, var(--border));
+}
+
+:root.theme-dark .btn-soft-danger {
+  color: #b89898;
+  border-color: color-mix(in srgb, #b89898 26%, var(--border));
+  background: color-mix(in srgb, #b89898 8%, var(--card));
+}
+
+:root.theme-dark .btn-soft-danger:hover {
+  background: color-mix(in srgb, #b89898 12%, var(--card));
+}
+
+/* 弹窗内确认删除：比纯红 500 更沉 */
+.btn-soft-danger-solid {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  background: #8a4a48;
+  color: #f2eaea;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.btn-soft-danger-solid:hover {
+  filter: brightness(1.06);
+}
+
+:root.theme-dark .btn-soft-danger-solid {
+  background: #6d3f3e;
+  color: #ebe0e0;
+}
+
+/* 下拉列表：细滚动条，与主题色协调 */
+.dropdown-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--text) 22%, transparent) transparent;
+}
+
+.dropdown-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.dropdown-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 6px 0;
+}
+
+.dropdown-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text) 20%, transparent);
+}
+
+.dropdown-scroll::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--text) 32%, transparent);
+}
+
+:root.theme-dark .dropdown-scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--text) 28%, transparent);
+}
+
+:root.theme-dark .dropdown-scroll::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--text) 42%, transparent);
+}

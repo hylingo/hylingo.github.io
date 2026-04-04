@@ -1,0 +1,1120 @@
+{
+  "items": [
+    {
+      "id": "desu",
+      "pattern": "〜です",
+      "level": "N5",
+      "meaning": "是…",
+      "meaningEn": "is / am / are",
+      "formation": "名詞/な形容詞 + です",
+      "examples": [{ "jp": "学生です。", "zh": "是学生。" }]
+    },
+    {
+      "id": "masu",
+      "pattern": "〜ます",
+      "level": "N5",
+      "meaning": "（动词礼貌体）",
+      "meaningEn": "polite verb ending",
+      "formation": "動詞ます形",
+      "examples": [{ "jp": "毎朝起きます。", "zh": "每天早上起床。" }]
+    },
+    {
+      "id": "kara-kita",
+      "pattern": "〜から来た",
+      "level": "N5",
+      "meaning": "从…来的",
+      "meaningEn": "came from ~",
+      "formation": "場所 + から + 来た",
+      "examples": [{ "jp": "中国から来ました。", "zh": "从中国来的。" }]
+    },
+    {
+      "id": "ni-sunde-iru",
+      "pattern": "〜に住んでいる",
+      "level": "N5",
+      "meaning": "住在…",
+      "meaningEn": "live in ~",
+      "formation": "場所 + に + 住んでいる",
+      "examples": [{ "jp": "東京に住んでいます。", "zh": "住在东京。" }]
+    },
+    {
+      "id": "te-kei-setsuzoku",
+      "pattern": "〜て、〜",
+      "level": "N5",
+      "meaning": "动作连接",
+      "meaningEn": "do ~ and then ~",
+      "formation": "動詞て形 + 動詞",
+      "examples": [{ "jp": "手を洗って、食べます。", "zh": "洗手然后吃。" }]
+    },
+    {
+      "id": "sorekara",
+      "pattern": "それから",
+      "level": "N5",
+      "meaning": "然后",
+      "meaningEn": "and then",
+      "formation": "文頭接続詞",
+      "examples": [{ "jp": "それから出かけます。", "zh": "然后出门。" }]
+    },
+    {
+      "id": "taitei",
+      "pattern": "たいてい",
+      "level": "N5",
+      "meaning": "一般，通常",
+      "meaningEn": "usually",
+      "formation": "副詞",
+      "examples": [{ "jp": "たいてい歩きます。", "zh": "一般走路去。" }]
+    },
+    {
+      "id": "mo",
+      "pattern": "〜も",
+      "level": "N5",
+      "meaning": "也…",
+      "meaningEn": "also / too",
+      "formation": "名詞 + も",
+      "examples": [{ "jp": "お茶も飲みます。", "zh": "也喝茶。" }]
+    },
+    {
+      "id": "nagara",
+      "pattern": "〜ながら",
+      "level": "N4",
+      "meaning": "一边…一边…",
+      "meaningEn": "while doing ~",
+      "formation": "動詞ます形（去ます）+ ながら",
+      "examples": [{ "jp": "音楽を聞きながら歩く。", "zh": "一边听音乐一边走。" }]
+    },
+    {
+      "id": "no-wa-desu",
+      "pattern": "〜のは〜です",
+      "level": "N4",
+      "meaning": "…这件事是…",
+      "meaningEn": "doing ~ is ~",
+      "formation": "動詞辞書形/ない形 + のは",
+      "examples": [{ "jp": "走るのは好きです。", "zh": "跑步这件事我喜欢。" }]
+    },
+    {
+      "id": "mada",
+      "pattern": "まだ",
+      "level": "N5",
+      "meaning": "还，仍然",
+      "meaningEn": "still / not yet",
+      "formation": "副詞",
+      "examples": [{ "jp": "まだ早いです。", "zh": "还早。" }]
+    },
+    {
+      "id": "te-iru",
+      "pattern": "〜ている",
+      "level": "N4",
+      "meaning": "正在…/处于…状态",
+      "meaningEn": "be doing ~ / state of ~",
+      "formation": "動詞て形 + いる",
+      "examples": [{ "jp": "雨が降っている。", "zh": "在下雨。" }]
+    },
+    {
+      "id": "koto-ga-ooi",
+      "pattern": "〜ことが多い",
+      "level": "N3",
+      "meaning": "经常…",
+      "meaningEn": "often ~",
+      "formation": "動詞辞書形/ない形 + ことが多い",
+      "examples": [{ "jp": "歩くことが多い。", "zh": "经常走路。" }]
+    },
+    {
+      "id": "you-ni-naru",
+      "pattern": "〜ようになる",
+      "level": "N3",
+      "meaning": "变得能…了",
+      "meaningEn": "come to be able to ~",
+      "formation": "動詞辞書形/可能形 + ようになる",
+      "examples": [{ "jp": "泳げるようになった。", "zh": "变得会游泳了。" }]
+    },
+    {
+      "id": "te-kuru",
+      "pattern": "〜てくる",
+      "level": "N4",
+      "meaning": "逐渐…起来",
+      "meaningEn": "gradually begin to ~",
+      "formation": "動詞て形 + くる",
+      "examples": [{ "jp": "暖かくなってきた。", "zh": "渐渐暖和起来了。" }]
+    },
+    {
+      "id": "adj-te-kei",
+      "pattern": "〜くて/〜で",
+      "level": "N5",
+      "meaning": "形容词连接",
+      "meaningEn": "adjective conjunctive form",
+      "formation": "い形→くて / な形→で",
+      "examples": [{ "jp": "安くておいしい。", "zh": "便宜又好吃。" }]
+    },
+    {
+      "id": "node",
+      "pattern": "〜ので",
+      "level": "N4",
+      "meaning": "因为…",
+      "meaningEn": "because ~",
+      "formation": "動詞/形容詞普通形 + ので",
+      "examples": [{ "jp": "雨なので休みます。", "zh": "因为下雨所以休息。" }]
+    },
+    {
+      "id": "te-mo",
+      "pattern": "〜ても",
+      "level": "N4",
+      "meaning": "即使…也…",
+      "meaningEn": "even if ~",
+      "formation": "動詞て形/形容詞くても",
+      "examples": [{ "jp": "高くても買う。", "zh": "即使贵也买。" }]
+    },
+    {
+      "id": "te-kureru",
+      "pattern": "〜てくれる",
+      "level": "N4",
+      "meaning": "（别人）为我做…",
+      "meaningEn": "someone does ~ for me",
+      "formation": "動詞て形 + くれる",
+      "examples": [{ "jp": "友達が教えてくれた。", "zh": "朋友教了我。" }]
+    },
+    {
+      "id": "to-iu",
+      "pattern": "〜と言う",
+      "level": "N4",
+      "meaning": "说…",
+      "meaningEn": "say that ~",
+      "formation": "引用 + と + 言う",
+      "examples": [{ "jp": "「大丈夫」と言った。", "zh": "说了没关系。" }]
+    },
+    {
+      "id": "koto-mo-arushi",
+      "pattern": "〜こともあるし、〜こともある",
+      "level": "N3",
+      "meaning": "有时…有时…",
+      "meaningEn": "sometimes ~ and sometimes ~",
+      "formation": "動詞辞書形 + こともあるし",
+      "examples": [{ "jp": "走ることもあるし、歩くこともある。", "zh": "有时跑有时走。" }]
+    },
+    {
+      "id": "dake",
+      "pattern": "〜だけ",
+      "level": "N5",
+      "meaning": "只，仅",
+      "meaningEn": "only ~",
+      "formation": "名詞/動詞 + だけ",
+      "examples": [{ "jp": "一つだけ買った。", "zh": "只买了一个。" }]
+    },
+    {
+      "id": "nakereba-naranai",
+      "pattern": "〜なければならない",
+      "level": "N4",
+      "meaning": "必须…",
+      "meaningEn": "must ~",
+      "formation": "動詞ない形（去い）+ ければならない",
+      "examples": [{ "jp": "早く寝なければならない。", "zh": "必须早睡。" }]
+    },
+    {
+      "id": "ni-nareru",
+      "pattern": "〜に慣れる",
+      "level": "N3",
+      "meaning": "习惯于…",
+      "meaningEn": "get used to ~",
+      "formation": "名詞/動詞辞書形 + に慣れる",
+      "examples": [{ "jp": "生活に慣れた。", "zh": "习惯了生活。" }]
+    },
+    {
+      "id": "ta-koto-ga-aru",
+      "pattern": "〜たことがある",
+      "level": "N4",
+      "meaning": "有过…的经验",
+      "meaningEn": "have experienced ~",
+      "formation": "動詞た形 + ことがある",
+      "examples": [{ "jp": "富士山に登ったことがある。", "zh": "爬过富士山。" }]
+    },
+    {
+      "id": "sugiru",
+      "pattern": "〜すぎる",
+      "level": "N4",
+      "meaning": "过于…，太…",
+      "meaningEn": "too much ~",
+      "formation": "動詞ます形（去ます）/形容詞語幹 + すぎる",
+      "examples": [{ "jp": "食べすぎた。", "zh": "吃太多了。" }]
+    },
+    {
+      "id": "tari-tari",
+      "pattern": "〜たり〜たりする",
+      "level": "N4",
+      "meaning": "又…又…（列举）",
+      "meaningEn": "do things like ~ and ~",
+      "formation": "動詞た形 + り + 動詞た形 + りする",
+      "examples": [{ "jp": "読んだり書いたりする。", "zh": "又读又写。" }]
+    },
+    {
+      "id": "bakari-dewanai",
+      "pattern": "〜ばかりではない",
+      "level": "N3",
+      "meaning": "不光是…",
+      "meaningEn": "not only ~",
+      "formation": "名詞/動詞 + ばかりではない",
+      "examples": [{ "jp": "楽しいことばかりではない。", "zh": "不光是开心的事。" }]
+    },
+    {
+      "id": "tabi-ni",
+      "pattern": "〜たびに",
+      "level": "N3",
+      "meaning": "每次…都…",
+      "meaningEn": "every time ~",
+      "formation": "動詞辞書形/名詞の + たびに",
+      "examples": [{ "jp": "会うたびに元気になる。", "zh": "每次见面都精神起来。" }]
+    },
+    {
+      "id": "ki-ga-suru",
+      "pattern": "〜気がする",
+      "level": "N3",
+      "meaning": "觉得…，有种…的感觉",
+      "meaningEn": "feel like ~",
+      "formation": "動詞/形容詞普通形 + 気がする",
+      "examples": [{ "jp": "忘れた気がする。", "zh": "感觉忘了什么。" }]
+    },
+    {
+      "id": "ba-ii",
+      "pattern": "〜ばいい",
+      "level": "N3",
+      "meaning": "…就好了",
+      "meaningEn": "it would be good if ~",
+      "formation": "動詞ば形 + いい",
+      "examples": [{ "jp": "聞けばいい。", "zh": "问一下就好了。" }]
+    },
+    {
+      "id": "nai-de-sasoi",
+      "pattern": "〜ない？",
+      "level": "N5",
+      "meaning": "…吧？（邀请）",
+      "meaningEn": "won't you ~? (invitation)",
+      "formation": "動詞ない形（否定疑問＝誘い）",
+      "examples": [{ "jp": "一緒に行かない？", "zh": "一起去吧？" }]
+    },
+    {
+      "id": "tai",
+      "pattern": "〜たい",
+      "level": "N5",
+      "meaning": "想…",
+      "meaningEn": "want to ~",
+      "formation": "動詞ます形（去ます）+ たい",
+      "examples": [{ "jp": "食べたい。", "zh": "想吃。" }]
+    },
+    {
+      "id": "you-to-omou",
+      "pattern": "〜（よ）うと思う",
+      "level": "N4",
+      "meaning": "打算…",
+      "meaningEn": "think I will ~",
+      "formation": "動詞意向形 + と思う",
+      "examples": [{ "jp": "明日行こうと思う。", "zh": "打算明天去。" }]
+    },
+    {
+      "id": "nara",
+      "pattern": "〜なら",
+      "level": "N4",
+      "meaning": "如果是…的话",
+      "meaningEn": "if it is ~",
+      "formation": "名詞/動詞普通形 + なら",
+      "examples": [{ "jp": "雨なら休む。", "zh": "下雨的话就休息。" }]
+    },
+    {
+      "id": "tara",
+      "pattern": "〜たら",
+      "level": "N4",
+      "meaning": "如果…；…之后",
+      "meaningEn": "if ~ / after ~",
+      "formation": "動詞た形 + ら",
+      "examples": [{ "jp": "着いたら連絡する。", "zh": "到了就联系。" }]
+    },
+    {
+      "id": "koto-ni-suru",
+      "pattern": "〜ことにする",
+      "level": "N3",
+      "meaning": "决定…",
+      "meaningEn": "decide to ~",
+      "formation": "動詞辞書形 + ことにする",
+      "examples": [{ "jp": "歩くことにした。", "zh": "决定走路去。" }]
+    },
+    {
+      "id": "sou-da-youtai",
+      "pattern": "〜そうだ（様態）",
+      "level": "N4",
+      "meaning": "看起来…",
+      "meaningEn": "looks like ~",
+      "formation": "動詞ます形（去ます）/形容詞語幹 + そう",
+      "examples": [{ "jp": "おいしそう。", "zh": "看起来好吃。" }]
+    },
+    {
+      "id": "yori",
+      "pattern": "〜より",
+      "level": "N5",
+      "meaning": "比…",
+      "meaningEn": "more than ~",
+      "formation": "名詞 + より",
+      "examples": [{ "jp": "昨日より寒い。", "zh": "比昨天冷。" }]
+    },
+    {
+      "id": "rashii",
+      "pattern": "〜らしい",
+      "level": "N3",
+      "meaning": "好像…；听说…",
+      "meaningEn": "seems like ~ / apparently ~",
+      "formation": "動詞/形容詞普通形 + らしい",
+      "examples": [{ "jp": "人気があるらしい。", "zh": "好像很受欢迎。" }]
+    },
+    {
+      "id": "te-miru",
+      "pattern": "〜てみる",
+      "level": "N4",
+      "meaning": "试着做…",
+      "meaningEn": "try doing ~",
+      "formation": "動詞て形 + みる",
+      "examples": [{ "jp": "食べてみる。", "zh": "尝尝看。" }]
+    },
+    {
+      "id": "te-mo-ii",
+      "pattern": "〜てもいい",
+      "level": "N4",
+      "meaning": "可以…",
+      "meaningEn": "may ~ / it's okay to ~",
+      "formation": "動詞て形 + もいい",
+      "examples": [{ "jp": "座ってもいい？", "zh": "可以坐吗？" }]
+    },
+    {
+      "id": "shika-nai",
+      "pattern": "〜しかない",
+      "level": "N4",
+      "meaning": "只有…",
+      "meaningEn": "only ~ (nothing but)",
+      "formation": "名詞 + しか + ない",
+      "examples": [{ "jp": "水しかない。", "zh": "只有水。" }]
+    },
+    {
+      "id": "hazu",
+      "pattern": "〜はずだ",
+      "level": "N3",
+      "meaning": "应该…；理应…",
+      "meaningEn": "should be ~ / supposed to ~",
+      "formation": "動詞/形容詞普通形 + はず",
+      "examples": [{ "jp": "届くはずだ。", "zh": "应该到了。" }]
+    },
+    {
+      "id": "noni",
+      "pattern": "〜のに",
+      "level": "N4",
+      "meaning": "明明…却…",
+      "meaningEn": "even though ~",
+      "formation": "動詞普通形 + のに",
+      "examples": [{ "jp": "呼んだのに来ない。", "zh": "明明叫了却不来。" }]
+    },
+    {
+      "id": "te-morau",
+      "pattern": "〜てもらう",
+      "level": "N4",
+      "meaning": "请（别人）为我做…",
+      "meaningEn": "have someone do ~ for me",
+      "formation": "動詞て形 + もらう",
+      "examples": [{ "jp": "友達に教えてもらった。", "zh": "请朋友教了我。" }]
+    },
+    {
+      "id": "te-ageru",
+      "pattern": "〜てあげる",
+      "level": "N4",
+      "meaning": "（我）为别人做…",
+      "meaningEn": "do ~ for someone",
+      "formation": "動詞て形 + あげる",
+      "examples": [{ "jp": "駅まで送ってあげる。", "zh": "送你到车站。" }]
+    },
+    {
+      "id": "ka-douka",
+      "pattern": "〜かどうか",
+      "level": "N3",
+      "meaning": "是否…",
+      "meaningEn": "whether or not ~",
+      "formation": "動詞普通形 + かどうか",
+      "examples": [{ "jp": "合うかどうかわからない。", "zh": "不知道合不合适。" }]
+    },
+    {
+      "id": "te-hoshii",
+      "pattern": "〜てほしい",
+      "level": "N3",
+      "meaning": "希望（别人）做…",
+      "meaningEn": "want someone to ~",
+      "formation": "動詞て形 + ほしい",
+      "examples": [{ "jp": "来てほしい。", "zh": "希望你来。" }]
+    },
+    {
+      "id": "mono-da",
+      "pattern": "〜ものだ",
+      "level": "N3",
+      "meaning": "本来就是…（感慨）",
+      "meaningEn": "it is natural that ~ (emotion)",
+      "formation": "動詞/形容詞普通形 + ものだ",
+      "examples": [{ "jp": "時間は早く過ぎるものだ。", "zh": "时间总是过得很快。" }]
+    },
+    {
+      "id": "beki",
+      "pattern": "〜べき",
+      "level": "N3",
+      "meaning": "应该…",
+      "meaningEn": "should ~",
+      "formation": "動詞辞書形 + べき",
+      "examples": [{ "jp": "やるべきことをやる。", "zh": "做该做的事。" }]
+    },
+    {
+      "id": "zu-ni",
+      "pattern": "〜ず（に）",
+      "level": "N3",
+      "meaning": "不做…就…",
+      "meaningEn": "without doing ~",
+      "formation": "動詞ない形（去ない）+ ず",
+      "examples": [{ "jp": "食べずに出かけた。", "zh": "没吃就出门了。" }]
+    },
+    {
+      "id": "te-shimau",
+      "pattern": "〜てしまう",
+      "level": "N4",
+      "meaning": "不小心…了；完全…",
+      "meaningEn": "end up doing ~ / completely ~",
+      "formation": "動詞て形 + しまう",
+      "examples": [{ "jp": "全部食べてしまった。", "zh": "全吃完了。" }]
+    },
+    {
+      "id": "uchi-ni",
+      "pattern": "〜うちに",
+      "level": "N3",
+      "meaning": "趁着…；在…期间",
+      "meaningEn": "while ~ / before ~ changes",
+      "formation": "動詞ている/名詞の + うちに",
+      "examples": [{ "jp": "明るいうちに帰る。", "zh": "趁天亮回去。" }]
+    },
+    {
+      "id": "mama",
+      "pattern": "〜まま",
+      "level": "N3",
+      "meaning": "保持…的状态",
+      "meaningEn": "remain in the state of ~",
+      "formation": "動詞た形/ない + まま",
+      "examples": [{ "jp": "靴のまま入った。", "zh": "穿着鞋就进去了。" }]
+    },
+    {
+      "id": "you-ni-suru",
+      "pattern": "〜ようにする",
+      "level": "N3",
+      "meaning": "尽量做到…",
+      "meaningEn": "try to ~ / make sure to ~",
+      "formation": "動詞辞書形/ない形 + ようにする",
+      "examples": [{ "jp": "早く寝るようにする。", "zh": "尽量早睡。" }]
+    },
+    {
+      "id": "to-shite-mo",
+      "pattern": "〜としても",
+      "level": "N2",
+      "meaning": "即使…也…",
+      "meaningEn": "even if ~",
+      "formation": "動詞た形/普通形 + としても",
+      "examples": [{ "jp": "失敗したとしても後悔しない。", "zh": "即使失败也不后悔。" }]
+    },
+    {
+      "id": "tatoe-temo",
+      "pattern": "たとえ〜ても",
+      "level": "N2",
+      "meaning": "即便…也…",
+      "meaningEn": "even if ~",
+      "formation": "たとえ + 動詞ても/でも",
+      "examples": [{ "jp": "たとえ雨でも行く。", "zh": "即便下雨也去。" }]
+    },
+    {
+      "id": "hodo",
+      "pattern": "〜ほど",
+      "level": "N3",
+      "meaning": "…的程度",
+      "meaningEn": "to the extent of ~",
+      "formation": "動詞/形容詞普通形 + ほど",
+      "examples": [{ "jp": "泣くほど嬉しかった。", "zh": "高兴得想哭。" }]
+    },
+    {
+      "id": "to-ieba",
+      "pattern": "〜といえば",
+      "level": "N2",
+      "meaning": "说到…就…",
+      "meaningEn": "speaking of ~",
+      "formation": "名詞 + といえば",
+      "examples": [{ "jp": "夏といえば花火だ。", "zh": "说到夏天就是烟花。" }]
+    },
+    {
+      "id": "rareru-ukemi",
+      "pattern": "〜（ら）れる（受身）",
+      "level": "N4",
+      "meaning": "被…",
+      "meaningEn": "be done ~ (passive)",
+      "formation": "動詞受身形",
+      "examples": [{ "jp": "先生に褒められた。", "zh": "被老师表扬了。" }]
+    },
+    {
+      "id": "sou-da-denbun",
+      "pattern": "〜そうだ（伝聞）",
+      "level": "N3",
+      "meaning": "听说…",
+      "meaningEn": "I heard that ~",
+      "formation": "動詞/形容詞普通形 + そうだ",
+      "examples": [{ "jp": "明日は雨だそうだ。", "zh": "听说明天下雨。" }]
+    },
+    {
+      "id": "tsumori",
+      "pattern": "〜つもり",
+      "level": "N4",
+      "meaning": "打算…；自以为…",
+      "meaningEn": "intend to ~ / think that ~",
+      "formation": "動詞た形/辞書形 + つもり",
+      "examples": [{ "jp": "明日行くつもりだ。", "zh": "打算明天去。" }]
+    },
+    {
+      "id": "doori",
+      "pattern": "〜どおり（に）",
+      "level": "N3",
+      "meaning": "按照…",
+      "meaningEn": "as ~ / according to ~",
+      "formation": "名詞 + どおり",
+      "examples": [{ "jp": "予定どおりに進めた。", "zh": "按计划推进了。" }]
+    },
+    {
+      "id": "to-shizen",
+      "pattern": "〜と（自然結果）",
+      "level": "N4",
+      "meaning": "一…就…",
+      "meaningEn": "when ~ (natural result)",
+      "formation": "動詞辞書形 + と",
+      "examples": [{ "jp": "春になると花が咲く。", "zh": "一到春天花就开。" }]
+    },
+    {
+      "id": "ni-totte",
+      "pattern": "〜にとって",
+      "level": "N2",
+      "meaning": "对…来说",
+      "meaningEn": "for ~ / to ~",
+      "formation": "名詞 + にとって",
+      "examples": [{ "jp": "私にとって大切だ。", "zh": "对我来说很重要。" }]
+    },
+    {
+      "id": "sura",
+      "pattern": "〜すら",
+      "level": "N2",
+      "meaning": "甚至…；连…都…",
+      "meaningEn": "even ~",
+      "formation": "名詞 + すら",
+      "examples": [{ "jp": "名前すら知らない。", "zh": "连名字都不知道。" }]
+    },
+    {
+      "id": "kamo-shirenai",
+      "pattern": "〜かもしれない",
+      "level": "N4",
+      "meaning": "也许…",
+      "meaningEn": "might ~ / maybe ~",
+      "formation": "動詞/形容詞普通形 + かもしれない",
+      "examples": [{ "jp": "明日は雨かもしれない。", "zh": "明天也许下雨。" }]
+    },
+    {
+      "id": "te-iku",
+      "pattern": "〜ていく",
+      "level": "N4",
+      "meaning": "…下去（持续变化）",
+      "meaningEn": "continue to ~ / gradually ~",
+      "formation": "動詞て形 + いく",
+      "examples": [{ "jp": "覚えていく。", "zh": "逐渐记住。" }]
+    },
+    {
+      "id": "nari-no",
+      "pattern": "〜なり（の）",
+      "level": "N2",
+      "meaning": "按自己的方式",
+      "meaningEn": "in one's own way",
+      "formation": "名詞 + なりの",
+      "examples": [{ "jp": "自分なりに頑張る。", "zh": "按自己的方式努力。" }]
+    },
+    {
+      "id": "ni-wa-kaerarenai",
+      "pattern": "〜には代えられない",
+      "level": "N2",
+      "meaning": "无可替代",
+      "meaningEn": "nothing can replace ~",
+      "formation": "名詞 + には代えられない",
+      "examples": [{ "jp": "健康には代えられない。", "zh": "健康无可替代。" }]
+    },
+    {
+      "id": "hajimeru",
+      "pattern": "〜始める",
+      "level": "N4",
+      "meaning": "开始…",
+      "meaningEn": "begin to ~",
+      "formation": "動詞ます形（去ます）+ 始める",
+      "examples": [{ "jp": "雨が降り始めた。", "zh": "开始下雨了。" }]
+    },
+    {
+      "id": "ni-itaru-made",
+      "pattern": "〜に至るまで",
+      "level": "N1",
+      "meaning": "直到…；甚至…",
+      "meaningEn": "even to the point of ~",
+      "formation": "名詞 + に至るまで",
+      "examples": [{ "jp": "細部に至るまで確認する。", "zh": "确认到每个细节。" }]
+    },
+    {
+      "id": "you-ni-mo-omoeru",
+      "pattern": "〜ようにも思える",
+      "level": "N2",
+      "meaning": "也觉得好像…",
+      "meaningEn": "it also seems like ~",
+      "formation": "動詞/形容詞普通形 + ようにも思える",
+      "examples": [{ "jp": "正しいようにも思える。", "zh": "也觉得好像是对的。" }]
+    },
+    {
+      "id": "ga-yue-ni",
+      "pattern": "〜がゆえに",
+      "level": "N1",
+      "meaning": "正因为…",
+      "meaningEn": "precisely because ~",
+      "formation": "動詞/形容詞普通形 + がゆえに",
+      "examples": [{ "jp": "若いがゆえに失敗する。", "zh": "正因为年轻所以会失败。" }]
+    },
+    {
+      "id": "ni-suginai",
+      "pattern": "〜にすぎない",
+      "level": "N2",
+      "meaning": "不过是…",
+      "meaningEn": "nothing more than ~",
+      "formation": "名詞/動詞普通形 + にすぎない",
+      "examples": [{ "jp": "始まりにすぎない。", "zh": "不过是开始。" }]
+    },
+    {
+      "id": "ni-mo-kakawarazu",
+      "pattern": "〜にもかかわらず",
+      "level": "N2",
+      "meaning": "尽管…却…",
+      "meaningEn": "despite ~ / in spite of ~",
+      "formation": "動詞/名詞 + にもかかわらず",
+      "examples": [{ "jp": "雨にもかかわらず来た。", "zh": "尽管下雨还是来了。" }]
+    },
+    {
+      "id": "zaru-wo-enai",
+      "pattern": "〜ざるを得ない",
+      "level": "N2",
+      "meaning": "不得不…",
+      "meaningEn": "have no choice but to ~",
+      "formation": "動詞ない形（去ない）+ ざるを得ない",
+      "examples": [{ "jp": "認めざるを得ない。", "zh": "不得不承认。" }]
+    },
+    {
+      "id": "de-atte-mo",
+      "pattern": "〜であっても",
+      "level": "N2",
+      "meaning": "即使是…也…",
+      "meaningEn": "even if it is ~",
+      "formation": "名詞 + であっても",
+      "examples": [{ "jp": "専門家であっても間違う。", "zh": "即使是专家也会出错。" }]
+    },
+    {
+      "id": "ni-yotte",
+      "pattern": "〜によって",
+      "level": "N3",
+      "meaning": "根据…；由于…",
+      "meaningEn": "depending on ~ / by means of ~",
+      "formation": "名詞 + によって",
+      "examples": [{ "jp": "人によって違う。", "zh": "因人而异。" }]
+    },
+    {
+      "id": "ni-hoka-naranai",
+      "pattern": "〜にほかならない",
+      "level": "N1",
+      "meaning": "正是…；不外乎…",
+      "meaningEn": "nothing other than ~",
+      "formation": "名詞 + にほかならない",
+      "examples": [{ "jp": "努力の結果にほかならない。", "zh": "正是努力的结果。" }]
+    },
+    {
+      "id": "dakara-koso",
+      "pattern": "だからこそ",
+      "level": "N3",
+      "meaning": "正因如此",
+      "meaningEn": "that is precisely why",
+      "formation": "文頭接続",
+      "examples": [{ "jp": "だからこそ頑張る。", "zh": "正因如此才努力。" }]
+    },
+    {
+      "id": "ni-torawareru",
+      "pattern": "〜にとらわれる",
+      "level": "N2",
+      "meaning": "被…束缚",
+      "meaningEn": "be bound by ~",
+      "formation": "名詞 + にとらわれる",
+      "examples": [{ "jp": "常識にとらわれない。", "zh": "不被常识束缚。" }]
+    },
+    {
+      "id": "tsuzukeru",
+      "pattern": "〜続ける",
+      "level": "N4",
+      "meaning": "持续…",
+      "meaningEn": "keep doing ~",
+      "formation": "動詞ます形（去ます）+ 続ける",
+      "examples": [{ "jp": "走り続ける。", "zh": "一直跑下去。" }]
+    },
+    {
+      "id": "kudasai",
+      "pattern": "〜てください",
+      "level": "N5",
+      "meaning": "请…",
+      "meaningEn": "please do ~",
+      "formation": "動詞て形 + ください",
+      "examples": [{ "jp": "教えてください。", "zh": "请告诉我。" }]
+    },
+    {
+      "id": "mashou",
+      "pattern": "〜ましょう",
+      "level": "N5",
+      "meaning": "一起…吧",
+      "meaningEn": "let's ~",
+      "formation": "動詞ます形（去ます）+ ましょう",
+      "examples": [{ "jp": "一緒に行きましょう。", "zh": "一起去吧。" }]
+    },
+    {
+      "id": "masen-ka",
+      "pattern": "〜ませんか",
+      "level": "N5",
+      "meaning": "要不要…？",
+      "meaningEn": "would you like to ~?",
+      "formation": "動詞ます形（去ます）+ ませんか",
+      "examples": [{ "jp": "映画を見ませんか。", "zh": "要不要看电影？" }]
+    },
+    {
+      "id": "naide-kudasai",
+      "pattern": "〜ないでください",
+      "level": "N5",
+      "meaning": "请不要…",
+      "meaningEn": "please don't ~",
+      "formation": "動詞ない形 + でください",
+      "examples": [{ "jp": "触らないでください。", "zh": "请不要碰。" }]
+    },
+    {
+      "id": "hou-ga-ii",
+      "pattern": "〜ほうがいい",
+      "level": "N4",
+      "meaning": "最好…",
+      "meaningEn": "had better ~",
+      "formation": "動詞た形/ない形 + ほうがいい",
+      "examples": [{ "jp": "早く寝たほうがいい。", "zh": "最好早点睡。" }]
+    },
+    {
+      "id": "yasui",
+      "pattern": "〜やすい",
+      "level": "N4",
+      "meaning": "容易…",
+      "meaningEn": "easy to ~",
+      "formation": "動詞ます形（去ます）+ やすい",
+      "examples": [{ "jp": "分かりやすい。", "zh": "容易理解。" }]
+    },
+    {
+      "id": "nikui",
+      "pattern": "〜にくい",
+      "level": "N4",
+      "meaning": "难以…",
+      "meaningEn": "hard to ~",
+      "formation": "動詞ます形（去ます）+ にくい",
+      "examples": [{ "jp": "言いにくい。", "zh": "难以开口。" }]
+    },
+    {
+      "id": "rareru-kanou",
+      "pattern": "〜（ら）れる（可能）",
+      "level": "N4",
+      "meaning": "能…",
+      "meaningEn": "can ~ (potential)",
+      "formation": "動詞可能形",
+      "examples": [{ "jp": "漢字が読める。", "zh": "能读汉字。" }]
+    },
+    {
+      "id": "te-kara",
+      "pattern": "〜てから",
+      "level": "N4",
+      "meaning": "做完…之后",
+      "meaningEn": "after doing ~",
+      "formation": "動詞て形 + から",
+      "examples": [{ "jp": "食べてから出かける。", "zh": "吃完再出门。" }]
+    },
+    {
+      "id": "you-to-suru",
+      "pattern": "〜（よ）うとする",
+      "level": "N4",
+      "meaning": "正要…；试图…",
+      "meaningEn": "try to ~ / be about to ~",
+      "formation": "動詞意向形 + とする",
+      "examples": [{ "jp": "出ようとした瞬間。", "zh": "正要出去的那一刻。" }]
+    },
+    {
+      "id": "sei-de",
+      "pattern": "〜せいで",
+      "level": "N3",
+      "meaning": "因为…（负面）",
+      "meaningEn": "because of ~ (negative)",
+      "formation": "動詞/名詞の + せいで",
+      "examples": [{ "jp": "雨のせいで中止になった。", "zh": "因为下雨取消了。" }]
+    },
+    {
+      "id": "okage-de",
+      "pattern": "〜おかげで",
+      "level": "N3",
+      "meaning": "多亏了…",
+      "meaningEn": "thanks to ~",
+      "formation": "動詞/名詞の + おかげで",
+      "examples": [{ "jp": "あなたのおかげで助かった。", "zh": "多亏了你才得救。" }]
+    },
+    {
+      "id": "tame-ni",
+      "pattern": "〜ために",
+      "level": "N3",
+      "meaning": "为了…；因为…",
+      "meaningEn": "in order to ~ / because of ~",
+      "formation": "動詞辞書形/名詞の + ために",
+      "examples": [{ "jp": "健康のために走る。", "zh": "为了健康而跑步。" }]
+    },
+    {
+      "id": "wake-dewanai",
+      "pattern": "〜わけではない",
+      "level": "N3",
+      "meaning": "并不是…",
+      "meaningEn": "it doesn't mean that ~",
+      "formation": "動詞/形容詞普通形 + わけではない",
+      "examples": [{ "jp": "嫌なわけではない。", "zh": "并不是讨厌。" }]
+    },
+    {
+      "id": "darake",
+      "pattern": "〜だらけ",
+      "level": "N3",
+      "meaning": "到处是…；满是…",
+      "meaningEn": "full of ~ / covered in ~",
+      "formation": "名詞 + だらけ",
+      "examples": [{ "jp": "間違いだらけだ。", "zh": "全是错。" }]
+    },
+    {
+      "id": "ijou-wa",
+      "pattern": "〜以上（は）",
+      "level": "N3",
+      "meaning": "既然…就…",
+      "meaningEn": "since ~ / now that ~",
+      "formation": "動詞た形 + 以上",
+      "examples": [{ "jp": "約束した以上は守る。", "zh": "既然约了就要守。" }]
+    },
+    {
+      "id": "te-tamaranai",
+      "pattern": "〜てたまらない",
+      "level": "N3",
+      "meaning": "…得不得了",
+      "meaningEn": "unbearably ~ / can't stand ~",
+      "formation": "動詞て形/形容詞くて + たまらない",
+      "examples": [{ "jp": "寒くてたまらない。", "zh": "冷得受不了。" }]
+    },
+    {
+      "id": "ppoi",
+      "pattern": "〜っぽい",
+      "level": "N2",
+      "meaning": "有…的倾向；像…",
+      "meaningEn": "~ish / tend to ~",
+      "formation": "名詞/動詞ます形 + っぽい",
+      "examples": [{ "jp": "子供っぽい。", "zh": "像小孩一样。" }]
+    },
+    {
+      "id": "tsutsu-mo",
+      "pattern": "〜つつ（も）",
+      "level": "N2",
+      "meaning": "虽然…却…",
+      "meaningEn": "while ~ / although ~",
+      "formation": "動詞ます形（去ます）+ つつ",
+      "examples": [{ "jp": "悪いと思いつつ食べた。", "zh": "虽觉得不好还是吃了。" }]
+    },
+    {
+      "id": "kara-ni-wa",
+      "pattern": "〜からには",
+      "level": "N2",
+      "meaning": "既然…就…",
+      "meaningEn": "since ~ / now that ~",
+      "formation": "動詞た形/普通形 + からには",
+      "examples": [{ "jp": "始めたからには最後まで。", "zh": "既然开始了就到最后。" }]
+    },
+    {
+      "id": "wake-ni-wa-ikanai",
+      "pattern": "〜わけにはいかない",
+      "level": "N2",
+      "meaning": "不能…",
+      "meaningEn": "can't ~ / must not ~",
+      "formation": "動詞辞書形 + わけにはいかない",
+      "examples": [{ "jp": "逃げるわけにはいかない。", "zh": "不能逃跑。" }]
+    },
+    {
+      "id": "to-shite",
+      "pattern": "〜として",
+      "level": "N2",
+      "meaning": "作为…",
+      "meaningEn": "as ~",
+      "formation": "名詞 + として",
+      "examples": [{ "jp": "教師として働く。", "zh": "作为教师工作。" }]
+    },
+    {
+      "id": "kagiri",
+      "pattern": "〜限り（では）",
+      "level": "N2",
+      "meaning": "据…所知",
+      "meaningEn": "as far as ~",
+      "formation": "動詞辞書形 + 限り",
+      "examples": [{ "jp": "知る限りでは問題ない。", "zh": "据我所知没问题。" }]
+    },
+    {
+      "id": "shidai",
+      "pattern": "〜次第",
+      "level": "N2",
+      "meaning": "一…就…；取决于…",
+      "meaningEn": "as soon as ~ / depending on ~",
+      "formation": "動詞ます形（去ます）+ 次第",
+      "examples": [{ "jp": "届き次第連絡する。", "zh": "一到就联系。" }]
+    },
+    {
+      "id": "to-wa-ie",
+      "pattern": "〜とはいえ",
+      "level": "N2",
+      "meaning": "虽说…",
+      "meaningEn": "although ~ / that said ~",
+      "formation": "動詞/名詞 + とはいえ",
+      "examples": [{ "jp": "春とはいえまだ寒い。", "zh": "虽说是春天还是冷。" }]
+    },
+    {
+      "id": "ka-no-you",
+      "pattern": "〜かのよう（に）",
+      "level": "N1",
+      "meaning": "仿佛…一样",
+      "meaningEn": "as if ~",
+      "formation": "動詞た形 + かのように",
+      "examples": [{ "jp": "夢を見ているかのようだ。", "zh": "仿佛在做梦一样。" }]
+    },
+    {
+      "id": "mono-no",
+      "pattern": "〜ものの",
+      "level": "N2",
+      "meaning": "虽然…但是…",
+      "meaningEn": "although ~ / but ~",
+      "formation": "動詞/形容詞普通形 + ものの",
+      "examples": [{ "jp": "買ったものの使っていない。", "zh": "虽然买了却没用。" }]
+    },
+    {
+      "id": "gachi",
+      "pattern": "〜がち",
+      "level": "N2",
+      "meaning": "容易…；往往…",
+      "meaningEn": "tend to ~ / apt to ~",
+      "formation": "動詞ます形（去ます）/名詞 + がち",
+      "examples": [{ "jp": "忘れがちだ。", "zh": "容易忘。" }]
+    },
+    {
+      "id": "mitai-da",
+      "pattern": "〜みたいだ",
+      "level": "N3",
+      "meaning": "好像…（口语）",
+      "meaningEn": "seems like ~ (casual)",
+      "formation": "動詞/形容詞普通形 + みたいだ",
+      "examples": [{ "jp": "バグがあるみたいだ。", "zh": "好像有bug。" }]
+    },
+    {
+      "id": "te-oku",
+      "pattern": "〜ておく",
+      "level": "N4",
+      "meaning": "事先做好…",
+      "meaningEn": "do ~ in advance",
+      "formation": "動詞て形 + おく",
+      "examples": [{ "jp": "確認しておく。", "zh": "先确认好。" }]
+    },
+    {
+      "id": "darou",
+      "pattern": "〜だろう",
+      "level": "N4",
+      "meaning": "大概…吧",
+      "meaningEn": "probably ~",
+      "formation": "動詞/形容詞普通形 + だろう",
+      "examples": [{ "jp": "明日は晴れるだろう。", "zh": "明天大概会晴吧。" }]
+    },
+    {
+      "id": "ba",
+      "pattern": "〜ば",
+      "level": "N4",
+      "meaning": "如果…的话",
+      "meaningEn": "if ~",
+      "formation": "動詞ば形",
+      "examples": [{ "jp": "急げば間に合う。", "zh": "赶紧的话能赶上。" }]
+    },
+    {
+      "id": "saseru",
+      "pattern": "〜させる",
+      "level": "N4",
+      "meaning": "让…做；使…",
+      "meaningEn": "make / let someone do ~",
+      "formation": "動詞使役形",
+      "examples": [{ "jp": "考えさせてください。", "zh": "请让我想想。" }]
+    },
+    {
+      "id": "saserareru",
+      "pattern": "〜させられる",
+      "level": "N3",
+      "meaning": "被迫做…",
+      "meaningEn": "be made to do ~",
+      "formation": "動詞使役受身形",
+      "examples": [{ "jp": "毎日練習させられた。", "zh": "每天被逼着练。" }]
+    },
+    {
+      "id": "kana",
+      "pattern": "〜かな",
+      "level": "N4",
+      "meaning": "…吧（自问）",
+      "meaningEn": "I wonder ~",
+      "formation": "動詞/形容詞普通形 + かな",
+      "examples": [{ "jp": "何を作ろうかな。", "zh": "做什么好呢。" }]
+    },
+    {
+      "id": "tte",
+      "pattern": "〜って",
+      "level": "N4",
+      "meaning": "听说…（口语引用）",
+      "meaningEn": "I heard ~ (casual quote)",
+      "formation": "文 + って",
+      "examples": [{ "jp": "おいしいって有名らしい。", "zh": "听说很好吃很有名。" }]
+    },
+    {
+      "id": "janai-ka",
+      "pattern": "〜じゃないか",
+      "level": "N3",
+      "meaning": "不是…吗",
+      "meaningEn": "isn't it ~ ?",
+      "formation": "動詞/形容詞普通形 + じゃないか",
+      "examples": [{ "jp": "いいんじゃないか。", "zh": "不是挺好的吗。" }]
+    },
+    {
+      "id": "te-shouganai",
+      "pattern": "〜てしょうがない",
+      "level": "N3",
+      "meaning": "…得没办法",
+      "meaningEn": "can't help but feel ~",
+      "formation": "動詞て形/形容詞くて + しょうがない",
+      "examples": [{ "jp": "眠くてしょうがない。", "zh": "困得不行。" }]
+    },
+    {
+      "id": "bakari",
+      "pattern": "〜ばかり",
+      "level": "N3",
+      "meaning": "刚刚…；净是…",
+      "meaningEn": "just did ~ / nothing but ~",
+      "formation": "動詞た形 + ばかり / 名詞 + ばかり",
+      "examples": [{ "jp": "来たばかりです。", "zh": "刚来。" }]
+    },
+    {
+      "id": "you-na",
+      "pattern": "〜ような",
+      "level": "N3",
+      "meaning": "像…一样的",
+      "meaningEn": "like ~ / such as ~",
+      "formation": "動詞普通形/名詞の + ような",
+      "examples": [{ "jp": "嵐のような一日だった。", "zh": "像暴风雨一样的一天。" }]
+    }
+  ]
+}

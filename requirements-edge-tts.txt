@@ -1,0 +1,2 @@
+# 本地批量用 Edge TTS 生成/重录 MP3（scripts/regenerate_audio_edge_tts.py、generate_kana_audio.py）
+edge-tts>=6.1.0
