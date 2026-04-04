@@ -1,0 +1,4946 @@
+{
+  "items": [
+    {
+      "id": "n5-ichiban",
+      "pattern": "〜いちばん",
+      "level": "N5",
+      "meaning": "最～",
+      "meaningEn": "the most"
+    },
+    {
+      "id": "n5-ga-1",
+      "pattern": "〜が",
+      "level": "N5",
+      "meaning": "（标识主语）",
+      "meaningEn": "as for (identifies something)"
+    },
+    {
+      "id": "n5-ga-2",
+      "pattern": "〜が",
+      "level": "N5",
+      "meaning": "但是；然而",
+      "meaningEn": "but; however"
+    },
+    {
+      "id": "n5-ka-1",
+      "pattern": "〜か",
+      "level": "N5",
+      "meaning": "或（二选一）",
+      "meaningEn": "or (choice between 2 objects)"
+    },
+    {
+      "id": "n5-ka-2",
+      "pattern": "〜か",
+      "level": "N5",
+      "meaning": "疑问助词",
+      "meaningEn": "question particle"
+    },
+    {
+      "id": "n5-ga-aru",
+      "pattern": "〜がある",
+      "level": "N5",
+      "meaning": "有（用于非生物）",
+      "meaningEn": "there is (used for non-living things)"
+    },
+    {
+      "id": "n5-ga-iru",
+      "pattern": "〜がいる",
+      "level": "N5",
+      "meaning": "有（用于生物）",
+      "meaningEn": "there is (used for living things)"
+    },
+    {
+      "id": "n5-kara-1",
+      "pattern": "〜から",
+      "level": "N5",
+      "meaning": "因为；由于",
+      "meaningEn": "because; since"
+    },
+    {
+      "id": "n5-kara-2",
+      "pattern": "〜から",
+      "level": "N5",
+      "meaning": "从",
+      "meaningEn": "from"
+    },
+    {
+      "id": "n5-kurai",
+      "pattern": "〜くらい/ぐらい",
+      "level": "N5",
+      "meaning": "大约；左右",
+      "meaningEn": "about; approximately"
+    },
+    {
+      "id": "n5-kedo",
+      "pattern": "〜けど/けれども",
+      "level": "N5",
+      "meaning": "但是；虽然",
+      "meaningEn": "but; although"
+    },
+    {
+      "id": "n5-suru",
+      "pattern": "〜する",
+      "level": "N5",
+      "meaning": "做",
+      "meaningEn": "to do"
+    },
+    {
+      "id": "n5-da-desu",
+      "pattern": "〜だ/です",
+      "level": "N5",
+      "meaning": "是；有",
+      "meaningEn": "there is; this is"
+    },
+    {
+      "id": "n5-tai",
+      "pattern": "〜たい",
+      "level": "N5",
+      "meaning": "想要做",
+      "meaningEn": "want to"
+    },
+    {
+      "id": "n5-dake",
+      "pattern": "〜だけ",
+      "level": "N5",
+      "meaning": "只；仅仅",
+      "meaningEn": "only; just"
+    },
+    {
+      "id": "n5-ta-koto-ga-aru",
+      "pattern": "〜たことがある",
+      "level": "N5",
+      "meaning": "曾经做过",
+      "meaningEn": "have done before"
+    },
+    {
+      "id": "n5-darou-1",
+      "pattern": "〜だろう",
+      "level": "N5",
+      "meaning": "大概；可能",
+      "meaningEn": "probably"
+    },
+    {
+      "id": "n5-darou-2",
+      "pattern": "〜だろう",
+      "level": "N5",
+      "meaning": "是吧？对吧？",
+      "meaningEn": "isn't it?; right?"
+    },
+    {
+      "id": "n5-tsumori",
+      "pattern": "〜つもり",
+      "level": "N5",
+      "meaning": "打算；计划",
+      "meaningEn": "plan to; intend to"
+    },
+    {
+      "id": "n5-de-1",
+      "pattern": "〜で",
+      "level": "N5",
+      "meaning": "在（场所）",
+      "meaningEn": "at; in"
+    },
+    {
+      "id": "n5-de-2",
+      "pattern": "〜で",
+      "level": "N5",
+      "meaning": "用；通过",
+      "meaningEn": "with; by"
+    },
+    {
+      "id": "n5-te-iru",
+      "pattern": "〜ている",
+      "level": "N5",
+      "meaning": "正在做",
+      "meaningEn": "is/are/am doing"
+    },
+    {
+      "id": "n5-te-kara",
+      "pattern": "〜てから",
+      "level": "N5",
+      "meaning": "做了之后",
+      "meaningEn": "after doing"
+    },
+    {
+      "id": "n5-te-kudasai",
+      "pattern": "〜てください",
+      "level": "N5",
+      "meaning": "请做",
+      "meaningEn": "please do"
+    },
+    {
+      "id": "n5-deshou-1",
+      "pattern": "〜でしょう",
+      "level": "N5",
+      "meaning": "大概；可能",
+      "meaningEn": "probably"
+    },
+    {
+      "id": "n5-deshou-2",
+      "pattern": "〜でしょう",
+      "level": "N5",
+      "meaning": "是吧？对吧？",
+      "meaningEn": "isn't it?; right?"
+    },
+    {
+      "id": "n5-te-wa-ikenai",
+      "pattern": "〜てはいけない",
+      "level": "N5",
+      "meaning": "不可以；不允许",
+      "meaningEn": "must not; may not"
+    },
+    {
+      "id": "n5-te-mo-ii",
+      "pattern": "〜てもいい",
+      "level": "N5",
+      "meaning": "可以；没关系",
+      "meaningEn": "is okay; is alright to"
+    },
+    {
+      "id": "n5-to-1",
+      "pattern": "〜と",
+      "level": "N5",
+      "meaning": "和",
+      "meaningEn": "and"
+    },
+    {
+      "id": "n5-to-2",
+      "pattern": "〜と",
+      "level": "N5",
+      "meaning": "和（一起）",
+      "meaningEn": "with"
+    },
+    {
+      "id": "n5-na",
+      "pattern": "〜な",
+      "level": "N5",
+      "meaning": "不要做",
+      "meaningEn": "don't do"
+    },
+    {
+      "id": "n5-naide-kudasai",
+      "pattern": "〜ないでください",
+      "level": "N5",
+      "meaning": "请不要做",
+      "meaningEn": "please don't"
+    },
+    {
+      "id": "n5-naru",
+      "pattern": "〜なる",
+      "level": "N5",
+      "meaning": "变成",
+      "meaningEn": "to become"
+    },
+    {
+      "id": "n5-ni-e",
+      "pattern": "〜に/へ",
+      "level": "N5",
+      "meaning": "去；到",
+      "meaningEn": "to"
+    },
+    {
+      "id": "n5-ni",
+      "pattern": "〜に",
+      "level": "N5",
+      "meaning": "在；到；对于",
+      "meaningEn": "in; at; to; for"
+    },
+    {
+      "id": "n5-ni-iku",
+      "pattern": "〜にいく",
+      "level": "N5",
+      "meaning": "去做某事",
+      "meaningEn": "to go, in order to do"
+    },
+    {
+      "id": "n5-ni-suru",
+      "pattern": "〜にする",
+      "level": "N5",
+      "meaning": "决定",
+      "meaningEn": "to decide on"
+    },
+    {
+      "id": "n5-no-1",
+      "pattern": "〜の",
+      "level": "N5",
+      "meaning": "的（表示所属）",
+      "meaningEn": "of (indicates possession)"
+    },
+    {
+      "id": "n5-no-2",
+      "pattern": "〜の",
+      "level": "N5",
+      "meaning": "将动词名词化",
+      "meaningEn": "turns verbs into nouns"
+    },
+    {
+      "id": "n5-no-ga-heta",
+      "pattern": "〜のが下手",
+      "level": "N5",
+      "meaning": "不擅长做",
+      "meaningEn": "to be bad at"
+    },
+    {
+      "id": "n5-no-ga-jouzu",
+      "pattern": "〜のが上手",
+      "level": "N5",
+      "meaning": "擅长做",
+      "meaningEn": "to be good at"
+    },
+    {
+      "id": "n5-no-ga-suki",
+      "pattern": "〜のが好き",
+      "level": "N5",
+      "meaning": "喜欢做",
+      "meaningEn": "like/love doing"
+    },
+    {
+      "id": "n5-node",
+      "pattern": "〜ので",
+      "level": "N5",
+      "meaning": "因为；由于",
+      "meaningEn": "because of; the reason is that"
+    },
+    {
+      "id": "n5-wa",
+      "pattern": "〜は",
+      "level": "N5",
+      "meaning": "（提示主题）",
+      "meaningEn": "as for (introduces something)"
+    },
+    {
+      "id": "n5-hou-ga-ii-1",
+      "pattern": "〜ほうがいい",
+      "level": "N5",
+      "meaning": "最好做",
+      "meaningEn": "it'd be better to"
+    },
+    {
+      "id": "n5-hou-ga-ii-2",
+      "pattern": "〜ほうがいい",
+      "level": "N5",
+      "meaning": "最好不要做",
+      "meaningEn": "it'd be better not to"
+    },
+    {
+      "id": "n5-mae-ni",
+      "pattern": "〜前に",
+      "level": "N5",
+      "meaning": "在…之前",
+      "meaningEn": "before"
+    },
+    {
+      "id": "n5-mada",
+      "pattern": "まだ",
+      "level": "N5",
+      "meaning": "还；尚未",
+      "meaningEn": "still; not yet"
+    },
+    {
+      "id": "n5-made",
+      "pattern": "〜まで",
+      "level": "N5",
+      "meaning": "到；直到；甚至",
+      "meaningEn": "until; till; to; even"
+    },
+    {
+      "id": "n5-mo",
+      "pattern": "〜も",
+      "level": "N5",
+      "meaning": "也；还",
+      "meaningEn": "also; too; as well"
+    },
+    {
+      "id": "n5-mou",
+      "pattern": "もう",
+      "level": "N5",
+      "meaning": "已经；不再",
+      "meaningEn": "already; anymore"
+    },
+    {
+      "id": "n5-ya",
+      "pattern": "〜や",
+      "level": "N5",
+      "meaning": "和（等等）",
+      "meaningEn": "and (etc.)"
+    },
+    {
+      "id": "n5-yori-no-hou-ga",
+      "pattern": "〜より○○のほうが○○",
+      "level": "N5",
+      "meaning": "比～更",
+      "meaningEn": "is more ~ than"
+    },
+    {
+      "id": "n4-ato-de",
+      "pattern": "〜後で",
+      "level": "N4",
+      "meaning": "之后；以后",
+      "meaningEn": "after; later"
+    },
+    {
+      "id": "n4-amari-nai",
+      "pattern": "あまり〜ない",
+      "level": "N4",
+      "meaning": "不太；不怎么",
+      "meaningEn": "not very; not much"
+    },
+    {
+      "id": "n4-itasu",
+      "pattern": "〜いたす",
+      "level": "N4",
+      "meaning": "做（谦让语する）",
+      "meaningEn": "to do (humble する)"
+    },
+    {
+      "id": "n4-irassharu",
+      "pattern": "〜いらっしゃる",
+      "level": "N4",
+      "meaning": "在；来；去（尊敬语）",
+      "meaningEn": "to be; to come; to go"
+    },
+    {
+      "id": "n4-o-kudasai",
+      "pattern": "お〜ください",
+      "level": "N4",
+      "meaning": "请（尊敬语）",
+      "meaningEn": "please do (honorific)"
+    },
+    {
+      "id": "n4-o-ni-naru",
+      "pattern": "お〜になる",
+      "level": "N4",
+      "meaning": "做（尊敬语）",
+      "meaningEn": "to do (honorific)"
+    },
+    {
+      "id": "n4-oki-ni",
+      "pattern": "〜おきに",
+      "level": "N4",
+      "meaning": "每隔",
+      "meaningEn": "repeated at intervals; every"
+    },
+    {
+      "id": "n4-owaru",
+      "pattern": "〜終わる",
+      "level": "N4",
+      "meaning": "做完；结束",
+      "meaningEn": "to finish; to end"
+    },
+    {
+      "id": "n4-kai",
+      "pattern": "〜かい",
+      "level": "N4",
+      "meaning": "（将句子变为是非问句）",
+      "meaningEn": "turns a sentence into a yes/no question"
+    },
+    {
+      "id": "n4-kashira",
+      "pattern": "〜かしら",
+      "level": "N4",
+      "meaning": "我想知道",
+      "meaningEn": "I wonder"
+    },
+    {
+      "id": "n4-ga-suru",
+      "pattern": "〜がする",
+      "level": "N4",
+      "meaning": "闻到；听到；尝到",
+      "meaningEn": "smell; hear; taste"
+    },
+    {
+      "id": "n4-kata",
+      "pattern": "〜方",
+      "level": "N4",
+      "meaning": "做法；方法",
+      "meaningEn": "way of; method"
+    },
+    {
+      "id": "n4-ka-dou-ka",
+      "pattern": "〜かどうか",
+      "level": "N4",
+      "meaning": "是否",
+      "meaningEn": "whether or not"
+    },
+    {
+      "id": "n4-kana",
+      "pattern": "〜かな",
+      "level": "N4",
+      "meaning": "我想知道",
+      "meaningEn": "I wonder"
+    },
+    {
+      "id": "n4-kamoshirenai",
+      "pattern": "〜かもしれない",
+      "level": "N4",
+      "meaning": "也许；可能",
+      "meaningEn": "might; maybe"
+    },
+    {
+      "id": "n4-garu",
+      "pattern": "〜がる",
+      "level": "N4",
+      "meaning": "表现出；感到",
+      "meaningEn": "to show signs of; to feel; to think"
+    },
+    {
+      "id": "n4-kyuu-ni",
+      "pattern": "急に",
+      "level": "N4",
+      "meaning": "突然",
+      "meaningEn": "suddenly"
+    },
+    {
+      "id": "n4-gozaimasu",
+      "pattern": "〜ございます",
+      "level": "N4",
+      "meaning": "有（尊敬语ある）",
+      "meaningEn": "there is (honorific ある)"
+    },
+    {
+      "id": "n4-koto",
+      "pattern": "〜こと",
+      "level": "N4",
+      "meaning": "将动词名词化",
+      "meaningEn": "turns verbs into nouns"
+    },
+    {
+      "id": "n4-koto-ga-dekiru",
+      "pattern": "〜ことができる",
+      "level": "N4",
+      "meaning": "能够；可以",
+      "meaningEn": "can; be able to"
+    },
+    {
+      "id": "n4-koto-ni-suru",
+      "pattern": "〜ことにする",
+      "level": "N4",
+      "meaning": "决定做",
+      "meaningEn": "to decide on"
+    },
+    {
+      "id": "n4-koto-ni-naru",
+      "pattern": "〜ことになる",
+      "level": "N4",
+      "meaning": "将会变成",
+      "meaningEn": "will become"
+    },
+    {
+      "id": "n4-goro",
+      "pattern": "〜ごろ",
+      "level": "N4",
+      "meaning": "大约；左右",
+      "meaningEn": "around; about"
+    },
+    {
+      "id": "n4-sa",
+      "pattern": "〜さ",
+      "level": "N4",
+      "meaning": "将形容词名词化",
+      "meaningEn": "turns adjectives into nouns"
+    },
+    {
+      "id": "n4-saserareru",
+      "pattern": "〜させられる",
+      "level": "N4",
+      "meaning": "被迫做某事",
+      "meaningEn": "to be made to do something"
+    },
+    {
+      "id": "n4-saseru",
+      "pattern": "〜させる",
+      "level": "N4",
+      "meaning": "让某人做某事",
+      "meaningEn": "to make/let somebody do something"
+    },
+    {
+      "id": "n4-shi",
+      "pattern": "〜し",
+      "level": "N4",
+      "meaning": "而且；并且",
+      "meaningEn": "and"
+    },
+    {
+      "id": "n4-shika-nai",
+      "pattern": "〜しか〜ない",
+      "level": "N4",
+      "meaning": "只有；仅仅",
+      "meaningEn": "only; nothing but"
+    },
+    {
+      "id": "n4-janai-ka",
+      "pattern": "〜じゃないか",
+      "level": "N4",
+      "meaning": "不是吗",
+      "meaningEn": "isn't it"
+    },
+    {
+      "id": "n4-sugiru",
+      "pattern": "〜すぎる",
+      "level": "N4",
+      "meaning": "太过于",
+      "meaningEn": "too much"
+    },
+    {
+      "id": "n4-zenzen",
+      "pattern": "ぜんぜん",
+      "level": "N4",
+      "meaning": "完全（不）",
+      "meaningEn": "(not) at all"
+    },
+    {
+      "id": "n4-sou-da-1",
+      "pattern": "〜そうだ",
+      "level": "N4",
+      "meaning": "听说；据说",
+      "meaningEn": "I heard that; it is said that"
+    },
+    {
+      "id": "n4-sou-da-2",
+      "pattern": "〜そうだ",
+      "level": "N4",
+      "meaning": "看起来；似乎",
+      "meaningEn": "look like; appear; seem"
+    },
+    {
+      "id": "n4-sou-ni-na",
+      "pattern": "〜そうに/そうな",
+      "level": "N4",
+      "meaning": "看起来；似乎",
+      "meaningEn": "seem; look like"
+    },
+    {
+      "id": "n4-soredemo",
+      "pattern": "それでも",
+      "level": "N4",
+      "meaning": "即便如此；然而",
+      "meaningEn": "but still; and yet"
+    },
+    {
+      "id": "n4-sonnani",
+      "pattern": "そんなに",
+      "level": "N4",
+      "meaning": "那么；那样地",
+      "meaningEn": "so; so much; like that"
+    },
+    {
+      "id": "n4-tagaru",
+      "pattern": "〜たがる",
+      "level": "N4",
+      "meaning": "想要做（第三人称）",
+      "meaningEn": "to want to"
+    },
+    {
+      "id": "n4-dake-de",
+      "pattern": "〜だけで",
+      "level": "N4",
+      "meaning": "仅仅靠",
+      "meaningEn": "just by"
+    },
+    {
+      "id": "n4-dasu",
+      "pattern": "〜出す",
+      "level": "N4",
+      "meaning": "突然开始",
+      "meaningEn": "to suddenly begin; to suddenly appear"
+    },
+    {
+      "id": "n4-ta-tokoro",
+      "pattern": "〜たところ",
+      "level": "N4",
+      "meaning": "刚做完；正在做",
+      "meaningEn": "just finished doing; was just doing"
+    },
+    {
+      "id": "n4-ta-bakari",
+      "pattern": "〜たばかり",
+      "level": "N4",
+      "meaning": "刚刚做了",
+      "meaningEn": "just did; something just happened"
+    },
+    {
+      "id": "n4-tara",
+      "pattern": "〜たら",
+      "level": "N4",
+      "meaning": "如果；之后；当",
+      "meaningEn": "if; after; when"
+    },
+    {
+      "id": "n4-tara-dou",
+      "pattern": "〜たらどう",
+      "level": "N4",
+      "meaning": "你为什么不",
+      "meaningEn": "why don't you"
+    },
+    {
+      "id": "n4-tari-tari",
+      "pattern": "〜たり〜たり",
+      "level": "N4",
+      "meaning": "做诸如…之类的事",
+      "meaningEn": "do such things like"
+    },
+    {
+      "id": "n4-tsuzukeru",
+      "pattern": "〜続ける",
+      "level": "N4",
+      "meaning": "继续做",
+      "meaningEn": "to continue"
+    },
+    {
+      "id": "n4-te-ageru",
+      "pattern": "〜てあげる",
+      "level": "N4",
+      "meaning": "为某人做某事",
+      "meaningEn": "to do something for someone"
+    },
+    {
+      "id": "n4-te-aru",
+      "pattern": "〜てある",
+      "level": "N4",
+      "meaning": "某事已被做（状态）",
+      "meaningEn": "something is/has been done"
+    },
+    {
+      "id": "n4-te-iku",
+      "pattern": "〜ていく",
+      "level": "N4",
+      "meaning": "去做",
+      "meaningEn": "to go and do"
+    },
+    {
+      "id": "n4-te-itadakemasen-ka",
+      "pattern": "〜ていただけませんか",
+      "level": "N4",
+      "meaning": "能请您做吗",
+      "meaningEn": "could you please"
+    },
+    {
+      "id": "n4-te-iru-tokoro",
+      "pattern": "〜ているところ",
+      "level": "N4",
+      "meaning": "正在做的过程中",
+      "meaningEn": "in the process of doing"
+    },
+    {
+      "id": "n4-te-oku",
+      "pattern": "〜ておく/とく",
+      "level": "N4",
+      "meaning": "事先做好",
+      "meaningEn": "to do something for later"
+    },
+    {
+      "id": "n4-te-kuru",
+      "pattern": "〜てくる",
+      "level": "N4",
+      "meaning": "来做；变得；持续",
+      "meaningEn": "to come to; to become; to continue"
+    },
+    {
+      "id": "n4-te-kureru",
+      "pattern": "〜てくれる",
+      "level": "N4",
+      "meaning": "为我做某事",
+      "meaningEn": "to do something for someone"
+    },
+    {
+      "id": "n4-de-gozaimasu",
+      "pattern": "〜でございます",
+      "level": "N4",
+      "meaning": "是（尊敬语である）",
+      "meaningEn": "there is; this is (honorific である)"
+    },
+    {
+      "id": "n4-te-shimau",
+      "pattern": "〜てしまう/ちゃう",
+      "level": "N4",
+      "meaning": "做完了（遗憾）；做完了（彻底）",
+      "meaningEn": "to do something (regretfully); to do something (completely)"
+    },
+    {
+      "id": "n4-te-sumimasen",
+      "pattern": "〜てすみません",
+      "level": "N4",
+      "meaning": "对不起做了",
+      "meaningEn": "I'm sorry for"
+    },
+    {
+      "id": "n4-te-hoshii",
+      "pattern": "〜てほしい",
+      "level": "N4",
+      "meaning": "希望你做",
+      "meaningEn": "I want you to; I need you to"
+    },
+    {
+      "id": "n4-te-miru",
+      "pattern": "〜てみる",
+      "level": "N4",
+      "meaning": "试着做",
+      "meaningEn": "to try to"
+    },
+    {
+      "id": "n4-te-mo",
+      "pattern": "〜ても",
+      "level": "N4",
+      "meaning": "即使；尽管",
+      "meaningEn": "even if; even though"
+    },
+    {
+      "id": "n4-demo",
+      "pattern": "〜でも",
+      "level": "N4",
+      "meaning": "之类的",
+      "meaningEn": "or something"
+    },
+    {
+      "id": "n4-te-morau",
+      "pattern": "〜てもらう",
+      "level": "N4",
+      "meaning": "请某人为我做",
+      "meaningEn": "to get somebody to do something"
+    },
+    {
+      "id": "n4-te-yokatta",
+      "pattern": "〜てよかった",
+      "level": "N4",
+      "meaning": "太好了；庆幸",
+      "meaningEn": "I'm glad that"
+    },
+    {
+      "id": "n4-to-1",
+      "pattern": "〜と",
+      "level": "N4",
+      "meaning": "和",
+      "meaningEn": "and"
+    },
+    {
+      "id": "n4-to-2",
+      "pattern": "〜と",
+      "level": "N4",
+      "meaning": "和（一起）",
+      "meaningEn": "with"
+    },
+    {
+      "id": "n4-to-iu-koto",
+      "pattern": "〜ということ",
+      "level": "N4",
+      "meaning": "将句子或短语名词化",
+      "meaningEn": "changes a sentence or phrase into a noun"
+    },
+    {
+      "id": "n4-to-omou",
+      "pattern": "〜と思う",
+      "level": "N4",
+      "meaning": "我认为；你认为",
+      "meaningEn": "I think; you think"
+    },
+    {
+      "id": "n4-toka-toka",
+      "pattern": "〜とか〜とか",
+      "level": "N4",
+      "meaning": "诸如；例如",
+      "meaningEn": "among other things; such as"
+    },
+    {
+      "id": "n4-toki",
+      "pattern": "〜とき",
+      "level": "N4",
+      "meaning": "当…的时候",
+      "meaningEn": "when; at the time"
+    },
+    {
+      "id": "n4-tokoro",
+      "pattern": "〜ところ",
+      "level": "N4",
+      "meaning": "即将要做",
+      "meaningEn": "about to; on the verge of"
+    },
+    {
+      "id": "n4-naide",
+      "pattern": "〜ないで",
+      "level": "N4",
+      "meaning": "不做；没做",
+      "meaningEn": "without doing; don't"
+    },
+    {
+      "id": "n4-nagara",
+      "pattern": "〜ながら",
+      "level": "N4",
+      "meaning": "一边…一边",
+      "meaningEn": "while; during; as"
+    },
+    {
+      "id": "n4-nakute-wa-ikenai",
+      "pattern": "〜なくてはいけない/なくてはならない",
+      "level": "N4",
+      "meaning": "必须做",
+      "meaningEn": "must do; have to do"
+    },
+    {
+      "id": "n4-nakute-mo-ii",
+      "pattern": "〜なくてもいい",
+      "level": "N4",
+      "meaning": "不必做",
+      "meaningEn": "don't have to"
+    },
+    {
+      "id": "n4-nakereba-ikenai",
+      "pattern": "〜なければいけない/なければならない",
+      "level": "N4",
+      "meaning": "必须做",
+      "meaningEn": "must do; have to do"
+    },
+    {
+      "id": "n4-nasai",
+      "pattern": "〜なさい",
+      "level": "N4",
+      "meaning": "命令某人做某事",
+      "meaningEn": "order somebody to do something"
+    },
+    {
+      "id": "n4-nasaru",
+      "pattern": "〜なさる",
+      "level": "N4",
+      "meaning": "做（尊敬语する）",
+      "meaningEn": "to do (honorific する)"
+    },
+    {
+      "id": "n4-nado",
+      "pattern": "〜など",
+      "level": "N4",
+      "meaning": "等等；之类",
+      "meaningEn": "such as; things like"
+    },
+    {
+      "id": "n4-nara",
+      "pattern": "〜なら",
+      "level": "N4",
+      "meaning": "如果；要是",
+      "meaningEn": "if; in case; as for"
+    },
+    {
+      "id": "n4-nikui",
+      "pattern": "〜にくい",
+      "level": "N4",
+      "meaning": "难以做",
+      "meaningEn": "difficult to"
+    },
+    {
+      "id": "n4-no-naka-de",
+      "pattern": "〜の中で",
+      "level": "N4",
+      "meaning": "在…之中",
+      "meaningEn": "in; among"
+    },
+    {
+      "id": "n4-noni-1",
+      "pattern": "〜のに",
+      "level": "N4",
+      "meaning": "虽然；尽管",
+      "meaningEn": "although in spite of; even though"
+    },
+    {
+      "id": "n4-noni-2",
+      "pattern": "〜のに",
+      "level": "N4",
+      "meaning": "为了做",
+      "meaningEn": "in order to"
+    },
+    {
+      "id": "n4-no-you-ni",
+      "pattern": "〜のように/のような",
+      "level": "N4",
+      "meaning": "像；类似",
+      "meaningEn": "like; similar to"
+    },
+    {
+      "id": "n4-ba",
+      "pattern": "〜ば",
+      "level": "N4",
+      "meaning": "如果…那么",
+      "meaningEn": "if… then"
+    },
+    {
+      "id": "n4-baai-wa",
+      "pattern": "〜場合は",
+      "level": "N4",
+      "meaning": "在…的情况下",
+      "meaningEn": "in the event of"
+    },
+    {
+      "id": "n4-bakari-1",
+      "pattern": "〜ばかり",
+      "level": "N4",
+      "meaning": "只；净",
+      "meaningEn": "only; nothing but"
+    },
+    {
+      "id": "n4-hajimeru",
+      "pattern": "〜始める",
+      "level": "N4",
+      "meaning": "开始做",
+      "meaningEn": "to start; to begin to"
+    },
+    {
+      "id": "n4-hazu-ga-nai",
+      "pattern": "〜はずがない",
+      "level": "N4",
+      "meaning": "不可能",
+      "meaningEn": "cannot be"
+    },
+    {
+      "id": "n4-hazu-da",
+      "pattern": "〜はずだ",
+      "level": "N4",
+      "meaning": "应该是；一定是",
+      "meaningEn": "it must be; it should be"
+    },
+    {
+      "id": "n4-hitsuyou",
+      "pattern": "〜必要",
+      "level": "N4",
+      "meaning": "需要；必要",
+      "meaningEn": "need; necessary"
+    },
+    {
+      "id": "n4-hitsuyou-ga-aru",
+      "pattern": "〜必要がある",
+      "level": "N4",
+      "meaning": "需要做",
+      "meaningEn": "need to"
+    },
+    {
+      "id": "n4-hoshii",
+      "pattern": "〜ほしい",
+      "level": "N4",
+      "meaning": "想要某物",
+      "meaningEn": "to want something; to be in need of"
+    },
+    {
+      "id": "n4-made-ni",
+      "pattern": "〜までに",
+      "level": "N4",
+      "meaning": "在…之前",
+      "meaningEn": "by; by the time"
+    },
+    {
+      "id": "n4-mitai",
+      "pattern": "〜みたい",
+      "level": "N4",
+      "meaning": "像；好像",
+      "meaningEn": "like; similar to; resembling"
+    },
+    {
+      "id": "n4-mitai-ni-na",
+      "pattern": "〜みたいに/みたいな",
+      "level": "N4",
+      "meaning": "像；类似",
+      "meaningEn": "like; similar to"
+    },
+    {
+      "id": "n4-yasui",
+      "pattern": "〜やすい",
+      "level": "N4",
+      "meaning": "容易做；易于",
+      "meaningEn": "easy to; likely to"
+    },
+    {
+      "id": "n4-you-da",
+      "pattern": "〜ようだ",
+      "level": "N4",
+      "meaning": "好像；似乎",
+      "meaningEn": "it seems that; it appears that; it looks like"
+    },
+    {
+      "id": "n4-you-to-omou",
+      "pattern": "〜ようと思う",
+      "level": "N4",
+      "meaning": "我想要做",
+      "meaningEn": "I think I will"
+    },
+    {
+      "id": "n4-you-ni-na",
+      "pattern": "〜ように/ような",
+      "level": "N4",
+      "meaning": "像；如同",
+      "meaningEn": "as; like; just like"
+    },
+    {
+      "id": "n4-you-ni-suru",
+      "pattern": "〜ようにする",
+      "level": "N4",
+      "meaning": "尽量做到",
+      "meaningEn": "to try to; to make sure that"
+    },
+    {
+      "id": "n4-you-ni-naru",
+      "pattern": "〜ようになる",
+      "level": "N4",
+      "meaning": "变得能够；达到",
+      "meaningEn": "to reach the point that"
+    },
+    {
+      "id": "n4-yotei-da",
+      "pattern": "〜よていだ",
+      "level": "N4",
+      "meaning": "计划做；打算做",
+      "meaningEn": "plan to; intend to"
+    },
+    {
+      "id": "n4-yori",
+      "pattern": "〜より",
+      "level": "N4",
+      "meaning": "比",
+      "meaningEn": "than"
+    },
+    {
+      "id": "n4-rashii",
+      "pattern": "〜らしい",
+      "level": "N4",
+      "meaning": "像…的样子",
+      "meaningEn": "-like"
+    },
+    {
+      "id": "n4-rareru-1",
+      "pattern": "〜られる",
+      "level": "N4",
+      "meaning": "能够做",
+      "meaningEn": "to be able to do something"
+    },
+    {
+      "id": "n4-rareru-2",
+      "pattern": "〜られる",
+      "level": "N4",
+      "meaning": "被做（被动）",
+      "meaningEn": "to do (by someone)"
+    },
+    {
+      "id": "n3-amari",
+      "pattern": "〜あまり",
+      "level": "N3",
+      "meaning": "过于…以至于",
+      "meaningEn": "so much… that"
+    },
+    {
+      "id": "n3-amari-ni-mo",
+      "pattern": "あまりにも",
+      "level": "N3",
+      "meaning": "太…以至于",
+      "meaningEn": "so much… that; too…"
+    },
+    {
+      "id": "n3-ikura-temo",
+      "pattern": "いくら〜ても/いくら〜でも",
+      "level": "N3",
+      "meaning": "无论多么",
+      "meaningEn": "no matter how"
+    },
+    {
+      "id": "n3-ippou-da",
+      "pattern": "〜一方だ",
+      "level": "N3",
+      "meaning": "越来越；持续",
+      "meaningEn": "more and more; continue to"
+    },
+    {
+      "id": "n3-ippou-de",
+      "pattern": "〜一方で",
+      "level": "N3",
+      "meaning": "一方面；另一方面",
+      "meaningEn": "on one hand; on the other hand"
+    },
+    {
+      "id": "n3-uchi-ni",
+      "pattern": "〜うちに",
+      "level": "N3",
+      "meaning": "趁着；在…期间",
+      "meaningEn": "while; before; doing"
+    },
+    {
+      "id": "n3-okage-de",
+      "pattern": "〜おかげで",
+      "level": "N3",
+      "meaning": "多亏了；托…的福",
+      "meaningEn": "thanks to; because of"
+    },
+    {
+      "id": "n3-osoraku",
+      "pattern": "おそらく",
+      "level": "N3",
+      "meaning": "恐怕；大概",
+      "meaningEn": "perhaps; likely; probably"
+    },
+    {
+      "id": "n3-kake",
+      "pattern": "〜かけ",
+      "level": "N3",
+      "meaning": "做到一半；尚未完成",
+      "meaningEn": "half-; not yet finished"
+    },
+    {
+      "id": "n3-gatai",
+      "pattern": "〜がたい",
+      "level": "N3",
+      "meaning": "难以做",
+      "meaningEn": "hard to; difficult to"
+    },
+    {
+      "id": "n3-gachi",
+      "pattern": "〜がち",
+      "level": "N3",
+      "meaning": "容易；往往",
+      "meaningEn": "apt to do; tend to do"
+    },
+    {
+      "id": "n3-kawari-ni",
+      "pattern": "〜代わりに",
+      "level": "N3",
+      "meaning": "代替；作为交换",
+      "meaningEn": "instead of; in exchange for"
+    },
+    {
+      "id": "n3-gimi",
+      "pattern": "〜ぎみ",
+      "level": "N3",
+      "meaning": "有点像；有…的倾向",
+      "meaningEn": "-like; -looking"
+    },
+    {
+      "id": "n3-kiri",
+      "pattern": "〜きり",
+      "level": "N3",
+      "meaning": "只；仅仅",
+      "meaningEn": "only; just"
+    },
+    {
+      "id": "n3-kiru",
+      "pattern": "〜きる",
+      "level": "N3",
+      "meaning": "彻底做完",
+      "meaningEn": "to do something completely"
+    },
+    {
+      "id": "n3-kirenai",
+      "pattern": "〜切れない",
+      "level": "N3",
+      "meaning": "做不完",
+      "meaningEn": "being too much to finish"
+    },
+    {
+      "id": "n3-kuse-ni",
+      "pattern": "〜くせに",
+      "level": "N3",
+      "meaning": "明明…却",
+      "meaningEn": "even though; and yet; despite"
+    },
+    {
+      "id": "n3-kurai",
+      "pattern": "〜くらい/ぐらい",
+      "level": "N3",
+      "meaning": "大约；左右",
+      "meaningEn": "probably; around"
+    },
+    {
+      "id": "n3-kesshite-nai",
+      "pattern": "決して〜ない",
+      "level": "N3",
+      "meaning": "绝不；决不",
+      "meaningEn": "never; by no means"
+    },
+    {
+      "id": "n3-koso",
+      "pattern": "〜こそ",
+      "level": "N3",
+      "meaning": "正是；才",
+      "meaningEn": "certainly (emphasises the previous word)"
+    },
+    {
+      "id": "n3-koto",
+      "pattern": "〜こと",
+      "level": "N3",
+      "meaning": "必须做",
+      "meaningEn": "(must) do"
+    },
+    {
+      "id": "n3-koto-ka",
+      "pattern": "〜ことか",
+      "level": "N3",
+      "meaning": "多么…啊！",
+      "meaningEn": "how…? what…!"
+    },
+    {
+      "id": "n3-koto-ga-aru",
+      "pattern": "〜ことがある",
+      "level": "N3",
+      "meaning": "有时会；可能",
+      "meaningEn": "can; sometimes happens"
+    },
+    {
+      "id": "n3-koto-da",
+      "pattern": "〜ことだ",
+      "level": "N3",
+      "meaning": "应该（建议）",
+      "meaningEn": "should (when giving advice)"
+    },
+    {
+      "id": "n3-koto-ni",
+      "pattern": "〜ことに",
+      "level": "N3",
+      "meaning": "令人…地",
+      "meaningEn": "-ly"
+    },
+    {
+      "id": "n3-koto-wa-nai",
+      "pattern": "〜ことはない",
+      "level": "N3",
+      "meaning": "没有必要做；不会发生",
+      "meaningEn": "there is no need to; never happens"
+    },
+    {
+      "id": "n3-sae",
+      "pattern": "〜さえ",
+      "level": "N3",
+      "meaning": "甚至",
+      "meaningEn": "even"
+    },
+    {
+      "id": "n3-sae-ba",
+      "pattern": "〜さえ〜ば/さえすれば/さえいれば",
+      "level": "N3",
+      "meaning": "只要…就",
+      "meaningEn": "if only… then"
+    },
+    {
+      "id": "n3-shika-nai",
+      "pattern": "〜しかない",
+      "level": "N3",
+      "meaning": "只好；只能",
+      "meaningEn": "have no choice but"
+    },
+    {
+      "id": "n3-zu-ni",
+      "pattern": "〜ずに",
+      "level": "N3",
+      "meaning": "没有做",
+      "meaningEn": "without (doing)"
+    },
+    {
+      "id": "n3-zu-ni-wa-irarenai",
+      "pattern": "〜ずにはいられない",
+      "level": "N3",
+      "meaning": "忍不住做",
+      "meaningEn": "can't help but feel; can't help but do"
+    },
+    {
+      "id": "n3-sei-de",
+      "pattern": "〜せいで",
+      "level": "N3",
+      "meaning": "因为（不好的原因）",
+      "meaningEn": "because of"
+    },
+    {
+      "id": "n3-sou-mo-nai",
+      "pattern": "〜そうもない",
+      "level": "N3",
+      "meaning": "不太可能",
+      "meaningEn": "very unlikely to"
+    },
+    {
+      "id": "n3-sono-kekka",
+      "pattern": "その結果",
+      "level": "N3",
+      "meaning": "结果",
+      "meaningEn": "as a result"
+    },
+    {
+      "id": "n3-dake-2",
+      "pattern": "〜だけ",
+      "level": "N3",
+      "meaning": "尽可能",
+      "meaningEn": "as much as"
+    },
+    {
+      "id": "n3-ta-kekka",
+      "pattern": "〜た結果/の結果",
+      "level": "N3",
+      "meaning": "…的结果",
+      "meaningEn": "as a result of"
+    },
+    {
+      "id": "n3-dakedo",
+      "pattern": "〜だけど",
+      "level": "N3",
+      "meaning": "但是；然而",
+      "meaningEn": "but; however"
+    },
+    {
+      "id": "n3-tashika-ni",
+      "pattern": "確かに",
+      "level": "N3",
+      "meaning": "确实；的确",
+      "meaningEn": "surely; certainly"
+    },
+    {
+      "id": "n3-tatoe-temo",
+      "pattern": "たとえ〜てても",
+      "level": "N3",
+      "meaning": "即使…也",
+      "meaningEn": "even if… is the case"
+    },
+    {
+      "id": "n3-tatoeba",
+      "pattern": "たとえば",
+      "level": "N3",
+      "meaning": "例如",
+      "meaningEn": "for example"
+    },
+    {
+      "id": "n3-ta-totan",
+      "pattern": "〜たとたん",
+      "level": "N3",
+      "meaning": "一…就",
+      "meaningEn": "as soon as; just (now)"
+    },
+    {
+      "id": "n3-tabi-ni",
+      "pattern": "〜たびに",
+      "level": "N3",
+      "meaning": "每次；每当",
+      "meaningEn": "everytime; whenever"
+    },
+    {
+      "id": "n3-tame-ni-1",
+      "pattern": "〜ために",
+      "level": "N3",
+      "meaning": "为了",
+      "meaningEn": "for the sake of; in order to"
+    },
+    {
+      "id": "n3-tame-ni-2",
+      "pattern": "〜ために",
+      "level": "N3",
+      "meaning": "因为；由于",
+      "meaningEn": "because of; as a result of"
+    },
+    {
+      "id": "n3-tara-ii-1",
+      "pattern": "〜たらいい/といい",
+      "level": "N3",
+      "meaning": "应该",
+      "meaningEn": "should"
+    },
+    {
+      "id": "n3-tara-ii-2",
+      "pattern": "〜たらいい/といい",
+      "level": "N3",
+      "meaning": "希望",
+      "meaningEn": "I hope"
+    },
+    {
+      "id": "n3-tara-ii-3",
+      "pattern": "〜たらいい/といい",
+      "level": "N3",
+      "meaning": "要是…就好了",
+      "meaningEn": "it would be nice if"
+    },
+    {
+      "id": "n3-darake-1",
+      "pattern": "〜だらけ",
+      "level": "N3",
+      "meaning": "满是（覆盖）",
+      "meaningEn": "covered (all over)"
+    },
+    {
+      "id": "n3-darake-2",
+      "pattern": "〜だらけ",
+      "level": "N3",
+      "meaning": "满是；充满",
+      "meaningEn": "full of"
+    },
+    {
+      "id": "n3-tsuide-ni",
+      "pattern": "〜ついでに",
+      "level": "N3",
+      "meaning": "顺便；趁机",
+      "meaningEn": "taking the opportunity; while (you) are at it"
+    },
+    {
+      "id": "n3-kke",
+      "pattern": "〜っけ",
+      "level": "N3",
+      "meaning": "…是什么来着？",
+      "meaningEn": "what is… again?"
+    },
+    {
+      "id": "n3-ppanashi",
+      "pattern": "〜っぱなし",
+      "level": "N3",
+      "meaning": "一直放着不管",
+      "meaningEn": "leaving something still in use"
+    },
+    {
+      "id": "n3-ppoi",
+      "pattern": "〜っぽい",
+      "level": "N3",
+      "meaning": "有点像；像…的",
+      "meaningEn": "-ish; -like"
+    },
+    {
+      "id": "n3-tsumari",
+      "pattern": "つまり",
+      "level": "N3",
+      "meaning": "也就是说；换句话说",
+      "meaningEn": "in other words; that is to say"
+    },
+    {
+      "id": "n3-te-goran",
+      "pattern": "〜てごらん",
+      "level": "N3",
+      "meaning": "请试着做；请看",
+      "meaningEn": "(please) try to; (please) look"
+    },
+    {
+      "id": "n3-te-hajimete",
+      "pattern": "〜て初めて",
+      "level": "N3",
+      "meaning": "直到…才；…之后才",
+      "meaningEn": "not until; only after… did I"
+    },
+    {
+      "id": "n3-te-mo-kamawanai",
+      "pattern": "〜てもかまわない/てもかまいません",
+      "level": "N3",
+      "meaning": "也没关系",
+      "meaningEn": "no problem"
+    },
+    {
+      "id": "n3-to-iu",
+      "pattern": "〜という",
+      "level": "N3",
+      "meaning": "叫做；名为",
+      "meaningEn": "called; named"
+    },
+    {
+      "id": "n3-to-iu-koto",
+      "pattern": "〜ということ",
+      "level": "N3",
+      "meaning": "听说；据说",
+      "meaningEn": "I've heard that; it seems that"
+    },
+    {
+      "id": "n3-to-iu-to",
+      "pattern": "〜というと",
+      "level": "N3",
+      "meaning": "说到；提到",
+      "meaningEn": "speaking of; when you say…"
+    },
+    {
+      "id": "n3-to-iu-no-wa-1",
+      "pattern": "〜というのは",
+      "level": "N3",
+      "meaning": "意味着；是",
+      "meaningEn": "means; is"
+    },
+    {
+      "id": "n3-to-iu-no-wa-2",
+      "pattern": "〜というのは",
+      "level": "N3",
+      "meaning": "因为",
+      "meaningEn": "because"
+    },
+    {
+      "id": "n3-to-iu-no-wa-3",
+      "pattern": "〜というのは",
+      "level": "N3",
+      "meaning": "特别是",
+      "meaningEn": "in particular"
+    },
+    {
+      "id": "n3-to-iu-yori",
+      "pattern": "〜というより",
+      "level": "N3",
+      "meaning": "与其说…不如说",
+      "meaningEn": "rather than"
+    },
+    {
+      "id": "n3-to-itte-mo",
+      "pattern": "〜といっても",
+      "level": "N3",
+      "meaning": "虽然说",
+      "meaningEn": "although one says"
+    },
+    {
+      "id": "n3-toori",
+      "pattern": "〜とおり",
+      "level": "N3",
+      "meaning": "按照；和…一样",
+      "meaningEn": "in the way; the same as"
+    },
+    {
+      "id": "n3-tokoro-ga",
+      "pattern": "ところが",
+      "level": "N3",
+      "meaning": "然而；可是",
+      "meaningEn": "however; although"
+    },
+    {
+      "id": "n3-dokoro-ka",
+      "pattern": "〜どころか",
+      "level": "N3",
+      "meaning": "别说；何况",
+      "meaningEn": "far from; nevermind"
+    },
+    {
+      "id": "n3-tokoro-de",
+      "pattern": "ところで",
+      "level": "N3",
+      "meaning": "话说；对了",
+      "meaningEn": "by the way"
+    },
+    {
+      "id": "n3-to-shitara",
+      "pattern": "〜としたら/とすれば",
+      "level": "N3",
+      "meaning": "如果假设",
+      "meaningEn": "if it were the case that; if we assume"
+    },
+    {
+      "id": "n3-to-shite",
+      "pattern": "〜として",
+      "level": "N3",
+      "meaning": "作为",
+      "meaningEn": "as (i.e. in the role of)"
+    },
+    {
+      "id": "n3-to-shinai",
+      "pattern": "〜としない/とはしない",
+      "level": "N3",
+      "meaning": "不打算做；不努力做",
+      "meaningEn": "not try to; not make an effort to"
+    },
+    {
+      "id": "n3-to-suru-1",
+      "pattern": "〜とする",
+      "level": "N3",
+      "meaning": "试图做",
+      "meaningEn": "try to"
+    },
+    {
+      "id": "n3-to-suru-2",
+      "pattern": "〜とする",
+      "level": "N3",
+      "meaning": "即将做",
+      "meaningEn": "be about to"
+    },
+    {
+      "id": "n3-tochuu-ni-de",
+      "pattern": "〜途中に/途中で",
+      "level": "N3",
+      "meaning": "在路上；在…中途",
+      "meaningEn": "on the way; in the middle of"
+    },
+    {
+      "id": "n3-to-tomo-ni",
+      "pattern": "〜と共に",
+      "level": "N3",
+      "meaning": "和…一起；伴随",
+      "meaningEn": "together with"
+    },
+    {
+      "id": "n3-to-wa-kagiranai",
+      "pattern": "〜とは限らない",
+      "level": "N3",
+      "meaning": "不一定；未必",
+      "meaningEn": "not necessarily so; is not always true"
+    },
+    {
+      "id": "n3-donna-ni-temo",
+      "pattern": "どんなに〜ても",
+      "level": "N3",
+      "meaning": "无论多么",
+      "meaningEn": "no matter how"
+    },
+    {
+      "id": "n3-nai-koto-wa-nai",
+      "pattern": "〜ないことはない",
+      "level": "N3",
+      "meaning": "并非不能；可以",
+      "meaningEn": "can; is not impossible"
+    },
+    {
+      "id": "n3-chuu",
+      "pattern": "〜中",
+      "level": "N3",
+      "meaning": "在…期间；…之中",
+      "meaningEn": "during; throughout"
+    },
+    {
+      "id": "n3-nagara-mo",
+      "pattern": "〜ながら/いながら/ながらも",
+      "level": "N3",
+      "meaning": "虽然；尽管",
+      "meaningEn": "although; despite"
+    },
+    {
+      "id": "n3-nazenara",
+      "pattern": "なぜなら/なぜかというと",
+      "level": "N3",
+      "meaning": "因为；原因是",
+      "meaningEn": "because; the reason is"
+    },
+    {
+      "id": "n3-narubeku",
+      "pattern": "なるべく",
+      "level": "N3",
+      "meaning": "尽可能",
+      "meaningEn": "as much as possible"
+    },
+    {
+      "id": "n3-nanka-nante",
+      "pattern": "〜なんか/なんて",
+      "level": "N3",
+      "meaning": "之类的；什么的",
+      "meaningEn": "things like; something"
+    },
+    {
+      "id": "n3-ni-oite",
+      "pattern": "〜において/における",
+      "level": "N3",
+      "meaning": "在…；关于",
+      "meaningEn": "in; on; at; as for; regarding"
+    },
+    {
+      "id": "n3-ni-kakete",
+      "pattern": "〜にかけて",
+      "level": "N3",
+      "meaning": "经过；关于",
+      "meaningEn": "over (a period); through; concerning"
+    },
+    {
+      "id": "n3-ni-kawatte",
+      "pattern": "〜にかわって/にかわり",
+      "level": "N3",
+      "meaning": "代替；代表",
+      "meaningEn": "instead of; on behalf of"
+    },
+    {
+      "id": "n3-ni-kansuru",
+      "pattern": "〜に関する/に関して",
+      "level": "N3",
+      "meaning": "关于；有关",
+      "meaningEn": "related to; about"
+    },
+    {
+      "id": "n3-ni-kurabete",
+      "pattern": "〜に比べて",
+      "level": "N3",
+      "meaning": "与…相比",
+      "meaningEn": "compared to"
+    },
+    {
+      "id": "n3-ni-shite-wa",
+      "pattern": "〜にしては",
+      "level": "N3",
+      "meaning": "就…来说；作为…来说",
+      "meaningEn": "for; considering it's"
+    },
+    {
+      "id": "n3-ni-shite-mo",
+      "pattern": "〜にしても",
+      "level": "N3",
+      "meaning": "即使",
+      "meaningEn": "even if"
+    },
+    {
+      "id": "n3-ni-taishite",
+      "pattern": "〜に対して",
+      "level": "N3",
+      "meaning": "对于；针对",
+      "meaningEn": "regarding; with regards to"
+    },
+    {
+      "id": "n3-ni-chigai-nai",
+      "pattern": "〜に違いない",
+      "level": "N3",
+      "meaning": "一定是；肯定是",
+      "meaningEn": "I'm sure; no doubt that"
+    },
+    {
+      "id": "n3-ni-tsuite",
+      "pattern": "〜について",
+      "level": "N3",
+      "meaning": "关于",
+      "meaningEn": "concerning; about"
+    },
+    {
+      "id": "n3-ni-tsurete",
+      "pattern": "〜につれて",
+      "level": "N3",
+      "meaning": "随着",
+      "meaningEn": "as… then"
+    },
+    {
+      "id": "n3-ni-totte",
+      "pattern": "〜にとって",
+      "level": "N3",
+      "meaning": "对…来说",
+      "meaningEn": "to; for; concerning"
+    },
+    {
+      "id": "n3-ni-yotte",
+      "pattern": "〜によって/による",
+      "level": "N3",
+      "meaning": "由于；通过；根据",
+      "meaningEn": "due to; by means of"
+    },
+    {
+      "id": "n3-ni-yoru-to",
+      "pattern": "〜によると/によれば",
+      "level": "N3",
+      "meaning": "根据；据",
+      "meaningEn": "according to"
+    },
+    {
+      "id": "n3-aida-1",
+      "pattern": "〜間/間に",
+      "level": "N3",
+      "meaning": "在…期间",
+      "meaningEn": "while; during"
+    },
+    {
+      "id": "n3-aida-2",
+      "pattern": "〜間/間に",
+      "level": "N3",
+      "meaning": "在…之间",
+      "meaningEn": "between"
+    },
+    {
+      "id": "n3-ba-hodo",
+      "pattern": "〜ば〜ほど",
+      "level": "N3",
+      "meaning": "越…越",
+      "meaningEn": "the more… the more/less"
+    },
+    {
+      "id": "n3-ba-ii",
+      "pattern": "〜ばいい",
+      "level": "N3",
+      "meaning": "应该做；做就好了",
+      "meaningEn": "should; can; it'd be good if"
+    },
+    {
+      "id": "n3-bakari-de-naku",
+      "pattern": "〜ばかりでなく",
+      "level": "N3",
+      "meaning": "不仅…而且",
+      "meaningEn": "not only… but also; as well as"
+    },
+    {
+      "id": "n3-ba-yokatta",
+      "pattern": "〜ばよかった",
+      "level": "N3",
+      "meaning": "要是…就好了",
+      "meaningEn": "should have; it would have been better if"
+    },
+    {
+      "id": "n3-futo-1",
+      "pattern": "ふと",
+      "level": "N3",
+      "meaning": "突然",
+      "meaningEn": "suddenly"
+    },
+    {
+      "id": "n3-futo-2",
+      "pattern": "ふと",
+      "level": "N3",
+      "meaning": "偶然；无意中",
+      "meaningEn": "accidentally; unexpectedly"
+    },
+    {
+      "id": "n3-furi-wo-suru",
+      "pattern": "〜ふりをする",
+      "level": "N3",
+      "meaning": "假装；装作",
+      "meaningEn": "to pretend; to act as if"
+    },
+    {
+      "id": "n3-beki",
+      "pattern": "〜べき",
+      "level": "N3",
+      "meaning": "应该做",
+      "meaningEn": "must do; should do"
+    },
+    {
+      "id": "n3-beki-de-wa-nai",
+      "pattern": "〜べきではない",
+      "level": "N3",
+      "meaning": "不应该做",
+      "meaningEn": "must not do; should not do"
+    },
+    {
+      "id": "n3-betsu-ni-nai",
+      "pattern": "べつに〜ない/べつに〜じゃない",
+      "level": "N3",
+      "meaning": "并不特别；不怎么",
+      "meaningEn": "not really; not particularly"
+    },
+    {
+      "id": "n3-hodo",
+      "pattern": "〜ほど",
+      "level": "N3",
+      "meaning": "越…；到…的程度",
+      "meaningEn": "the more; to the extent that; so much… that"
+    },
+    {
+      "id": "n3-hodo-nai",
+      "pattern": "〜ほど〜ない",
+      "level": "N3",
+      "meaning": "不如…那么",
+      "meaningEn": "is not as… as"
+    },
+    {
+      "id": "n3-saichuu-ni",
+      "pattern": "〜最中に",
+      "level": "N3",
+      "meaning": "正在…的时候",
+      "meaningEn": "in the middle of"
+    },
+    {
+      "id": "n3-mama",
+      "pattern": "〜まま",
+      "level": "N3",
+      "meaning": "保持原样",
+      "meaningEn": "as it is"
+    },
+    {
+      "id": "n3-maru-de",
+      "pattern": "まるで",
+      "level": "N3",
+      "meaning": "简直像；宛如",
+      "meaningEn": "as if; as though"
+    },
+    {
+      "id": "n3-muki-1",
+      "pattern": "〜向き",
+      "level": "N3",
+      "meaning": "朝向（方向）",
+      "meaningEn": "towards (direction)"
+    },
+    {
+      "id": "n3-muki-2",
+      "pattern": "〜向き",
+      "level": "N3",
+      "meaning": "适合",
+      "meaningEn": "suitable for"
+    },
+    {
+      "id": "n3-muke",
+      "pattern": "〜向け",
+      "level": "N3",
+      "meaning": "面向；针对",
+      "meaningEn": "intended for; aimed at"
+    },
+    {
+      "id": "n3-metta-ni",
+      "pattern": "めったに",
+      "level": "N3",
+      "meaning": "几乎不；很少",
+      "meaningEn": "hardly; rarely; seldom"
+    },
+    {
+      "id": "n3-moshikashitara",
+      "pattern": "もしかしたら",
+      "level": "N3",
+      "meaning": "也许；说不定",
+      "meaningEn": "perhaps; maybe"
+    },
+    {
+      "id": "n3-mono",
+      "pattern": "〜もの",
+      "level": "N3",
+      "meaning": "因为（表示理由或借口）",
+      "meaningEn": "because (indicate reason or excuse)"
+    },
+    {
+      "id": "n3-mono-da",
+      "pattern": "〜ものだ",
+      "level": "N3",
+      "meaning": "以前常常做；应该做",
+      "meaningEn": "used to do something; should do something"
+    },
+    {
+      "id": "n3-you-na-ki-ga-suru",
+      "pattern": "〜ような気がする",
+      "level": "N3",
+      "meaning": "感觉；觉得",
+      "meaningEn": "have a feeling that; think that"
+    },
+    {
+      "id": "n3-you-ni",
+      "pattern": "〜ように",
+      "level": "N3",
+      "meaning": "为了；以便",
+      "meaningEn": "in order to; so that"
+    },
+    {
+      "id": "n3-wake-ga-nai",
+      "pattern": "〜わけがない",
+      "level": "N3",
+      "meaning": "不可能",
+      "meaningEn": "there is no way that"
+    },
+    {
+      "id": "n3-wake-da",
+      "pattern": "〜わけだ",
+      "level": "N3",
+      "meaning": "所以；难怪",
+      "meaningEn": "for that reason; no wonder; as you'd expect"
+    },
+    {
+      "id": "n3-wake-de-wa-nai",
+      "pattern": "〜わけではない",
+      "level": "N3",
+      "meaning": "并不是说；并非",
+      "meaningEn": "it doesn't mean that; it is not the case"
+    },
+    {
+      "id": "n3-wake-ni-wa-ikanai",
+      "pattern": "〜わけにはいかない",
+      "level": "N3",
+      "meaning": "不能；不可以",
+      "meaningEn": "must not; can't afford to"
+    },
+    {
+      "id": "n3-wari-ni",
+      "pattern": "〜わりに",
+      "level": "N3",
+      "meaning": "就…来说；出乎意料地",
+      "meaningEn": "for; despite; unexpectedly"
+    },
+    {
+      "id": "n3-wo-chuushin-ni",
+      "pattern": "〜を中心に",
+      "level": "N3",
+      "meaning": "以…为中心",
+      "meaningEn": "focused on; centered on"
+    },
+    {
+      "id": "n3-wo-hajime",
+      "pattern": "〜をはじめ/をはじめとする",
+      "level": "N3",
+      "meaning": "以…为首；例如",
+      "meaningEn": "for example; starting with"
+    },
+    {
+      "id": "n2-aruiwa",
+      "pattern": "あるいは",
+      "level": "N2",
+      "meaning": "或者；也许",
+      "meaningEn": "or; possibly"
+    },
+    {
+      "id": "n2-ikinari",
+      "pattern": "いきなり",
+      "level": "N2",
+      "meaning": "突然；冷不防",
+      "meaningEn": "suddenly; all of a sudden"
+    },
+    {
+      "id": "n2-ijou",
+      "pattern": "〜以上",
+      "level": "N2",
+      "meaning": "以上；既然",
+      "meaningEn": "over; because; now that"
+    },
+    {
+      "id": "n2-ijou-ni",
+      "pattern": "〜以上に",
+      "level": "N2",
+      "meaning": "比…更；不亚于",
+      "meaningEn": "more than; no less than"
+    },
+    {
+      "id": "n2-iyoiyo",
+      "pattern": "いよいよ",
+      "level": "N2",
+      "meaning": "终于；总算",
+      "meaningEn": "at last; finally"
+    },
+    {
+      "id": "n2-iwayuru",
+      "pattern": "いわゆる",
+      "level": "N2",
+      "meaning": "所谓的",
+      "meaningEn": "so-called; so to speak"
+    },
+    {
+      "id": "n2-ue-de",
+      "pattern": "〜上で",
+      "level": "N2",
+      "meaning": "在…之后",
+      "meaningEn": "after"
+    },
+    {
+      "id": "n2-ue-ni",
+      "pattern": "〜上に",
+      "level": "N2",
+      "meaning": "而且；此外",
+      "meaningEn": "as well; besides; in addition to"
+    },
+    {
+      "id": "n2-ue-wa",
+      "pattern": "〜上は",
+      "level": "N2",
+      "meaning": "既然；因为",
+      "meaningEn": "now that; since"
+    },
+    {
+      "id": "n2-enai",
+      "pattern": "〜えない",
+      "level": "N2",
+      "meaning": "不能；无法",
+      "meaningEn": "unable to; cannot"
+    },
+    {
+      "id": "n2-eru-uru",
+      "pattern": "〜える/うる",
+      "level": "N2",
+      "meaning": "能够；有可能",
+      "meaningEn": "can; is possible"
+    },
+    {
+      "id": "n2-o-negau",
+      "pattern": "お〜願う",
+      "level": "N2",
+      "meaning": "请您做",
+      "meaningEn": "could you please"
+    },
+    {
+      "id": "n2-osore-ga-aru",
+      "pattern": "〜恐れがある",
+      "level": "N2",
+      "meaning": "恐怕会；有…的危险",
+      "meaningEn": "there are fears that"
+    },
+    {
+      "id": "n2-omake-ni",
+      "pattern": "おまけに",
+      "level": "N2",
+      "meaning": "而且；雪上加霜",
+      "meaningEn": "to make matters worse"
+    },
+    {
+      "id": "n2-ka-nai-ka-no-uchi-ni",
+      "pattern": "〜か〜ないかのうちに",
+      "level": "N2",
+      "meaning": "刚…就",
+      "meaningEn": "right after; as soon as"
+    },
+    {
+      "id": "n2-kai-ga-aru",
+      "pattern": "〜かいがある",
+      "level": "N2",
+      "meaning": "值得",
+      "meaningEn": "it's worth one's effort"
+    },
+    {
+      "id": "n2-kaette",
+      "pattern": "かえって",
+      "level": "N2",
+      "meaning": "反而；反倒",
+      "meaningEn": "on the contrary; rather"
+    },
+    {
+      "id": "n2-kagiri",
+      "pattern": "〜限り",
+      "level": "N2",
+      "meaning": "只要；在…期间",
+      "meaningEn": "as long as; while"
+    },
+    {
+      "id": "n2-ka-to-omottara",
+      "pattern": "〜かと思ったら/かと思うと",
+      "level": "N2",
+      "meaning": "刚…就；以为…却",
+      "meaningEn": "then again; just when"
+    },
+    {
+      "id": "n2-ka-nanika",
+      "pattern": "〜か何か",
+      "level": "N2",
+      "meaning": "或者什么的",
+      "meaningEn": "or something"
+    },
+    {
+      "id": "n2-kanenai",
+      "pattern": "〜かねない",
+      "level": "N2",
+      "meaning": "有可能会",
+      "meaningEn": "might happen; might do"
+    },
+    {
+      "id": "n2-kaneru",
+      "pattern": "〜かねる",
+      "level": "N2",
+      "meaning": "难以做；无法做",
+      "meaningEn": "unable to do something"
+    },
+    {
+      "id": "n2-ka-no-you",
+      "pattern": "〜かのよう",
+      "level": "N2",
+      "meaning": "宛如；好像",
+      "meaningEn": "as if; just like"
+    },
+    {
+      "id": "n2-kara-iu-to",
+      "pattern": "〜から言うと",
+      "level": "N2",
+      "meaning": "从…来说",
+      "meaningEn": "in terms of; from viewpoint"
+    },
+    {
+      "id": "n2-kara-koso",
+      "pattern": "〜からこそ",
+      "level": "N2",
+      "meaning": "正因为",
+      "meaningEn": "precisely because"
+    },
+    {
+      "id": "n2-kara-shite",
+      "pattern": "〜からして",
+      "level": "N2",
+      "meaning": "从…来判断",
+      "meaningEn": "judging from; based on"
+    },
+    {
+      "id": "n2-kara-suru-to",
+      "pattern": "〜からすると/からすれば",
+      "level": "N2",
+      "meaning": "从…来看",
+      "meaningEn": "judging from; considering"
+    },
+    {
+      "id": "n2-kara-to-itte",
+      "pattern": "〜からといって",
+      "level": "N2",
+      "meaning": "虽说；不能因为",
+      "meaningEn": "just because"
+    },
+    {
+      "id": "n2-kara-ni-wa",
+      "pattern": "〜からには",
+      "level": "N2",
+      "meaning": "既然；因为",
+      "meaningEn": "now that; since; so long as"
+    },
+    {
+      "id": "n2-kara-miru-to",
+      "pattern": "〜から見ると",
+      "level": "N2",
+      "meaning": "从…来看",
+      "meaningEn": "from viewpoint; by look of"
+    },
+    {
+      "id": "n2-ki",
+      "pattern": "〜気",
+      "level": "N2",
+      "meaning": "想要；觉得",
+      "meaningEn": "feel like"
+    },
+    {
+      "id": "n2-gyaku-ni",
+      "pattern": "逆に",
+      "level": "N2",
+      "meaning": "相反地",
+      "meaningEn": "on the contrary"
+    },
+    {
+      "id": "n2-ge",
+      "pattern": "〜げ",
+      "level": "N2",
+      "meaning": "好像；显得",
+      "meaningEn": "giving appearance of"
+    },
+    {
+      "id": "n2-koto-kara",
+      "pattern": "〜ことから",
+      "level": "N2",
+      "meaning": "由于；因为",
+      "meaningEn": "from fact that"
+    },
+    {
+      "id": "n2-koto-dakara",
+      "pattern": "〜ことだから",
+      "level": "N2",
+      "meaning": "正因为是",
+      "meaningEn": "it's exactly because"
+    },
+    {
+      "id": "n2-koto-naku",
+      "pattern": "〜ことなく",
+      "level": "N2",
+      "meaning": "不曾做",
+      "meaningEn": "without doing even once"
+    },
+    {
+      "id": "n2-goto-ni",
+      "pattern": "〜ごとに",
+      "level": "N2",
+      "meaning": "每；每隔",
+      "meaningEn": "each; every; at intervals"
+    },
+    {
+      "id": "n2-koto-ni-natte-iru",
+      "pattern": "〜ことになっている",
+      "level": "N2",
+      "meaning": "预定；按规定",
+      "meaningEn": "expected to; scheduled to"
+    },
+    {
+      "id": "n2-koto-ni-wa-naranai",
+      "pattern": "〜ことにはならない",
+      "level": "N2",
+      "meaning": "不等于；不能说",
+      "meaningEn": "just because doesn't mean"
+    },
+    {
+      "id": "n2-koto-wa-ga",
+      "pattern": "〜ことは〜が",
+      "level": "N2",
+      "meaning": "虽然…但是",
+      "meaningEn": "although; but"
+    },
+    {
+      "id": "n2-sai-ni",
+      "pattern": "〜際に",
+      "level": "N2",
+      "meaning": "在…之际",
+      "meaningEn": "at time; in case of"
+    },
+    {
+      "id": "n2-saiwai",
+      "pattern": "幸い",
+      "level": "N2",
+      "meaning": "幸运的是",
+      "meaningEn": "luckily; fortunately"
+    },
+    {
+      "id": "n2-sarani",
+      "pattern": "さらに",
+      "level": "N2",
+      "meaning": "而且；更加",
+      "meaningEn": "furthermore; again; more"
+    },
+    {
+      "id": "n2-zaru-wo-enai",
+      "pattern": "〜ざるを得ない",
+      "level": "N2",
+      "meaning": "不得不做",
+      "meaningEn": "can't help; must do"
+    },
+    {
+      "id": "n2-shikamo",
+      "pattern": "しかも",
+      "level": "N2",
+      "meaning": "而且；况且",
+      "meaningEn": "moreover; furthermore"
+    },
+    {
+      "id": "n2-shidai",
+      "pattern": "〜次第",
+      "level": "N2",
+      "meaning": "一…就",
+      "meaningEn": "as soon as"
+    },
+    {
+      "id": "n2-shidai-da-de",
+      "pattern": "〜次第だ/次第で",
+      "level": "N2",
+      "meaning": "取决于；所以",
+      "meaningEn": "depending on; so"
+    },
+    {
+      "id": "n2-shitagatte",
+      "pattern": "したがって",
+      "level": "N2",
+      "meaning": "因此；所以",
+      "meaningEn": "therefore; accordingly"
+    },
+    {
+      "id": "n2-jou",
+      "pattern": "〜上",
+      "level": "N2",
+      "meaning": "从…角度来看",
+      "meaningEn": "from standpoint of"
+    },
+    {
+      "id": "n2-sukoshi-mo-nai",
+      "pattern": "少しも〜ない",
+      "level": "N2",
+      "meaning": "一点也不",
+      "meaningEn": "not one bit; not little"
+    },
+    {
+      "id": "n2-sunawachi",
+      "pattern": "すなわち",
+      "level": "N2",
+      "meaning": "也就是说",
+      "meaningEn": "in other words"
+    },
+    {
+      "id": "n2-zu-ni-sumu",
+      "pattern": "〜ずに済む",
+      "level": "N2",
+      "meaning": "不做也行",
+      "meaningEn": "get by without doing"
+    },
+    {
+      "id": "n2-seizei",
+      "pattern": "せいぜい",
+      "level": "N2",
+      "meaning": "至多；顶多",
+      "meaningEn": "at most; at best"
+    },
+    {
+      "id": "n2-semete",
+      "pattern": "せめて",
+      "level": "N2",
+      "meaning": "至少；起码",
+      "meaningEn": "at least; at most"
+    },
+    {
+      "id": "n2-sou-ieba",
+      "pattern": "そういえば",
+      "level": "N2",
+      "meaning": "说起来",
+      "meaningEn": "come to think of it"
+    },
+    {
+      "id": "n2-sou-suru-to",
+      "pattern": "そうすると",
+      "level": "N2",
+      "meaning": "那样做的话",
+      "meaningEn": "having done that"
+    },
+    {
+      "id": "n2-sou-ni-nai",
+      "pattern": "〜そうにない",
+      "level": "N2",
+      "meaning": "极不可能",
+      "meaningEn": "extremely unlikely to"
+    },
+    {
+      "id": "n2-sono-ue",
+      "pattern": "その上",
+      "level": "N2",
+      "meaning": "而且；此外",
+      "meaningEn": "besides; in addition"
+    },
+    {
+      "id": "n2-soretomo",
+      "pattern": "それとも",
+      "level": "N2",
+      "meaning": "还是；或者",
+      "meaningEn": "or; or else"
+    },
+    {
+      "id": "n2-sore-na-no-ni",
+      "pattern": "それなのに",
+      "level": "N2",
+      "meaning": "尽管如此",
+      "meaningEn": "and yet; despite this"
+    },
+    {
+      "id": "n2-sore-nara",
+      "pattern": "それなら",
+      "level": "N2",
+      "meaning": "那样的话",
+      "meaningEn": "then; if that's case"
+    },
+    {
+      "id": "n2-sore-ni-shite-mo",
+      "pattern": "それにしても",
+      "level": "N2",
+      "meaning": "即便如此",
+      "meaningEn": "nevertheless; even so"
+    },
+    {
+      "id": "n2-ta-ageku",
+      "pattern": "〜たあげく",
+      "level": "N2",
+      "meaning": "最终；结果",
+      "meaningEn": "to end up; finally"
+    },
+    {
+      "id": "n2-dake-atte",
+      "pattern": "〜だけあって",
+      "level": "N2",
+      "meaning": "不愧是；正因为",
+      "meaningEn": "being case; precisely"
+    },
+    {
+      "id": "n2-dake-de-naku",
+      "pattern": "〜だけでなく",
+      "level": "N2",
+      "meaning": "不仅…而且",
+      "meaningEn": "not only but also"
+    },
+    {
+      "id": "n2-dake-ni",
+      "pattern": "〜だけに",
+      "level": "N2",
+      "meaning": "正因为",
+      "meaningEn": "being case; precisely"
+    },
+    {
+      "id": "n2-dake-no-koto-wa-aru",
+      "pattern": "〜だけのことはある",
+      "level": "N2",
+      "meaning": "难怪；不愧是",
+      "meaningEn": "no wonder; not surprising"
+    },
+    {
+      "id": "n2-dake-wa",
+      "pattern": "〜だけは",
+      "level": "N2",
+      "meaning": "尽力做",
+      "meaningEn": "to do all one can"
+    },
+    {
+      "id": "n2-dake-mashi",
+      "pattern": "〜だけまし",
+      "level": "N2",
+      "meaning": "幸好还有；算是好的了",
+      "meaningEn": "should feel grateful for"
+    },
+    {
+      "id": "n2-ta-sue",
+      "pattern": "〜た末/の末",
+      "level": "N2",
+      "meaning": "最后；结果",
+      "meaningEn": "as conclusion of"
+    },
+    {
+      "id": "n2-tadachi-ni",
+      "pattern": "直ちに",
+      "level": "N2",
+      "meaning": "立即；马上",
+      "meaningEn": "at once; immediately"
+    },
+    {
+      "id": "n2-datte",
+      "pattern": "だって",
+      "level": "N2",
+      "meaning": "因为；可是",
+      "meaningEn": "because; but"
+    },
+    {
+      "id": "n2-tatte",
+      "pattern": "〜たって",
+      "level": "N2",
+      "meaning": "即使；就算",
+      "meaningEn": "even if; even though"
+    },
+    {
+      "id": "n2-tamae",
+      "pattern": "〜たまえ",
+      "level": "N2",
+      "meaning": "命令某人做",
+      "meaningEn": "order somebody to do"
+    },
+    {
+      "id": "n2-chittomo-nai",
+      "pattern": "ちっとも〜ない",
+      "level": "N2",
+      "meaning": "一点也不",
+      "meaningEn": "not at all; not least"
+    },
+    {
+      "id": "n2-kko-nai",
+      "pattern": "〜っこない",
+      "level": "N2",
+      "meaning": "不可能",
+      "meaningEn": "no chance of; not possible"
+    },
+    {
+      "id": "n2-tsutsu",
+      "pattern": "〜つつ",
+      "level": "N2",
+      "meaning": "一边；虽然",
+      "meaningEn": "while; although"
+    },
+    {
+      "id": "n2-tsutsu-aru",
+      "pattern": "〜つつある",
+      "level": "N2",
+      "meaning": "正在进行中",
+      "meaningEn": "to be doing"
+    },
+    {
+      "id": "n2-tsumori-de",
+      "pattern": "〜つもりで",
+      "level": "N2",
+      "meaning": "以…的心态",
+      "meaningEn": "with intention of doing"
+    },
+    {
+      "id": "n2-te-ite-wa",
+      "pattern": "〜ていては",
+      "level": "N2",
+      "meaning": "如果一直做",
+      "meaningEn": "if one keeps doing"
+    },
+    {
+      "id": "n2-te-irai",
+      "pattern": "〜て以来",
+      "level": "N2",
+      "meaning": "自从…以来",
+      "meaningEn": "since"
+    },
+    {
+      "id": "n2-te-kara-de-nai-to",
+      "pattern": "〜てからでないと",
+      "level": "N2",
+      "meaning": "不…就不能",
+      "meaningEn": "unless; until"
+    },
+    {
+      "id": "n2-te-koso",
+      "pattern": "〜てこそ",
+      "level": "N2",
+      "meaning": "正因为做了才",
+      "meaningEn": "now that; since"
+    },
+    {
+      "id": "n2-de-shika-nai",
+      "pattern": "〜でしかない",
+      "level": "N2",
+      "meaning": "只不过是；仅仅",
+      "meaningEn": "merely; nothing but"
+    },
+    {
+      "id": "n2-te-shou-ga-nai",
+      "pattern": "〜てしょうがない",
+      "level": "N2",
+      "meaning": "非常；极其",
+      "meaningEn": "very; extremely"
+    },
+    {
+      "id": "n2-te-tamaranai",
+      "pattern": "〜てたまらない",
+      "level": "N2",
+      "meaning": "非常；极其；忍不住",
+      "meaningEn": "very; extremely; can't help"
+    },
+    {
+      "id": "n2-te-demo",
+      "pattern": "〜てでも",
+      "level": "N2",
+      "meaning": "即使要做也",
+      "meaningEn": "even if one has to"
+    },
+    {
+      "id": "n2-te-touzen-da",
+      "pattern": "〜て当然だ",
+      "level": "N2",
+      "meaning": "理所当然",
+      "meaningEn": "natural; as matter of course"
+    },
+    {
+      "id": "n2-te-naranai",
+      "pattern": "〜てならない",
+      "level": "N2",
+      "meaning": "非常；极其",
+      "meaningEn": "very; extremely"
+    },
+    {
+      "id": "n2-te-wa-irarenai",
+      "pattern": "〜てはいられない",
+      "level": "N2",
+      "meaning": "不能一直做",
+      "meaningEn": "can't afford to"
+    },
+    {
+      "id": "n2-te-bakari-wa-irarenai",
+      "pattern": "〜てばかりはいられない",
+      "level": "N2",
+      "meaning": "不能一直做",
+      "meaningEn": "can't keep doing"
+    },
+    {
+      "id": "n2-de-wa-nai-ka",
+      "pattern": "〜ではないか",
+      "level": "N2",
+      "meaning": "让我们做吧",
+      "meaningEn": "let's do; why don't we"
+    },
+    {
+      "id": "n2-te-wa-naranai",
+      "pattern": "〜てはならない",
+      "level": "N2",
+      "meaning": "不可以；不能",
+      "meaningEn": "must not; cannot"
+    },
+    {
+      "id": "n2-temae",
+      "pattern": "〜手前",
+      "level": "N2",
+      "meaning": "在…面前；碍于",
+      "meaningEn": "before; in front; from standpoint"
+    },
+    {
+      "id": "n2-to-iu-koto-wa",
+      "pattern": "〜ということは",
+      "level": "N2",
+      "meaning": "也就是说",
+      "meaningEn": "that is to say"
+    },
+    {
+      "id": "n2-to-iu-fuu-ni",
+      "pattern": "〜というふうに",
+      "level": "N2",
+      "meaning": "以那样的方式",
+      "meaningEn": "in such way that"
+    },
+    {
+      "id": "n2-to-iu-mono-da",
+      "pattern": "〜というものだ",
+      "level": "N2",
+      "meaning": "就是这样的东西",
+      "meaningEn": "something like"
+    },
+    {
+      "id": "n2-to-iu-mono-demo-nai",
+      "pattern": "〜というものでもない",
+      "level": "N2",
+      "meaning": "不一定；未必",
+      "meaningEn": "no guarantee; not necessarily"
+    },
+    {
+      "id": "n2-to-itta",
+      "pattern": "〜といった",
+      "level": "N2",
+      "meaning": "诸如；例如",
+      "meaningEn": "such as"
+    },
+    {
+      "id": "n2-douse",
+      "pattern": "どうせ",
+      "level": "N2",
+      "meaning": "反正；无论如何",
+      "meaningEn": "anyway; anyhow"
+    },
+    {
+      "id": "n2-douyara",
+      "pattern": "どうやら",
+      "level": "N2",
+      "meaning": "好像；似乎",
+      "meaningEn": "it seems like; appears"
+    },
+    {
+      "id": "n2-toka",
+      "pattern": "〜とか",
+      "level": "N2",
+      "meaning": "听说",
+      "meaningEn": "I heard that"
+    },
+    {
+      "id": "n2-to-kangaerareru",
+      "pattern": "〜と考えられる",
+      "level": "N2",
+      "meaning": "可以认为",
+      "meaningEn": "one can think that"
+    },
+    {
+      "id": "n2-tokoro-datta",
+      "pattern": "〜ところだった",
+      "level": "N2",
+      "meaning": "差点就做了",
+      "meaningEn": "was just about to"
+    },
+    {
+      "id": "n2-dokoro-de-wa-nai",
+      "pattern": "〜どころではない",
+      "level": "N2",
+      "meaning": "哪有心情做",
+      "meaningEn": "this is not time for"
+    },
+    {
+      "id": "n2-tokoro-ni-e",
+      "pattern": "〜ところに/ところへ",
+      "level": "N2",
+      "meaning": "正在那时",
+      "meaningEn": "at time"
+    },
+    {
+      "id": "n2-tokoro-wo-miru-to",
+      "pattern": "〜ところを見ると",
+      "level": "N2",
+      "meaning": "从…来判断",
+      "meaningEn": "judging from; seeing"
+    },
+    {
+      "id": "n2-to-shite-wa",
+      "pattern": "〜としては",
+      "level": "N2",
+      "meaning": "作为…来说",
+      "meaningEn": "as for"
+    },
+    {
+      "id": "n2-to-shite-mo",
+      "pattern": "〜としても",
+      "level": "N2",
+      "meaning": "即使；就算",
+      "meaningEn": "assuming; even if"
+    },
+    {
+      "id": "n2-tokku-ni",
+      "pattern": "とっくに",
+      "level": "N2",
+      "meaning": "早就；老早",
+      "meaningEn": "already; long ago"
+    },
+    {
+      "id": "n2-to-douji-ni",
+      "pattern": "〜と同時に",
+      "level": "N2",
+      "meaning": "与此同时",
+      "meaningEn": "at same time as"
+    },
+    {
+      "id": "n2-tomo",
+      "pattern": "〜とも",
+      "level": "N2",
+      "meaning": "即使；无论",
+      "meaningEn": "even if; no matter"
+    },
+    {
+      "id": "n2-nai-koto-ni-wa-nai",
+      "pattern": "〜ないことには〜ない",
+      "level": "N2",
+      "meaning": "不做的话就不能",
+      "meaningEn": "unless you do"
+    },
+    {
+      "id": "n2-nai-de-wa-irarenai",
+      "pattern": "〜ないではいられない",
+      "level": "N2",
+      "meaning": "忍不住做",
+      "meaningEn": "can't help but feel"
+    },
+    {
+      "id": "n2-nao",
+      "pattern": "なお",
+      "level": "N2",
+      "meaning": "而且；仍然",
+      "meaningEn": "furthermore; still; yet"
+    },
+    {
+      "id": "n2-naka-wo",
+      "pattern": "〜中を",
+      "level": "N2",
+      "meaning": "在…中",
+      "meaningEn": "in; on"
+    },
+    {
+      "id": "n2-naku-wa-nai",
+      "pattern": "〜なくはない",
+      "level": "N2",
+      "meaning": "并非没有；可以",
+      "meaningEn": "it's not that; can; may"
+    },
+    {
+      "id": "n2-nani-mo-nai",
+      "pattern": "なにも〜ない",
+      "level": "N2",
+      "meaning": "没有必要",
+      "meaningEn": "no need to"
+    },
+    {
+      "id": "n2-ni-atari",
+      "pattern": "〜にあたり",
+      "level": "N2",
+      "meaning": "在…之际",
+      "meaningEn": "at time; on occasion"
+    },
+    {
+      "id": "n2-ni-oujite",
+      "pattern": "〜に応じて",
+      "level": "N2",
+      "meaning": "根据；按照",
+      "meaningEn": "depending on; in accordance"
+    },
+    {
+      "id": "n2-ni-kakawarazu",
+      "pattern": "〜にかかわらず",
+      "level": "N2",
+      "meaning": "不管；无论",
+      "meaningEn": "regardless of"
+    },
+    {
+      "id": "n2-ni-kakawaru",
+      "pattern": "〜にかかわる",
+      "level": "N2",
+      "meaning": "关系到；涉及",
+      "meaningEn": "to relate to; have to do"
+    },
+    {
+      "id": "n2-ni-kagitte",
+      "pattern": "〜に限って",
+      "level": "N2",
+      "meaning": "偏偏；只有",
+      "meaningEn": "only; particularly when"
+    },
+    {
+      "id": "n2-ni-kagirazu",
+      "pattern": "〜に限らず",
+      "level": "N2",
+      "meaning": "不仅；不限于",
+      "meaningEn": "not just; not only but also"
+    },
+    {
+      "id": "n2-ni-kagiru",
+      "pattern": "〜に限る",
+      "level": "N2",
+      "meaning": "最好是；没有比…更好的",
+      "meaningEn": "nothing better than"
+    },
+    {
+      "id": "n2-ni-kimatte-iru",
+      "pattern": "〜に決まっている",
+      "level": "N2",
+      "meaning": "肯定是",
+      "meaningEn": "I'm sure that"
+    },
+    {
+      "id": "n2-ni-kuwaete",
+      "pattern": "〜に加えて",
+      "level": "N2",
+      "meaning": "除了…之外还",
+      "meaningEn": "in addition to"
+    },
+    {
+      "id": "n2-ni-koshita-koto-wa-nai",
+      "pattern": "〜に越したことはない",
+      "level": "N2",
+      "meaning": "最好是",
+      "meaningEn": "it's best that"
+    },
+    {
+      "id": "n2-ni-kotaete",
+      "pattern": "〜に応えて",
+      "level": "N2",
+      "meaning": "响应；回应",
+      "meaningEn": "in response to"
+    },
+    {
+      "id": "n2-ni-motodzuite",
+      "pattern": "〜に基づいて",
+      "level": "N2",
+      "meaning": "基于；根据",
+      "meaningEn": "based on"
+    },
+    {
+      "id": "n2-ni-saishite",
+      "pattern": "〜に際して",
+      "level": "N2",
+      "meaning": "在…之际",
+      "meaningEn": "on occasion; at time of"
+    },
+    {
+      "id": "n2-ni-sakidachi",
+      "pattern": "〜に先立ち",
+      "level": "N2",
+      "meaning": "在…之前",
+      "meaningEn": "before; prior to"
+    },
+    {
+      "id": "n2-ni-shitagatte",
+      "pattern": "〜に従って",
+      "level": "N2",
+      "meaning": "随着；按照",
+      "meaningEn": "as; therefore"
+    },
+    {
+      "id": "n2-ni-shitara",
+      "pattern": "〜にしたら",
+      "level": "N2",
+      "meaning": "从…的角度来看",
+      "meaningEn": "from point of view"
+    },
+    {
+      "id": "n2-ni-shite-mo-ni-shite-mo",
+      "pattern": "〜にしても〜にしても",
+      "level": "N2",
+      "meaning": "不管…还是",
+      "meaningEn": "regardless of"
+    },
+    {
+      "id": "n2-ni-shiro-ni-seyo",
+      "pattern": "〜にしろ/にせよ",
+      "level": "N2",
+      "meaning": "即使；虽然",
+      "meaningEn": "though; even if"
+    },
+    {
+      "id": "n2-ni-shiro-ni-shiro",
+      "pattern": "〜にしろ〜にしろ",
+      "level": "N2",
+      "meaning": "无论…还是",
+      "meaningEn": "whether or"
+    },
+    {
+      "id": "n2-ni-suginai",
+      "pattern": "〜に過ぎない",
+      "level": "N2",
+      "meaning": "不过是；仅仅",
+      "meaningEn": "no more than; merely"
+    },
+    {
+      "id": "n2-ni-soui-nai",
+      "pattern": "〜に相違ない",
+      "level": "N2",
+      "meaning": "毫无疑问；一定",
+      "meaningEn": "without doubt; certain"
+    },
+    {
+      "id": "n2-ni-sotte",
+      "pattern": "〜に沿って",
+      "level": "N2",
+      "meaning": "沿着；按照",
+      "meaningEn": "along with; in accordance"
+    },
+    {
+      "id": "n2-ni-tsuki",
+      "pattern": "〜につき",
+      "level": "N2",
+      "meaning": "因为；每",
+      "meaningEn": "due to; because; per; each"
+    },
+    {
+      "id": "n2-ni-tsuke",
+      "pattern": "〜につけ",
+      "level": "N2",
+      "meaning": "无论…都；每当",
+      "meaningEn": "both and; every time"
+    },
+    {
+      "id": "n2-nite",
+      "pattern": "〜にて",
+      "level": "N2",
+      "meaning": "在；于",
+      "meaningEn": "in; at"
+    },
+    {
+      "id": "n2-ni-tomonatte",
+      "pattern": "〜に伴って",
+      "level": "N2",
+      "meaning": "伴随着；随着",
+      "meaningEn": "as; due to"
+    },
+    {
+      "id": "n2-ni-wa",
+      "pattern": "〜には",
+      "level": "N2",
+      "meaning": "为了",
+      "meaningEn": "in order to; for"
+    },
+    {
+      "id": "n2-ni-hanshite",
+      "pattern": "〜に反して",
+      "level": "N2",
+      "meaning": "与…相反",
+      "meaningEn": "against; contrary to"
+    },
+    {
+      "id": "n2-ni-hoka-naranai",
+      "pattern": "〜にほかならない",
+      "level": "N2",
+      "meaning": "不外乎；正是",
+      "meaningEn": "nothing but; none other"
+    },
+    {
+      "id": "n2-ni-mukatte",
+      "pattern": "〜に向かって",
+      "level": "N2",
+      "meaning": "朝着；面向",
+      "meaningEn": "towards; to face; to head"
+    },
+    {
+      "id": "n2-ni-mo-kakawarazu",
+      "pattern": "〜にもかかわらず",
+      "level": "N2",
+      "meaning": "尽管；虽然",
+      "meaningEn": "despite; in spite of"
+    },
+    {
+      "id": "n2-ni-watatte",
+      "pattern": "〜にわたって",
+      "level": "N2",
+      "meaning": "在…期间；涉及",
+      "meaningEn": "throughout; over period"
+    },
+    {
+      "id": "n2-nuki-de",
+      "pattern": "〜抜きで/抜きにして",
+      "level": "N2",
+      "meaning": "去掉；省略",
+      "meaningEn": "leaving out; cutting"
+    },
+    {
+      "id": "n2-nuku",
+      "pattern": "〜抜く",
+      "level": "N2",
+      "meaning": "做到底",
+      "meaningEn": "do something to end"
+    },
+    {
+      "id": "n2-neba-naranai",
+      "pattern": "〜ねばならない",
+      "level": "N2",
+      "meaning": "必须做",
+      "meaningEn": "have to; must"
+    },
+    {
+      "id": "n2-nomi-narazu",
+      "pattern": "〜のみならず",
+      "level": "N2",
+      "meaning": "不仅；而且",
+      "meaningEn": "not only; besides; as well"
+    },
+    {
+      "id": "n2-no-mo-touzen-da",
+      "pattern": "〜のも当然だ",
+      "level": "N2",
+      "meaning": "理所当然；难怪",
+      "meaningEn": "it's only natural; no wonder"
+    },
+    {
+      "id": "n2-no-moto-de",
+      "pattern": "〜のもとで",
+      "level": "N2",
+      "meaning": "在…之下",
+      "meaningEn": "under"
+    },
+    {
+      "id": "n2-no-mo-mottomo-da",
+      "pattern": "〜のももっともだ",
+      "level": "N2",
+      "meaning": "难怪；理所当然",
+      "meaningEn": "no wonder; only natural"
+    },
+    {
+      "id": "n2-bakari-2",
+      "pattern": "〜ばかり",
+      "level": "N2",
+      "meaning": "大约",
+      "meaningEn": "about; approximately"
+    },
+    {
+      "id": "n2-bakari-da",
+      "pattern": "〜ばかりだ",
+      "level": "N2",
+      "meaning": "一直在；持续",
+      "meaningEn": "continue to"
+    },
+    {
+      "id": "n2-bakari-ni",
+      "pattern": "〜ばかりに",
+      "level": "N2",
+      "meaning": "就因为；只因为",
+      "meaningEn": "because; on account of"
+    },
+    {
+      "id": "n2-hatashite",
+      "pattern": "果たして",
+      "level": "N2",
+      "meaning": "果然；究竟",
+      "meaningEn": "sure enough; really"
+    },
+    {
+      "id": "n2-wa-tomokaku",
+      "pattern": "〜はともかく",
+      "level": "N2",
+      "meaning": "不管；姑且不论",
+      "meaningEn": "whether or not"
+    },
+    {
+      "id": "n2-wa-betsu-to-shite",
+      "pattern": "〜は別として",
+      "level": "N2",
+      "meaning": "除…之外",
+      "meaningEn": "aside from"
+    },
+    {
+      "id": "n2-wa-moto-yori",
+      "pattern": "〜はもとより",
+      "level": "N2",
+      "meaning": "不用说；更不用说",
+      "meaningEn": "also; let alone"
+    },
+    {
+      "id": "n2-hanmen",
+      "pattern": "〜反面",
+      "level": "N2",
+      "meaning": "另一方面",
+      "meaningEn": "on other hand"
+    },
+    {
+      "id": "n2-fuu-ni",
+      "pattern": "〜ふうに",
+      "level": "N2",
+      "meaning": "以…方式",
+      "meaningEn": "in way (this/that/what way)"
+    },
+    {
+      "id": "n2-futatabi",
+      "pattern": "ふたたび",
+      "level": "N2",
+      "meaning": "再次；又",
+      "meaningEn": "again; once more"
+    },
+    {
+      "id": "n2-buri-ni",
+      "pattern": "〜ぶりに",
+      "level": "N2",
+      "meaning": "时隔…久",
+      "meaningEn": "for first time in"
+    },
+    {
+      "id": "n2-mai",
+      "pattern": "〜まい",
+      "level": "N2",
+      "meaning": "不会做；打算不做",
+      "meaningEn": "won't; intend not to"
+    },
+    {
+      "id": "n2-mattaku-nai",
+      "pattern": "まったく〜ない",
+      "level": "N2",
+      "meaning": "完全不",
+      "meaningEn": "not at all"
+    },
+    {
+      "id": "n2-mushiro",
+      "pattern": "むしろ",
+      "level": "N2",
+      "meaning": "不如说；宁可",
+      "meaningEn": "rather; instead"
+    },
+    {
+      "id": "n2-mo-ba-mo",
+      "pattern": "〜も〜ば〜も",
+      "level": "N2",
+      "meaning": "既…也",
+      "meaningEn": "and"
+    },
+    {
+      "id": "n2-mou-sukoshi-de",
+      "pattern": "もう少しで",
+      "level": "N2",
+      "meaning": "差一点就",
+      "meaningEn": "almost; nearly"
+    },
+    {
+      "id": "n2-mo-kamawazu",
+      "pattern": "〜もかまわず",
+      "level": "N2",
+      "meaning": "不顾；不在乎",
+      "meaningEn": "without worrying"
+    },
+    {
+      "id": "n2-mottomo",
+      "pattern": "もっとも",
+      "level": "N2",
+      "meaning": "不过；虽然",
+      "meaningEn": "but then; although"
+    },
+    {
+      "id": "n2-mono-ka",
+      "pattern": "〜ものか",
+      "level": "N2",
+      "meaning": "怎么会",
+      "meaningEn": "as if"
+    },
+    {
+      "id": "n2-mono-ga-aru",
+      "pattern": "〜ものがある",
+      "level": "N2",
+      "meaning": "有…的感觉",
+      "meaningEn": "sentence-ending strong judgement"
+    },
+    {
+      "id": "n2-mono-dakara",
+      "pattern": "〜ものだから",
+      "level": "N2",
+      "meaning": "因为；原因是",
+      "meaningEn": "because; reason is"
+    },
+    {
+      "id": "n2-mono-de-wa-nai",
+      "pattern": "〜ものではない",
+      "level": "N2",
+      "meaning": "不应该做；不可能",
+      "meaningEn": "shouldn't do; impossible"
+    },
+    {
+      "id": "n2-mono-nara",
+      "pattern": "〜ものなら",
+      "level": "N2",
+      "meaning": "如果能做的话",
+      "meaningEn": "if one can do"
+    },
+    {
+      "id": "n2-mono-no",
+      "pattern": "〜ものの",
+      "level": "N2",
+      "meaning": "虽然；但是",
+      "meaningEn": "but; although"
+    },
+    {
+      "id": "n2-yagate",
+      "pattern": "やがて",
+      "level": "N2",
+      "meaning": "不久；很快",
+      "meaningEn": "soon; before long; eventually"
+    },
+    {
+      "id": "n2-yara-yara",
+      "pattern": "〜やら〜やら",
+      "level": "N2",
+      "meaning": "又…又…",
+      "meaningEn": "such things as"
+    },
+    {
+      "id": "n2-you-ga-nai",
+      "pattern": "〜ようがない/ようもない",
+      "level": "N2",
+      "meaning": "没办法做；无法",
+      "meaningEn": "no way to; impossible"
+    },
+    {
+      "id": "n2-you-suru-ni",
+      "pattern": "要するに",
+      "level": "N2",
+      "meaning": "总之；要点是",
+      "meaningEn": "point is"
+    },
+    {
+      "id": "n2-you-de-wa",
+      "pattern": "〜ようでは",
+      "level": "N2",
+      "meaning": "如果",
+      "meaningEn": "if"
+    },
+    {
+      "id": "n2-yori-hoka-nai",
+      "pattern": "〜よりほかない",
+      "level": "N2",
+      "meaning": "只好；别无选择",
+      "meaningEn": "no choice but"
+    },
+    {
+      "id": "n2-roku-ni-nai",
+      "pattern": "ろくに〜ない",
+      "level": "N2",
+      "meaning": "没有好好地做",
+      "meaningEn": "not doing properly"
+    },
+    {
+      "id": "n2-wazuka-ni",
+      "pattern": "わずかに",
+      "level": "N2",
+      "meaning": "稍微；略微",
+      "meaningEn": "slightly"
+    },
+    {
+      "id": "n2-wo-to-shite",
+      "pattern": "〜を〜として",
+      "level": "N2",
+      "meaning": "作为",
+      "meaningEn": "as"
+    },
+    {
+      "id": "n2-wo-kikkake-ni",
+      "pattern": "〜をきっかけに",
+      "level": "N2",
+      "meaning": "以…为契机",
+      "meaningEn": "with as start; as result"
+    },
+    {
+      "id": "n2-wo-keiki-ni",
+      "pattern": "〜を契機に",
+      "level": "N2",
+      "meaning": "以…为契机",
+      "meaningEn": "good opportunity; result of"
+    },
+    {
+      "id": "n2-wo-komete",
+      "pattern": "〜をこめて",
+      "level": "N2",
+      "meaning": "充满；带着",
+      "meaningEn": "filled with"
+    },
+    {
+      "id": "n2-wo-tsuujite",
+      "pattern": "〜を通じて/を通して",
+      "level": "N2",
+      "meaning": "通过；经由",
+      "meaningEn": "via; through"
+    },
+    {
+      "id": "n2-wo-towazu",
+      "pattern": "〜を問わず",
+      "level": "N2",
+      "meaning": "不论；不分",
+      "meaningEn": "regardless of"
+    },
+    {
+      "id": "n2-wo-nozoite",
+      "pattern": "〜を除いて",
+      "level": "N2",
+      "meaning": "除了",
+      "meaningEn": "except; with exception"
+    },
+    {
+      "id": "n2-wo-megutte",
+      "pattern": "〜をめぐって",
+      "level": "N2",
+      "meaning": "围绕；关于",
+      "meaningEn": "concerning; in regard to"
+    },
+    {
+      "id": "n2-wo-moto-ni",
+      "pattern": "〜をもとに",
+      "level": "N2",
+      "meaning": "根据；以…为基础",
+      "meaningEn": "based on; from"
+    },
+    {
+      "id": "n2-n-datte",
+      "pattern": "〜んだって",
+      "level": "N2",
+      "meaning": "听说",
+      "meaningEn": "I heard that"
+    },
+    {
+      "id": "n1-aete",
+      "pattern": "あえて",
+      "level": "N1",
+      "meaning": "敢于；故意",
+      "meaningEn": "dare to"
+    },
+    {
+      "id": "n1-akumademo",
+      "pattern": "あくまでも",
+      "level": "N1",
+      "meaning": "彻底地；始终",
+      "meaningEn": "persist; absolutely"
+    },
+    {
+      "id": "n1-an-no-jou",
+      "pattern": "案の定",
+      "level": "N1",
+      "meaning": "果然不出所料",
+      "meaningEn": "just as expected"
+    },
+    {
+      "id": "n1-arakajime",
+      "pattern": "あらかじめ",
+      "level": "N1",
+      "meaning": "预先；事先",
+      "meaningEn": "beforehand; in advance"
+    },
+    {
+      "id": "n1-atte-no",
+      "pattern": "〜あってのあってこそ",
+      "level": "N1",
+      "meaning": "正因为有…才",
+      "meaningEn": "owe everything to"
+    },
+    {
+      "id": "n1-baai-ni-yotte-wa",
+      "pattern": "場合によっては",
+      "level": "N1",
+      "meaning": "根据情况",
+      "meaningEn": "depending on circumstances"
+    },
+    {
+      "id": "n1-ba-koso",
+      "pattern": "〜ばこそ",
+      "level": "N1",
+      "meaning": "正因为",
+      "meaningEn": "only because"
+    },
+    {
+      "id": "n1-ba-sore-made-da",
+      "pattern": "〜ばそれまでだ",
+      "level": "N1",
+      "meaning": "如果那样就到此为止",
+      "meaningEn": "if that, then it ends"
+    },
+    {
+      "id": "n1-bekarazu",
+      "pattern": "〜べからず",
+      "level": "N1",
+      "meaning": "不得；禁止",
+      "meaningEn": "must not; should not"
+    },
+    {
+      "id": "n1-beku",
+      "pattern": "〜べく",
+      "level": "N1",
+      "meaning": "为了；应该",
+      "meaningEn": "in order to; should"
+    },
+    {
+      "id": "n1-beku-mo-nai",
+      "pattern": "〜べくもない",
+      "level": "N1",
+      "meaning": "不可能",
+      "meaningEn": "cannot possibly"
+    },
+    {
+      "id": "n1-biru",
+      "pattern": "〜びる",
+      "level": "N1",
+      "meaning": "看起来像",
+      "meaningEn": "seeming to be"
+    },
+    {
+      "id": "n1-buri",
+      "pattern": "〜ぶり",
+      "level": "N1",
+      "meaning": "风格；样子",
+      "meaningEn": "style; manner"
+    },
+    {
+      "id": "n1-buru",
+      "pattern": "〜ぶる",
+      "level": "N1",
+      "meaning": "装作；摆架子",
+      "meaningEn": "behaving like"
+    },
+    {
+      "id": "n1-dani",
+      "pattern": "〜だに",
+      "level": "N1",
+      "meaning": "连…都",
+      "meaningEn": "even"
+    },
+    {
+      "id": "n1-dano-dano",
+      "pattern": "〜だの〜だの",
+      "level": "N1",
+      "meaning": "又…又…；等等",
+      "meaningEn": "and; et cetera"
+    },
+    {
+      "id": "n1-de-are-de-are",
+      "pattern": "〜であれ〜であれ",
+      "level": "N1",
+      "meaning": "无论A还是B",
+      "meaningEn": "whether A or B"
+    },
+    {
+      "id": "n1-de-are",
+      "pattern": "〜であれ/であろうと",
+      "level": "N1",
+      "meaning": "无论谁/什么/怎样",
+      "meaningEn": "whoever/whatever/however"
+    },
+    {
+      "id": "n1-demo-nan-demo-nai",
+      "pattern": "〜でも何でもない",
+      "level": "N1",
+      "meaning": "一点也不；根本不是",
+      "meaningEn": "not in the least"
+    },
+    {
+      "id": "n1-de-nakute-nan-darou",
+      "pattern": "〜でなくてなんだろう",
+      "level": "N1",
+      "meaning": "一定是；肯定是",
+      "meaningEn": "must be; definitely is"
+    },
+    {
+      "id": "n1-de-sura",
+      "pattern": "〜(で)すら",
+      "level": "N1",
+      "meaning": "甚至",
+      "meaningEn": "even"
+    },
+    {
+      "id": "n1-de-wa-arumai-ka",
+      "pattern": "〜ではあるまいか",
+      "level": "N1",
+      "meaning": "难道不是…吗",
+      "meaningEn": "I wonder if not"
+    },
+    {
+      "id": "n1-de-wa-arumai-shi",
+      "pattern": "〜ではあるまいし",
+      "level": "N1",
+      "meaning": "又不是",
+      "meaningEn": "it's not as if"
+    },
+    {
+      "id": "n1-de-wa-sumanai",
+      "pattern": "〜ではすまない",
+      "level": "N1",
+      "meaning": "不会仅仅就此了结",
+      "meaningEn": "doesn't end with merely"
+    },
+    {
+      "id": "n1-dou-ni-mo-nai",
+      "pattern": "どうにも〜ない",
+      "level": "N1",
+      "meaning": "怎么也不能",
+      "meaningEn": "not by any means"
+    },
+    {
+      "id": "n1-gatera",
+      "pattern": "〜がてら",
+      "level": "N1",
+      "meaning": "顺便",
+      "meaningEn": "on same occasion"
+    },
+    {
+      "id": "n1-ga-hayai-ka",
+      "pattern": "〜が早いか",
+      "level": "N1",
+      "meaning": "一…就",
+      "meaningEn": "as soon as"
+    },
+    {
+      "id": "n1-ga-saigo",
+      "pattern": "〜が最後",
+      "level": "N1",
+      "meaning": "一旦…就",
+      "meaningEn": "once occurs; triggers consequence"
+    },
+    {
+      "id": "n1-gotoki-gotoku",
+      "pattern": "〜ごとき/ごとく",
+      "level": "N1",
+      "meaning": "如同；好像",
+      "meaningEn": "like; as if"
+    },
+    {
+      "id": "n1-gurumi",
+      "pattern": "〜ぐるみ",
+      "level": "N1",
+      "meaning": "整个；全部一起",
+      "meaningEn": "together with"
+    },
+    {
+      "id": "n1-hame-ni-naru",
+      "pattern": "〜羽目になる",
+      "level": "N1",
+      "meaning": "落得…的下场",
+      "meaningEn": "end up with (unpleasant)"
+    },
+    {
+      "id": "n1-hitotsu",
+      "pattern": "〜ひとつ",
+      "level": "N1",
+      "meaning": "试一试",
+      "meaningEn": "give something a try"
+    },
+    {
+      "id": "n1-hodo-no-koto-wa-nai",
+      "pattern": "〜ほどのことはない",
+      "level": "N1",
+      "meaning": "不值得；没有必要",
+      "meaningEn": "not worth; unnecessary"
+    },
+    {
+      "id": "n1-hoka-ni-nai",
+      "pattern": "〜ほかに〜ない",
+      "level": "N1",
+      "meaning": "别无选择",
+      "meaningEn": "no other option"
+    },
+    {
+      "id": "n1-hou-ga-mashi-da",
+      "pattern": "〜ほうがましだ",
+      "level": "N1",
+      "meaning": "宁可",
+      "meaningEn": "would rather"
+    },
+    {
+      "id": "n1-ikanaru",
+      "pattern": "いかなる",
+      "level": "N1",
+      "meaning": "任何的",
+      "meaningEn": "any kind of"
+    },
+    {
+      "id": "n1-ikan-de-wa",
+      "pattern": "〜いかんでは/いかんによっては",
+      "level": "N1",
+      "meaning": "取决于",
+      "meaningEn": "depending on"
+    },
+    {
+      "id": "n1-ikan-ni-yorazu",
+      "pattern": "〜いかんによらず",
+      "level": "N1",
+      "meaning": "不论",
+      "meaningEn": "regardless of"
+    },
+    {
+      "id": "n1-ikani",
+      "pattern": "いかに",
+      "level": "N1",
+      "meaning": "多么；如何",
+      "meaningEn": "how"
+    },
+    {
+      "id": "n1-ikani-mo",
+      "pattern": "いかにも",
+      "level": "N1",
+      "meaning": "确实；的确",
+      "meaningEn": "indeed; really"
+    },
+    {
+      "id": "n1-imada-ni",
+      "pattern": "いまだに",
+      "level": "N1",
+      "meaning": "至今仍然",
+      "meaningEn": "still; even now"
+    },
+    {
+      "id": "n1-izure-ni-seyo",
+      "pattern": "いずれにせよ",
+      "level": "N1",
+      "meaning": "无论如何",
+      "meaningEn": "at any rate; in any case"
+    },
+    {
+      "id": "n1-jimita",
+      "pattern": "〜じみた",
+      "level": "N1",
+      "meaning": "看起来像",
+      "meaningEn": "look like"
+    },
+    {
+      "id": "n1-kagiri-da",
+      "pattern": "〜限りだ",
+      "level": "N1",
+      "meaning": "非常感到",
+      "meaningEn": "feel so"
+    },
+    {
+      "id": "n1-kai-mo-naku",
+      "pattern": "〜かいもなく",
+      "level": "N1",
+      "meaning": "尽管…也没用",
+      "meaningEn": "even though"
+    },
+    {
+      "id": "n1-ka-ina-ka",
+      "pattern": "〜か否か",
+      "level": "N1",
+      "meaning": "是否",
+      "meaningEn": "whether or not"
+    },
+    {
+      "id": "n1-kanousei-ga-aru",
+      "pattern": "〜可能性がある",
+      "level": "N1",
+      "meaning": "有可能",
+      "meaningEn": "possibility exists"
+    },
+    {
+      "id": "n1-kara-aru",
+      "pattern": "〜からある",
+      "level": "N1",
+      "meaning": "多达",
+      "meaningEn": "as much/many as"
+    },
+    {
+      "id": "n1-kare-kare",
+      "pattern": "〜かれ〜かれ",
+      "level": "N1",
+      "meaning": "或…或；无论",
+      "meaningEn": "or; either way"
+    },
+    {
+      "id": "n1-katagata",
+      "pattern": "〜かたがた",
+      "level": "N1",
+      "meaning": "顺便；兼",
+      "meaningEn": "while; for purpose of"
+    },
+    {
+      "id": "n1-katawara",
+      "pattern": "〜かたわら",
+      "level": "N1",
+      "meaning": "一边…一边",
+      "meaningEn": "while; simultaneously"
+    },
+    {
+      "id": "n1-katsute",
+      "pattern": "かつて",
+      "level": "N1",
+      "meaning": "曾经；从前",
+      "meaningEn": "once; formerly"
+    },
+    {
+      "id": "n1-kirai-ga-aru",
+      "pattern": "〜嫌いがある",
+      "level": "N1",
+      "meaning": "有…的倾向",
+      "meaningEn": "tendency to; apt to"
+    },
+    {
+      "id": "n1-kitte-no",
+      "pattern": "〜きってのきりがない",
+      "level": "N1",
+      "meaning": "没完没了",
+      "meaningEn": "there's no end to"
+    },
+    {
+      "id": "n1-kiwamaru",
+      "pattern": "〜極まる/極まりない",
+      "level": "N1",
+      "meaning": "极其；非常",
+      "meaningEn": "extremely"
+    },
+    {
+      "id": "n1-kiwamete",
+      "pattern": "極めて",
+      "level": "N1",
+      "meaning": "极其；非常",
+      "meaningEn": "exceedingly; very"
+    },
+    {
+      "id": "n1-koto-dashi",
+      "pattern": "〜ことだし",
+      "level": "N1",
+      "meaning": "因为；既然",
+      "meaningEn": "because; since"
+    },
+    {
+      "id": "n1-kotogotoku",
+      "pattern": "〜ことごとく",
+      "level": "N1",
+      "meaning": "全部；统统",
+      "meaningEn": "altogether; entirely"
+    },
+    {
+      "id": "n1-koto-nashi-ni",
+      "pattern": "〜ことなしに",
+      "level": "N1",
+      "meaning": "不做…地",
+      "meaningEn": "without doing"
+    },
+    {
+      "id": "n1-koto-no-nai-you",
+      "pattern": "〜ことのないよう",
+      "level": "N1",
+      "meaning": "以免",
+      "meaningEn": "so as not to"
+    },
+    {
+      "id": "n1-koto-tote",
+      "pattern": "〜こととて",
+      "level": "N1",
+      "meaning": "因为；由于",
+      "meaningEn": "because; since"
+    },
+    {
+      "id": "n1-kurai-nara",
+      "pattern": "〜くらいなら",
+      "level": "N1",
+      "meaning": "与其…不如",
+      "meaningEn": "rather than"
+    },
+    {
+      "id": "n1-kurai-no-mono-da",
+      "pattern": "〜くらいのものだ",
+      "level": "N1",
+      "meaning": "只有",
+      "meaningEn": "only"
+    },
+    {
+      "id": "n1-made-da",
+      "pattern": "〜までだ",
+      "level": "N1",
+      "meaning": "只是；不过如此",
+      "meaningEn": "only; that's all"
+    },
+    {
+      "id": "n1-made-mo-nai",
+      "pattern": "〜までもない",
+      "level": "N1",
+      "meaning": "不必；没有必要",
+      "meaningEn": "unnecessary; not need to"
+    },
+    {
+      "id": "n1-majiki",
+      "pattern": "〜まじき",
+      "level": "N1",
+      "meaning": "不应该；不可以",
+      "meaningEn": "should not; must not"
+    },
+    {
+      "id": "n1-mama-ni",
+      "pattern": "〜ままに",
+      "level": "N1",
+      "meaning": "任由；随意",
+      "meaningEn": "do as; let be"
+    },
+    {
+      "id": "n1-mamire",
+      "pattern": "〜まみれ",
+      "level": "N1",
+      "meaning": "沾满；满是",
+      "meaningEn": "covered in; smeared with"
+    },
+    {
+      "id": "n1-marukkiri",
+      "pattern": "まるっきり",
+      "level": "N1",
+      "meaning": "完全；彻底",
+      "meaningEn": "totally; completely"
+    },
+    {
+      "id": "n1-meku",
+      "pattern": "〜めく",
+      "level": "N1",
+      "meaning": "显出…的样子",
+      "meaningEn": "show signs of"
+    },
+    {
+      "id": "n1-mohaya",
+      "pattern": "もはや",
+      "level": "N1",
+      "meaning": "已经；不再",
+      "meaningEn": "already; no longer"
+    },
+    {
+      "id": "n1-mo-kaerimizu",
+      "pattern": "〜も顧みず/を顧みず",
+      "level": "N1",
+      "meaning": "不顾；不管",
+      "meaningEn": "regardless of; despite"
+    },
+    {
+      "id": "n1-mo-shinaide",
+      "pattern": "〜もしないで",
+      "level": "N1",
+      "meaning": "连…都没做",
+      "meaningEn": "without even doing"
+    },
+    {
+      "id": "n1-mono-de",
+      "pattern": "〜もので",
+      "level": "N1",
+      "meaning": "因为；原因是",
+      "meaningEn": "because; reason is"
+    },
+    {
+      "id": "n1-mono-wo",
+      "pattern": "〜ものを",
+      "level": "N1",
+      "meaning": "要是…就好了",
+      "meaningEn": "I wish; if only"
+    },
+    {
+      "id": "n1-mono-to-omowareru",
+      "pattern": "〜ものと思われる",
+      "level": "N1",
+      "meaning": "认为；推测",
+      "meaningEn": "think; suppose"
+    },
+    {
+      "id": "n1-mono-to-shite",
+      "pattern": "〜ものとして",
+      "level": "N1",
+      "meaning": "假定；假设",
+      "meaningEn": "assume; suppose"
+    },
+    {
+      "id": "n1-mo-saru-koto-nagara",
+      "pattern": "〜もさることながら",
+      "level": "N1",
+      "meaning": "不仅…而且",
+      "meaningEn": "not only but also"
+    },
+    {
+      "id": "n1-moshiku-wa",
+      "pattern": "もしくは",
+      "level": "N1",
+      "meaning": "或者；或",
+      "meaningEn": "or; otherwise"
+    },
+    {
+      "id": "n1-nagara-ni",
+      "pattern": "〜ながらに/ながらの",
+      "level": "N1",
+      "meaning": "一边；在…的状态下",
+      "meaningEn": "while; during"
+    },
+    {
+      "id": "n1-nai-de-wa-okanai",
+      "pattern": "〜ないではおかない/ずにはおかない",
+      "level": "N1",
+      "meaning": "一定会；必然",
+      "meaningEn": "will definitely; cannot not"
+    },
+    {
+      "id": "n1-nai-de-wa-sumanai",
+      "pattern": "〜ないではすまない/ずにはすまない",
+      "level": "N1",
+      "meaning": "不得不做",
+      "meaningEn": "must do"
+    },
+    {
+      "id": "n1-nai-made-mo",
+      "pattern": "〜ないまでも",
+      "level": "N1",
+      "meaning": "即使不…也",
+      "meaningEn": "even if not"
+    },
+    {
+      "id": "n1-nai-mono-ka",
+      "pattern": "〜ないものか",
+      "level": "N1",
+      "meaning": "就不能…吗",
+      "meaningEn": "can't we?"
+    },
+    {
+      "id": "n1-nai-mono-demo-nai",
+      "pattern": "〜ないものでもない",
+      "level": "N1",
+      "meaning": "并非完全不可能",
+      "meaningEn": "not entirely impossible"
+    },
+    {
+      "id": "n1-nai-tomo-kagiranai",
+      "pattern": "〜ないとも限らない",
+      "level": "N1",
+      "meaning": "也许会；说不定",
+      "meaningEn": "might; could"
+    },
+    {
+      "id": "n1-nakushite",
+      "pattern": "〜なくして",
+      "level": "N1",
+      "meaning": "没有…就",
+      "meaningEn": "without"
+    },
+    {
+      "id": "n1-nanishiro",
+      "pattern": "何しろ",
+      "level": "N1",
+      "meaning": "毕竟；总之",
+      "meaningEn": "in any case; as you know"
+    },
+    {
+      "id": "n1-nashi-ni",
+      "pattern": "〜なしに",
+      "level": "N1",
+      "meaning": "没有；不",
+      "meaningEn": "without"
+    },
+    {
+      "id": "n1-narade-wa",
+      "pattern": "〜ならでは",
+      "level": "N1",
+      "meaning": "只有…才有的",
+      "meaningEn": "uniquely applies to"
+    },
+    {
+      "id": "n1-nara-iza-shirazu",
+      "pattern": "〜ならいざしらず",
+      "level": "N1",
+      "meaning": "A姑且不论，但B",
+      "meaningEn": "don't know about A; but B"
+    },
+    {
+      "id": "n1-nari",
+      "pattern": "〜なり",
+      "level": "N1",
+      "meaning": "一…就",
+      "meaningEn": "as soon as"
+    },
+    {
+      "id": "n1-nari-nari",
+      "pattern": "〜なり〜なり",
+      "level": "N1",
+      "meaning": "或…或",
+      "meaningEn": "or; either way"
+    },
+    {
+      "id": "n1-nari-ni",
+      "pattern": "〜なりに/なりの",
+      "level": "N1",
+      "meaning": "按自己的方式",
+      "meaningEn": "in one's own way"
+    },
+    {
+      "id": "n1-nari-tomo",
+      "pattern": "〜なりとも",
+      "level": "N1",
+      "meaning": "哪怕一点；至少",
+      "meaningEn": "even a little; at least"
+    },
+    {
+      "id": "n1-ni-atai-suru",
+      "pattern": "〜に値する",
+      "level": "N1",
+      "meaning": "值得",
+      "meaningEn": "worthy of; deserve"
+    },
+    {
+      "id": "n1-ni-ataranai",
+      "pattern": "〜にあたらない",
+      "level": "N1",
+      "meaning": "不值得；没有必要",
+      "meaningEn": "not worth; unnecessary"
+    },
+    {
+      "id": "n1-ni-atte",
+      "pattern": "〜にあって",
+      "level": "N1",
+      "meaning": "在…情况下",
+      "meaningEn": "at; during; in condition"
+    },
+    {
+      "id": "n1-ni-hikikae",
+      "pattern": "〜にひきかえ",
+      "level": "N1",
+      "meaning": "与…相反",
+      "meaningEn": "in contrast to"
+    },
+    {
+      "id": "n1-ni-itaru-made",
+      "pattern": "〜に至るまで",
+      "level": "N1",
+      "meaning": "直到；甚至",
+      "meaningEn": "until; as far as"
+    },
+    {
+      "id": "n1-ni-itatte-wa",
+      "pattern": "〜に至っては",
+      "level": "N1",
+      "meaning": "说到；至于",
+      "meaningEn": "when it comes to; as for"
+    },
+    {
+      "id": "n1-ni-iwasereba",
+      "pattern": "〜に言わせれば",
+      "level": "N1",
+      "meaning": "如果让…来说",
+      "meaningEn": "if you ask; if may say"
+    },
+    {
+      "id": "n1-ni-kakatte-iru",
+      "pattern": "〜にかかっている",
+      "level": "N1",
+      "meaning": "取决于",
+      "meaningEn": "depends on"
+    },
+    {
+      "id": "n1-ni-kataku-nai",
+      "pattern": "〜にかたくない",
+      "level": "N1",
+      "meaning": "不难想象",
+      "meaningEn": "not hard to; easy to"
+    },
+    {
+      "id": "n1-ni-matsuwaru",
+      "pattern": "〜にまつわる",
+      "level": "N1",
+      "meaning": "有关；关于",
+      "meaningEn": "related to; concern"
+    },
+    {
+      "id": "n1-ni-mo-hodo-ga-aru",
+      "pattern": "〜にもほどがある",
+      "level": "N1",
+      "meaning": "太过分了",
+      "meaningEn": "has limit; goes too far"
+    },
+    {
+      "id": "n1-ni-mo-mashite",
+      "pattern": "〜にもまして",
+      "level": "N1",
+      "meaning": "比…更",
+      "meaningEn": "more than; above"
+    },
+    {
+      "id": "n1-ni-nottotte",
+      "pattern": "〜に則って",
+      "level": "N1",
+      "meaning": "遵循；按照",
+      "meaningEn": "in accordance with"
+    },
+    {
+      "id": "n1-ni-sakigakete",
+      "pattern": "〜に先駆けて",
+      "level": "N1",
+      "meaning": "率先；先于",
+      "meaningEn": "be first; precede"
+    },
+    {
+      "id": "n1-ni-shitatte",
+      "pattern": "〜にしたって",
+      "level": "N1",
+      "meaning": "即使；就算",
+      "meaningEn": "even; even if"
+    },
+    {
+      "id": "n1-ni-shite",
+      "pattern": "〜にして",
+      "level": "N1",
+      "meaning": "只有；在…时",
+      "meaningEn": "only; in (time span)"
+    },
+    {
+      "id": "n1-ni-sokushite",
+      "pattern": "〜に即して",
+      "level": "N1",
+      "meaning": "根据；符合",
+      "meaningEn": "in keeping with"
+    },
+    {
+      "id": "n1-ni-taeru",
+      "pattern": "〜にたえる/にたえない",
+      "level": "N1",
+      "meaning": "能/不能承受",
+      "meaningEn": "can/cannot do"
+    },
+    {
+      "id": "n1-ni-taru",
+      "pattern": "〜に足る/に足りる",
+      "level": "N1",
+      "meaning": "足够；值得",
+      "meaningEn": "enough; worthy"
+    },
+    {
+      "id": "n1-ni-tarinai",
+      "pattern": "〜に足りない",
+      "level": "N1",
+      "meaning": "不值得；不够",
+      "meaningEn": "not worth; insufficient"
+    },
+    {
+      "id": "n1-ni-terashite",
+      "pattern": "〜に照らして",
+      "level": "N1",
+      "meaning": "照；根据",
+      "meaningEn": "in comparison; according"
+    },
+    {
+      "id": "n1-ni-todomarazu",
+      "pattern": "〜にとどまらず",
+      "level": "N1",
+      "meaning": "不仅限于",
+      "meaningEn": "not limited to"
+    },
+    {
+      "id": "n1-ni-wa-oyobanai",
+      "pattern": "〜には及ばない",
+      "level": "N1",
+      "meaning": "不必；没有必要",
+      "meaningEn": "no need to"
+    },
+    {
+      "id": "n1-ni-yorazu",
+      "pattern": "〜によらず",
+      "level": "N1",
+      "meaning": "不论",
+      "meaningEn": "regardless of"
+    },
+    {
+      "id": "n1-n-bakari-ni",
+      "pattern": "〜んばかりに",
+      "level": "N1",
+      "meaning": "简直要；好像要",
+      "meaningEn": "as if; as though"
+    },
+    {
+      "id": "n1-n-ga-tame",
+      "pattern": "〜んがため",
+      "level": "N1",
+      "meaning": "为了",
+      "meaningEn": "in order to"
+    },
+    {
+      "id": "n1-no-itari",
+      "pattern": "〜の至り",
+      "level": "N1",
+      "meaning": "极致；至极",
+      "meaningEn": "utmost; extreme"
+    },
+    {
+      "id": "n1-no-kiwami",
+      "pattern": "〜の極み",
+      "level": "N1",
+      "meaning": "极致；顶峰",
+      "meaningEn": "utmost; peak"
+    },
+    {
+      "id": "n1-nomi-ka",
+      "pattern": "〜のみか",
+      "level": "N1",
+      "meaning": "不仅…而且",
+      "meaningEn": "not only but also"
+    },
+    {
+      "id": "n1-no-nan-notte",
+      "pattern": "〜のなんのって",
+      "level": "N1",
+      "meaning": "非常；极其",
+      "meaningEn": "extremely"
+    },
+    {
+      "id": "n1-wo-fumaete",
+      "pattern": "〜を踏まえて",
+      "level": "N1",
+      "meaning": "基于；根据",
+      "meaningEn": "based on"
+    },
+    {
+      "id": "n1-wo-hete",
+      "pattern": "〜を経て",
+      "level": "N1",
+      "meaning": "经过；经由",
+      "meaningEn": "through; after; via"
+    },
+    {
+      "id": "n1-wo-ii-koto-ni",
+      "pattern": "〜をいいことに",
+      "level": "N1",
+      "meaning": "趁机利用",
+      "meaningEn": "take advantage of"
+    },
+    {
+      "id": "n1-wo-kagiri-ni",
+      "pattern": "〜を限りに",
+      "level": "N1",
+      "meaning": "从…开始",
+      "meaningEn": "starting from"
+    },
+    {
+      "id": "n1-wo-kanete",
+      "pattern": "〜を兼ねて",
+      "level": "N1",
+      "meaning": "兼；同时",
+      "meaningEn": "also for purpose"
+    },
+    {
+      "id": "n1-wo-kawakiri-ni",
+      "pattern": "〜を皮切りに",
+      "level": "N1",
+      "meaning": "以…为开端",
+      "meaningEn": "starting with"
+    },
+    {
+      "id": "n1-wo-ki-ni",
+      "pattern": "〜を機に",
+      "level": "N1",
+      "meaning": "以…为契机",
+      "meaningEn": "as opportunity to"
+    },
+    {
+      "id": "n1-wo-kinjienai",
+      "pattern": "〜を禁じえない",
+      "level": "N1",
+      "meaning": "禁不住；不由得",
+      "meaningEn": "can't help but"
+    },
+    {
+      "id": "n1-wo-mono-tomo-sezu",
+      "pattern": "〜をものともせず",
+      "level": "N1",
+      "meaning": "不畏；不顾",
+      "meaningEn": "in defiance of"
+    },
+    {
+      "id": "n1-wo-motte-1",
+      "pattern": "〜をもって",
+      "level": "N1",
+      "meaning": "以；用",
+      "meaningEn": "by means of"
+    },
+    {
+      "id": "n1-wo-motte-2",
+      "pattern": "〜をもって",
+      "level": "N1",
+      "meaning": "在…时",
+      "meaningEn": "at time of"
+    },
+    {
+      "id": "n1-wo-oite",
+      "pattern": "〜をおいて",
+      "level": "N1",
+      "meaning": "除了…以外",
+      "meaningEn": "other than; without"
+    },
+    {
+      "id": "n1-wo-yogi-naku-sareru",
+      "pattern": "〜を余儀なくされる",
+      "level": "N1",
+      "meaning": "被迫做",
+      "meaningEn": "forced to do"
+    },
+    {
+      "id": "n1-wo-yoso-ni",
+      "pattern": "〜をよそに",
+      "level": "N1",
+      "meaning": "不顾；无视",
+      "meaningEn": "despite; ignoring"
+    },
+    {
+      "id": "n1-omoi-wo-suru",
+      "pattern": "〜思いをする",
+      "level": "N1",
+      "meaning": "感到；体会",
+      "meaningEn": "feel; experience"
+    },
+    {
+      "id": "n1-ori-ni",
+      "pattern": "〜折に",
+      "level": "N1",
+      "meaning": "在…之际",
+      "meaningEn": "when; on occasion"
+    },
+    {
+      "id": "n1-oyoso",
+      "pattern": "およそ",
+      "level": "N1",
+      "meaning": "完全；根本（不）",
+      "meaningEn": "totally; (not) at all"
+    },
+    {
+      "id": "n1-samo-naito",
+      "pattern": "さもないと",
+      "level": "N1",
+      "meaning": "否则；不然",
+      "meaningEn": "otherwise; else"
+    },
+    {
+      "id": "n1-sazo",
+      "pattern": "さぞ",
+      "level": "N1",
+      "meaning": "想必；一定",
+      "meaningEn": "I'm sure; certain"
+    },
+    {
+      "id": "n1-shimatsu-da",
+      "pattern": "〜始末だ",
+      "level": "N1",
+      "meaning": "落得…的下场",
+      "meaningEn": "end up; result"
+    },
+    {
+      "id": "n1-soba-kara",
+      "pattern": "〜そばから",
+      "level": "N1",
+      "meaning": "一…就（马上）",
+      "meaningEn": "as soon as; right after"
+    },
+    {
+      "id": "n1-samo",
+      "pattern": "さも",
+      "level": "N1",
+      "meaning": "真的；确实",
+      "meaningEn": "truly; really"
+    },
+    {
+      "id": "n1-sore-nari-ni",
+      "pattern": "それなりに",
+      "level": "N1",
+      "meaning": "按照原样；以自己的方式",
+      "meaningEn": "as is; in own way"
+    },
+    {
+      "id": "n1-sou-ni-mo-nai",
+      "pattern": "〜そうにもない",
+      "level": "N1",
+      "meaning": "不可能；不太可能",
+      "meaningEn": "impossible; unlikely"
+    },
+    {
+      "id": "n1-tada-nomi-da",
+      "pattern": "ただ〜のみだ",
+      "level": "N1",
+      "meaning": "只能做",
+      "meaningEn": "can do nothing but"
+    },
+    {
+      "id": "n1-ta-hyoushi-ni",
+      "pattern": "〜た拍子に",
+      "level": "N1",
+      "meaning": "在…的瞬间",
+      "meaningEn": "the instant; moment"
+    },
+    {
+      "id": "n1-tameshi-ga-nai",
+      "pattern": "〜ためしがない",
+      "level": "N1",
+      "meaning": "从来没有过",
+      "meaningEn": "never happens; never case"
+    },
+    {
+      "id": "n1-tari-tomo",
+      "pattern": "〜たりとも",
+      "level": "N1",
+      "meaning": "一…也不",
+      "meaningEn": "(not) even; (not) any"
+    },
+    {
+      "id": "n1-ta-shunkan-ni",
+      "pattern": "〜た瞬間に",
+      "level": "N1",
+      "meaning": "在…的瞬间",
+      "meaningEn": "the moment; instant"
+    },
+    {
+      "id": "n1-tekkiri",
+      "pattern": "てっきり",
+      "level": "N1",
+      "meaning": "一直以为",
+      "meaningEn": "surely; certainly"
+    },
+    {
+      "id": "n1-ta-tokoro-de",
+      "pattern": "〜たところで",
+      "level": "N1",
+      "meaning": "即使做了也",
+      "meaningEn": "even if does"
+    },
+    {
+      "id": "n1-te-kara-to-iu-mono",
+      "pattern": "〜てからというもの",
+      "level": "N1",
+      "meaning": "自从…以后",
+      "meaningEn": "after; since then"
+    },
+    {
+      "id": "n1-te-kanawanai",
+      "pattern": "〜てかなわない",
+      "level": "N1",
+      "meaning": "受不了；难以忍受",
+      "meaningEn": "can't stand; unbearable"
+    },
+    {
+      "id": "n1-te-made",
+      "pattern": "〜てまで",
+      "level": "N1",
+      "meaning": "甚至；到…的地步",
+      "meaningEn": "even; to extent of"
+    },
+    {
+      "id": "n1-te-miseru",
+      "pattern": "〜てみせる",
+      "level": "N1",
+      "meaning": "一定要做给你看",
+      "meaningEn": "I'll definitely do"
+    },
+    {
+      "id": "n1-te-mo-dou-ni-mo-naranai",
+      "pattern": "〜てもどうにもならない",
+      "level": "N1",
+      "meaning": "做了也没用",
+      "meaningEn": "it's no use"
+    },
+    {
+      "id": "n1-te-mo-hajimaranai",
+      "pattern": "〜ても始まらない",
+      "level": "N1",
+      "meaning": "做了也没用",
+      "meaningEn": "pointless; no use"
+    },
+    {
+      "id": "n1-te-mo-sashitsukaenai",
+      "pattern": "〜ても差し支えない",
+      "level": "N1",
+      "meaning": "可以；没有妨碍",
+      "meaningEn": "can; okay if"
+    },
+    {
+      "id": "n1-te-shikaru-beki-da",
+      "pattern": "〜てしかるべきだ",
+      "level": "N1",
+      "meaning": "理应；应当",
+      "meaningEn": "should; ought to"
+    },
+    {
+      "id": "n1-tteba",
+      "pattern": "〜ってば",
+      "level": "N1",
+      "meaning": "都说了；跟你说了",
+      "meaningEn": "I said; told you"
+    },
+    {
+      "id": "n1-te-yamanai",
+      "pattern": "〜てやまない",
+      "level": "N1",
+      "meaning": "衷心地；不停地",
+      "meaningEn": "always; never stop"
+    },
+    {
+      "id": "n1-to-aimatte",
+      "pattern": "〜と相まって",
+      "level": "N1",
+      "meaning": "加上；与…相结合",
+      "meaningEn": "together with; combined"
+    },
+    {
+      "id": "n1-to-areba",
+      "pattern": "〜とあれば",
+      "level": "N1",
+      "meaning": "如果是",
+      "meaningEn": "if; if case that"
+    },
+    {
+      "id": "n1-to-atte",
+      "pattern": "〜とあって",
+      "level": "N1",
+      "meaning": "因为；由于",
+      "meaningEn": "because of; due to"
+    },
+    {
+      "id": "n1-to-bakari-ni",
+      "pattern": "〜とばかりに",
+      "level": "N1",
+      "meaning": "好像要；仿佛",
+      "meaningEn": "as if; as though"
+    },
+    {
+      "id": "n1-to-iedomo",
+      "pattern": "〜といえども",
+      "level": "N1",
+      "meaning": "即使；虽然",
+      "meaningEn": "even; even if"
+    },
+    {
+      "id": "n1-to-ii-to-ii",
+      "pattern": "〜といい〜といい",
+      "level": "N1",
+      "meaning": "无论是…还是",
+      "meaningEn": "and; or"
+    },
+    {
+      "id": "n1-to-ittara-nai",
+      "pattern": "〜といったらない",
+      "level": "N1",
+      "meaning": "非常；极其",
+      "meaningEn": "very; extremely"
+    },
+    {
+      "id": "n1-to-iu-all",
+      "pattern": "〜というall",
+      "level": "N1",
+      "meaning": "所有的",
+      "meaningEn": "every"
+    },
+    {
+      "id": "n1-to-iu-ka",
+      "pattern": "〜というか",
+      "level": "N1",
+      "meaning": "或者说；更准确地说",
+      "meaningEn": "or; or more precisely"
+    },
+    {
+      "id": "n1-to-iu-ka-to-iu-ka",
+      "pattern": "〜というか〜というか",
+      "level": "N1",
+      "meaning": "说A好还是B好",
+      "meaningEn": "(unsure) A or B"
+    },
+    {
+      "id": "n1-to-itta-tokoro-da",
+      "pattern": "〜といったところだ",
+      "level": "N1",
+      "meaning": "大约；差不多",
+      "meaningEn": "approximately; about"
+    },
+    {
+      "id": "n1-to-iu-mono",
+      "pattern": "〜というもの",
+      "level": "N1",
+      "meaning": "在…期间",
+      "meaningEn": "during period"
+    },
+    {
+      "id": "n1-to-iu-wake-da",
+      "pattern": "〜というわけだ",
+      "level": "N1",
+      "meaning": "这就意味着",
+      "meaningEn": "this means"
+    },
+    {
+      "id": "n1-to-iu-wake-de-wa-nai",
+      "pattern": "〜というわけではない",
+      "level": "N1",
+      "meaning": "并不是说",
+      "meaningEn": "not that; doesn't mean"
+    },
+    {
+      "id": "n1-to-iwazu",
+      "pattern": "〜といわず",
+      "level": "N1",
+      "meaning": "不分；不论",
+      "meaningEn": "not just; both"
+    },
+    {
+      "id": "n1-to-kitara",
+      "pattern": "〜ときたら",
+      "level": "N1",
+      "meaning": "说到…（不满）",
+      "meaningEn": "when comes to; concerning"
+    },
+    {
+      "id": "n1-to-kite-iru",
+      "pattern": "〜ときている",
+      "level": "N1",
+      "meaning": "因为；而且",
+      "meaningEn": "because; since"
+    },
+    {
+      "id": "n1-tokoro-ga-aru",
+      "pattern": "〜ところがある",
+      "level": "N1",
+      "meaning": "有…的一面",
+      "meaningEn": "there is"
+    },
+    {
+      "id": "n1-tokoro-kara",
+      "pattern": "〜ところから",
+      "level": "N1",
+      "meaning": "从…来看",
+      "meaningEn": "from fact that"
+    },
+    {
+      "id": "n1-to-mirareru",
+      "pattern": "〜とみられる",
+      "level": "N1",
+      "meaning": "被认为；被预期",
+      "meaningEn": "regarded as; expected"
+    },
+    {
+      "id": "n1-to-miru-ya",
+      "pattern": "〜とみるや",
+      "level": "N1",
+      "meaning": "一看到就",
+      "meaningEn": "at sight of; upon seeing"
+    },
+    {
+      "id": "n1-to-mo-naku",
+      "pattern": "〜ともなく",
+      "level": "N1",
+      "meaning": "不经意地",
+      "meaningEn": "without thinking"
+    },
+    {
+      "id": "n1-to-mo-naru-to",
+      "pattern": "〜ともなると/ともなれば",
+      "level": "N1",
+      "meaning": "一旦到了",
+      "meaningEn": "when; once"
+    },
+    {
+      "id": "n1-tomo-sureba",
+      "pattern": "〜ともすれば",
+      "level": "N1",
+      "meaning": "往往；动不动就",
+      "meaningEn": "apt to; prone to"
+    },
+    {
+      "id": "n1-to-omoikiya",
+      "pattern": "〜と思いきや",
+      "level": "N1",
+      "meaning": "原以为…结果却",
+      "meaningEn": "I thought (but was wrong)"
+    },
+    {
+      "id": "n1-toriwake",
+      "pattern": "とりわけ",
+      "level": "N1",
+      "meaning": "尤其；特别",
+      "meaningEn": "especially; particularly"
+    },
+    {
+      "id": "n1-to-sareru",
+      "pattern": "〜とされる",
+      "level": "N1",
+      "meaning": "被认为",
+      "meaningEn": "considered; regarded"
+    },
+    {
+      "id": "n1-tossa-ni",
+      "pattern": "とっさに",
+      "level": "N1",
+      "meaning": "立刻；咄嗟地",
+      "meaningEn": "at once; right away"
+    },
+    {
+      "id": "n1-to-shitatte",
+      "pattern": "〜としたって/としたところで",
+      "level": "N1",
+      "meaning": "即使",
+      "meaningEn": "even if"
+    },
+    {
+      "id": "n1-to-shite-nai",
+      "pattern": "〜として〜ない",
+      "level": "N1",
+      "meaning": "一个也没有",
+      "meaningEn": "not even one"
+    },
+    {
+      "id": "n1-tote",
+      "pattern": "〜とて",
+      "level": "N1",
+      "meaning": "即使；虽然",
+      "meaningEn": "even if; even though"
+    },
+    {
+      "id": "n1-totemo-nai",
+      "pattern": "とても〜ない",
+      "level": "N1",
+      "meaning": "怎么也不能",
+      "meaningEn": "cannot possibly"
+    },
+    {
+      "id": "n1-to-wa",
+      "pattern": "〜とは",
+      "level": "N1",
+      "meaning": "所谓的；（定义词语）",
+      "meaningEn": "(defines word/phrase)"
+    },
+    {
+      "id": "n1-to-wa-ie",
+      "pattern": "〜とはいえ",
+      "level": "N1",
+      "meaning": "尽管如此；虽说",
+      "meaningEn": "nonetheless; although"
+    },
+    {
+      "id": "n1-to-wa-iu-mono-no",
+      "pattern": "〜とはいうものの",
+      "level": "N1",
+      "meaning": "话虽如此",
+      "meaningEn": "having said that; be that"
+    },
+    {
+      "id": "n1-tsu-tsu",
+      "pattern": "〜つ〜つ",
+      "level": "N1",
+      "meaning": "又…又…（对比动作）",
+      "meaningEn": "contrasting actions"
+    },
+    {
+      "id": "n1-wa-oroka",
+      "pattern": "〜はおろか",
+      "level": "N1",
+      "meaning": "别说；更不用说",
+      "meaningEn": "let alone; not mention"
+    },
+    {
+      "id": "n1-wa-sateoki",
+      "pattern": "〜はさておき",
+      "level": "N1",
+      "meaning": "先不说；暂且不论",
+      "meaningEn": "setting aside"
+    },
+    {
+      "id": "n1-ya-ina-ya",
+      "pattern": "〜や否や",
+      "level": "N1",
+      "meaning": "一…就",
+      "meaningEn": "moment that; as soon as"
+    },
+    {
+      "id": "n1-ya-shinai",
+      "pattern": "〜やしない",
+      "level": "N1",
+      "meaning": "根本不（强调）",
+      "meaningEn": "not (emphatic)"
+    },
+    {
+      "id": "n1-you-ga-to",
+      "pattern": "〜(よ)うが/(よ)うと",
+      "level": "N1",
+      "meaning": "无论怎么",
+      "meaningEn": "no matter how/what"
+    },
+    {
+      "id": "n1-you-ga-mai-ga",
+      "pattern": "〜(よ)うが〜まいが",
+      "level": "N1",
+      "meaning": "无论做还是不做",
+      "meaningEn": "whether or not"
+    },
+    {
+      "id": "n1-you-ka-mai-ka",
+      "pattern": "〜(よ)うか〜まいか",
+      "level": "N1",
+      "meaning": "做还是不做",
+      "meaningEn": "whether or not"
+    },
+    {
+      "id": "n1-you-mono-nara",
+      "pattern": "〜(よ)うものなら",
+      "level": "N1",
+      "meaning": "如果胆敢做",
+      "meaningEn": "if one chooses to"
+    },
+    {
+      "id": "n1-you-ni-mo-nai",
+      "pattern": "〜(よ)うにも〜ない",
+      "level": "N1",
+      "meaning": "想做也不能",
+      "meaningEn": "even if tries; can't"
+    },
+    {
+      "id": "n1-you-ni-yotte-wa",
+      "pattern": "〜ようによっては",
+      "level": "N1",
+      "meaning": "取决于做法",
+      "meaningEn": "depending on"
+    },
+    {
+      "id": "n1-yue-ni",
+      "pattern": "〜ゆえに",
+      "level": "N1",
+      "meaning": "因此；所以",
+      "meaningEn": "therefore; consequently"
+    },
+    {
+      "id": "n1-zaru",
+      "pattern": "〜ざる",
+      "level": "N1",
+      "meaning": "不；未",
+      "meaningEn": "not; un-"
+    },
+    {
+      "id": "n1-zujimai",
+      "pattern": "〜ずじまい",
+      "level": "N1",
+      "meaning": "最终没做",
+      "meaningEn": "never does"
+    },
+    {
+      "id": "n1-zukume",
+      "pattern": "〜ずくめ",
+      "level": "N1",
+      "meaning": "清一色；全是",
+      "meaningEn": "entirely; completely"
+    },
+    {
+      "id": "n1-zu-tomo",
+      "pattern": "〜ずとも",
+      "level": "N1",
+      "meaning": "即使不做也",
+      "meaningEn": "even without doing"
+    }
+  ]
+}
