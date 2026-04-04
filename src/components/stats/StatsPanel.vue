@@ -38,14 +38,14 @@ function closeResetConfirm() {
   confirmStep.value = 0
 }
 
-function onConfirmReset() {
+async function onConfirmReset() {
   if (confirmStep.value === 1) {
     confirmStep.value = 2
     return
   }
 
   clearAllLearnProgressLocal()
-  flushDataToCloud()
+  await flushDataToCloud()
   confirmStep.value = 0
   window.location.reload()
 }

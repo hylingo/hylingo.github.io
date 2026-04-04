@@ -27,6 +27,18 @@ const userId = ref(localStorage.getItem('jp_user_id') || '')
 let db: firebase.database.Database | null = null
 let syncTimer: ReturnType<typeof setTimeout> | null = null
 
+/** 所有 RTDB .set 串行 + await，避免多次上传乱序完成用旧快照覆盖新数据（测验队列等） */
+let serializedCloudChain: Promise<void> = Promise.resolve()
+
+function runSerialized<T>(task: () => Promise<T>): Promise<T> {
+  const p = serializedCloudChain.then(() => task())
+  serializedCloudChain = p.then(
+    () => undefined,
+    () => undefined,
+  )
+  return p
+}
+
 function emptyBundle(): LangBundle {
   const b = {} as LangBundle
   for (const ck of SYNCED_CLOUD_KEYS) {
@@ -115,12 +127,9 @@ function mergeLangBundle(local: LangBundle, cloud: LangBundle): LangBundle {
     counts: mergeMaxNumbers((local.counts || {}) as any, (cloud.counts || {}) as any),
     delays: mergeLaterReviewDates((local.delays || {}) as any, (cloud.delays || {}) as any),
     listened: mergeListenCountMaps((local.listened || {}) as any, (cloud.listened || {}) as any),
-    listenDismissed: mergeDismissed((local.listenDismissed || {}) as any, (cloud.listenDismissed || {}) as any),
     practiceRecognized: mergeDismissed((local.practiceRecognized || {}) as any, (cloud.practiceRecognized || {}) as any),
     masteryQuizPassed: mergeDismissed((local.masteryQuizPassed || {}) as any, (cloud.masteryQuizPassed || {}) as any),
     quizQueue: mergeMaxNumbers((local.quizQueue || {}) as any, (cloud.quizQueue || {}) as any),
-    quizFails: mergeMaxNumbers((local.quizFails || {}) as any, (cloud.quizFails || {}) as any),
-    quizPhase1: mergeDismissed((local.quizPhase1 || {}) as any, (cloud.quizPhase1 || {}) as any),
   }
 }
 
@@ -145,10 +154,44 @@ function writeBothBundlesToLS(ja: LangBundle, en: LangBundle) {
   milestoneStateTick.value++
 }
 
+type PracticeSlotCloud = { id: string; title: string; index: number }
+type PracticeSlotsCloud = { essay?: PracticeSlotCloud | null; dialogue?: PracticeSlotCloud | null }
+
+function readPracticeSlots(): PracticeSlotsCloud {
+  const result: PracticeSlotsCloud = {}
+  for (const fmt of ['essay', 'dialogue'] as const) {
+    const id = localStorage.getItem(`practice_${fmt}_id`)
+    if (id) {
+      result[fmt] = {
+        id,
+        title: localStorage.getItem(`practice_${fmt}_title`) || '',
+        index: Number(localStorage.getItem(`practice_${fmt}_index`) || '0'),
+      }
+    }
+  }
+  return result
+}
+
+function writePracticeSlots(slots: PracticeSlotsCloud) {
+  for (const fmt of ['essay', 'dialogue'] as const) {
+    const s = slots[fmt]
+    if (s && s.id) {
+      localStorage.setItem(`practice_${fmt}_id`, s.id)
+      localStorage.setItem(`practice_${fmt}_title`, s.title)
+      localStorage.setItem(`practice_${fmt}_index`, String(s.index || 0))
+    } else {
+      localStorage.removeItem(`practice_${fmt}_id`)
+      localStorage.removeItem(`practice_${fmt}_title`)
+      localStorage.removeItem(`practice_${fmt}_index`)
+    }
+  }
+}
+
 function buildV2Payload(ja: LangBundle, en: LangBundle, resetAt?: number) {
   const payload: Record<string, unknown> = {
     schemaVersion: 2,
     langs: { ja, en },
+    practiceSlots: readPracticeSlots(),
   }
   if (resetAt != null && resetAt > 0) payload.resetAt = resetAt
   return payload
@@ -168,39 +211,90 @@ function initFirebase() {
   db = firebase.database()
 }
 
-function syncToCloud() {
+async function performCloudUpload(): Promise<void> {
   if (!userId.value || !db) return
   const { ja, en } = readBothBundlesFromLS()
   if (!langBundleHasAny(ja) && !langBundleHasAny(en)) return
   const resetAt = Number(localStorage.getItem('jp_reset_at') || '0')
-  const payload = buildV2Payload(ja, en, resetAt > 0 ? resetAt : undefined)
-  db.ref('users/' + userId.value + '/data').set(payload)
+  await db.ref('users/' + userId.value + '/data').set(
+    buildV2Payload(ja, en, resetAt > 0 ? resetAt : undefined),
+  )
 }
 
-function flushDataToCloud() {
+function syncToCloud() {
   if (!userId.value || !db) return
-  const { ja, en } = readBothBundlesFromLS()
+  runSerialized(() => performCloudUpload()).catch(() => {})
+}
+
+async function flushDataToCloud(): Promise<void> {
+  if (!userId.value || !db) return
   const resetAt = Date.now()
-  const payload = buildV2Payload(ja, en, resetAt)
-  db.ref('users/' + userId.value + '/data').set(payload)
   localStorage.setItem('jp_reset_at', String(resetAt))
+  await runSerialized(async () => {
+    const { ja, en } = readBothBundlesFromLS()
+    await db!.ref('users/' + userId.value + '/data').set(buildV2Payload(ja, en, resetAt))
+  })
 }
 
 function debouncedSync() {
   if (syncTimer) clearTimeout(syncTimer)
-  syncTimer = setTimeout(syncToCloud, cloudSync.debounceMs)
+  syncTimer = setTimeout(() => {
+    syncTimer = null
+    syncToCloud()
+  }, cloudSync.debounceMs)
 }
 
-/** 将云端 v2 数据合并进本地并写回同结构；非 v2 的学习字段忽略，resetAt 仍从原始节点读取 */
-function mergeCloudIntoLocal(cloudRaw: unknown): { uploaded: Record<string, unknown> } {
+function parseOneSlot(raw: unknown): PracticeSlotCloud | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null
+  const { id, title, index } = raw as Record<string, unknown>
+  if (typeof id !== 'string' || !id) return null
+  return { id, title: typeof title === 'string' ? title : '', index: typeof index === 'number' ? index : 0 }
+}
+
+function parseCloudPracticeSlots(cloud: unknown): PracticeSlotsCloud {
+  if (!cloud || typeof cloud !== 'object' || Array.isArray(cloud)) return {}
+  const c = cloud as Record<string, unknown>
+  // 兼容旧格式 practiceArticle（单槽位）
+  if (c.practiceArticle && !c.practiceSlots) {
+    const s = parseOneSlot(c.practiceArticle)
+    return s ? { essay: s } : {}
+  }
+  const ps = c.practiceSlots
+  if (!ps || typeof ps !== 'object' || Array.isArray(ps)) return {}
+  const slots = ps as Record<string, unknown>
+  return {
+    essay: parseOneSlot(slots.essay) || undefined,
+    dialogue: parseOneSlot(slots.dialogue) || undefined,
+  }
+}
+
+/** 将云端 v2 数据合并进本地并写回 LS；上传 payload 须由调用方在合并后再次 readBothBundlesFromLS 构建，以免 await 间隙内的新写入丢失 */
+function mergeCloudIntoLocal(cloudRaw: unknown): void {
   const localResetAt = Number(localStorage.getItem('jp_reset_at') || '0')
   const cloudResetAt = rawResetAtMs(cloudRaw)
   const cloudLangs = parseCloudLangs(cloudRaw)
 
-  if (cloudResetAt > localResetAt) {
+  // 合并云端练习槽位：每个槽位独立合并，同篇取更大进度
+  const cloudSlots = parseCloudPracticeSlots(cloudRaw)
+  const localSlots = readPracticeSlots()
+  const mergedSlots: PracticeSlotsCloud = { ...localSlots }
+  for (const fmt of ['essay', 'dialogue'] as const) {
+    const cs = cloudSlots[fmt]
+    const ls = localSlots[fmt]
+    if (cs && !ls) {
+      mergedSlots[fmt] = cs
+    } else if (cs && ls && cs.id === ls.id && cs.index > ls.index) {
+      mergedSlots[fmt] = cs
+    }
+  }
+  writePracticeSlots(mergedSlots)
+
+  // 仅当本机已有 reset 游标且云端更新时整桶以云端为准。
+  if (cloudResetAt > localResetAt && localResetAt > 0) {
     writeBothBundlesToLS(cloudLangs.ja, cloudLangs.en)
     localStorage.setItem('jp_reset_at', String(cloudResetAt))
-    return { uploaded: buildV2Payload(cloudLangs.ja, cloudLangs.en, cloudResetAt) }
+    writePracticeSlots(cloudSlots)
+    return
   }
 
   const localJa = readLangBundle('ja')
@@ -209,22 +303,26 @@ function mergeCloudIntoLocal(cloudRaw: unknown): { uploaded: Record<string, unkn
   const mergedEn = mergeLangBundle(localEn, cloudLangs.en)
   writeBothBundlesToLS(mergedJa, mergedEn)
 
-  const resetAt =
-    cloudResetAt > 0 ? cloudResetAt : Number(localStorage.getItem('jp_reset_at') || '0')
-  return {
-    uploaded: buildV2Payload(mergedJa, mergedEn, resetAt > 0 ? resetAt : undefined),
+  const nextResetMarker = Math.max(localResetAt, cloudResetAt)
+  if (nextResetMarker > 0) {
+    localStorage.setItem('jp_reset_at', String(nextResetMarker))
   }
 }
 
 async function pullAndMerge(): Promise<boolean> {
   if (!userId.value || !db) return false
   try {
-    const snap = await db.ref('users/' + userId.value + '/data').once('value')
-    if (!snap.exists()) return false
-    const cloud = snap.val()
-    const { uploaded } = mergeCloudIntoLocal(cloud)
-    await db.ref('users/' + userId.value + '/data').set(uploaded)
-    return true
+    return await runSerialized(async () => {
+      const snap = await db!.ref('users/' + userId.value + '/data').once('value')
+      if (!snap.exists()) return false
+      mergeCloudIntoLocal(snap.val())
+      const { ja, en } = readBothBundlesFromLS()
+      const resetAt = Number(localStorage.getItem('jp_reset_at') || '0')
+      await db!.ref('users/' + userId.value + '/data').set(
+        buildV2Payload(ja, en, resetAt > 0 ? resetAt : undefined),
+      )
+      return true
+    })
   } catch {
     return false
   }
@@ -257,9 +355,11 @@ async function register(username: string, password: string): Promise<{ success: 
     const { ja, en } = readBothBundlesFromLS()
     if (langBundleHasAny(ja) || langBundleHasAny(en)) {
       const resetAt = Number(localStorage.getItem('jp_reset_at') || '0')
-      await db
-        .ref('users/' + name + '/data')
-        .set(buildV2Payload(ja, en, resetAt > 0 ? resetAt : undefined))
+      await runSerialized(async () => {
+        await db!
+          .ref('users/' + name + '/data')
+          .set(buildV2Payload(ja, en, resetAt > 0 ? resetAt : undefined))
+      })
     }
 
     userId.value = name
@@ -300,8 +400,14 @@ async function login(username: string, password: string): Promise<{ success: boo
     const cloudSnap = await db.ref('users/' + name + '/data').once('value')
     if (cloudSnap.exists()) {
       const cloud = cloudSnap.val()
-      const { uploaded } = mergeCloudIntoLocal(cloud)
-      await db.ref('users/' + name + '/data').set(uploaded)
+      await runSerialized(async () => {
+        mergeCloudIntoLocal(cloud)
+        const { ja, en } = readBothBundlesFromLS()
+        const resetAt = Number(localStorage.getItem('jp_reset_at') || '0')
+        await db!.ref('users/' + name + '/data').set(
+          buildV2Payload(ja, en, resetAt > 0 ? resetAt : undefined),
+        )
+      })
     }
 
     return { success: true, message: t('loginFound') }

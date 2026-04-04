@@ -24,12 +24,15 @@ watch(loopPlaying, (val) => {
   if (!val) listPanelRef.value?.stopSpeaking()
 })
 const { userId, initFirebase, pullAndMerge } = useFirebase()
-const { startQuiz } = useQuiz()
+const { schedulePracticeStartQuiz } = useQuiz()
 const { initTheme } = useTheme()
 
-watch(() => [store.currentMode, store.currentCat], () => {
-  if (store.currentMode === 'practice') startQuiz()
-})
+watch(
+  () => [store.currentMode, store.currentCat, store.practiceArticleId] as const,
+  () => {
+    if (store.currentMode === 'practice') schedulePracticeStartQuiz()
+  },
+)
 
 watch(
   () => store.currentMode,
@@ -56,7 +59,9 @@ onMounted(async () => {
   await store.loadData()
 
   if (userId.value) {
-    pullAndMerge()
+    pullAndMerge().then((merged) => {
+      if (merged) store.restorePracticeArticleFromLS()
+    })
   }
 
   document.addEventListener('keydown', onGlobalKeydown)
@@ -71,14 +76,20 @@ onUnmounted(() => {
   <AppHeader />
   <div class="flex min-h-[100svh]">
     <AppNav />
-    <div class="flex-1 min-w-0 pb-20 md:ml-[200px]">
+    <div
+      class="flex-1 min-w-0 pb-20 md:ml-[200px] max-md:pb-[calc(5rem+env(safe-area-inset-bottom,0px))]"
+    >
       <CategoryTabs />
       <div
         v-show="store.currentMode === 'list'"
         class="w-full min-w-0 md:max-w-[800px] md:mx-auto"
       >
         <KanaGrid v-if="store.currentCat === 'kana'" />
-        <ArticlesPanel v-else-if="store.currentCat === 'articles'" />
+        <ArticlesPanel
+          v-else-if="store.currentCat === 'articles' || store.currentCat === 'dialogues'"
+          :key="store.currentCat"
+          :filter-format="store.currentCat === 'dialogues' ? 'dialogue' : 'essay'"
+        />
         <ListPanel
           v-else
           ref="listPanelRef"

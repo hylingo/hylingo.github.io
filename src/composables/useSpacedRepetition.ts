@@ -9,7 +9,7 @@ import {
   writeListenedTodayRaw,
 } from '@/learning/learnStorage'
 import { coerceListenCount } from '@/utils/listenCount'
-import { hasMasteryQuizPassed, isInQuizQueue } from '@/learning'
+import { makeItemKey, getMasteryQuizPassedMap, getQuizQueueKeySet } from '@/learning'
 
 const { debouncedSync } = useFirebase()
 
@@ -43,16 +43,18 @@ export function getActiveItems(cat: string): (DataItem & { _cat?: string })[] {
   const store = useAppStore()
   const delays = getDelays()
   const today = new Date().toISOString().slice(0, 10)
+  const mastery = getMasteryQuizPassedMap()
+  const inQuiz = getQuizQueueKeySet()
 
   if (cat === 'mix') {
     const all: (DataItem & { _cat: string })[] = []
-    for (const k of ['nouns', 'sentences'] as const) {
+    for (const k of ['nouns', 'verbs'] as const) {
       store.data[k].forEach((it: DataItem) => {
-        const key = k + ':' + it.id
+        const key = makeItemKey(k, it.id)
         if (
           !(delays[key] > today) &&
-          !hasMasteryQuizPassed(k, it.id) &&
-          !isInQuizQueue(k, it.id)
+          !mastery[key] &&
+          !inQuiz.has(key)
         ) {
           all.push({ ...it, _cat: k })
         }
@@ -66,13 +68,13 @@ export function getActiveItems(cat: string): (DataItem & { _cat?: string })[] {
   }
 
   const items = store.data[cat as keyof typeof store.data]
-  if (!items) return []
+  if (!Array.isArray(items)) return []
   return items.filter((it: DataItem) => {
-    const key = cat + ':' + it.id
+    const key = makeItemKey(cat, it.id)
     return (
       !(delays[key] > today) &&
-      !hasMasteryQuizPassed(cat, it.id) &&
-      !isInQuizQueue(cat, it.id)
+      !mastery[key] &&
+      !inQuiz.has(key)
     )
   })
 }

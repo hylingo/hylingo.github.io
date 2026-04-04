@@ -6,7 +6,6 @@ import { speakWithExample, playExampleAudio } from '../../composables/useAudio'
 import { useListenListCardSwipe } from '@/composables/useListenListCardSwipe'
 import { useLang } from '@/i18n'
 import { localMeaning, localExampleCn } from '@/utils/helpers'
-import SentenceListenRow from './SentenceListenRow.vue'
 import RubyText from '@/components/common/RubyText.vue'
 
 const { t, currentLang } = useLang()
@@ -60,14 +59,7 @@ const {
 </script>
 
 <template>
-  <SentenceListenRow
-    v-if="cat === 'sentences'"
-    :item="item"
-    :row-number="rowNumber"
-    @play-list-from="emit('playListFrom', $event)"
-  />
   <div
-    v-else
     class="flex flex-col rounded-2xl shadow-[0_2px_16px_rgba(0,0,0,0.06)] overflow-hidden animate-fadeUp"
   >
     <div class="relative flex-1 min-w-0 overflow-hidden">
@@ -97,21 +89,21 @@ const {
             {{ rowNumber }}
           </div>
           <div class="flex-1 min-w-0 min-h-0">
-            <div class="text-base font-bold theme-text">
+            <div class="text-base font-bold text-content-original">
               <RubyText v-if="item.ruby" :tokens="item.ruby" />
               <template v-else>{{ item.word }}</template>
             </div>
-            <div class="text-sm theme-text mt-0.5">{{ localMeaning(item, currentLang) }}</div>
+            <div class="text-sm mt-0.5 text-content-translation">{{ localMeaning(item, currentLang) }}</div>
             <div
               v-if="item.example"
-              class="text-xs theme-muted mt-1 leading-relaxed"
+              class="text-content-example mt-1 text-xs leading-relaxed"
               :class="item.audioExample ? 'cursor-pointer active:opacity-60' : ''"
               @pointerdown.stop
               @click.stop="playExample"
             >
               {{ item.example }}
               <br v-if="localExampleCn(item, currentLang)" />
-              <span v-if="localExampleCn(item, currentLang)" class="text-[#5b8a72]">{{ localExampleCn(item, currentLang) }}</span>
+              <span v-if="localExampleCn(item, currentLang)">{{ localExampleCn(item, currentLang) }}</span>
             </div>
           </div>
           <div class="flex flex-col items-end shrink-0 gap-2">

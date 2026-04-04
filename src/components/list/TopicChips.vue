@@ -140,7 +140,7 @@ function onLevelClear() {
 </script>
 
 <template>
-  <div class="flex items-center gap-2 px-4 pb-3 md:px-10">
+  <div class="flex flex-wrap items-center gap-2">
     <!-- 全部 -->
     <button
       type="button"

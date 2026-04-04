@@ -67,8 +67,8 @@ const wrongTitleText = computed(() =>
       :key="idx"
       class="flex items-center justify-between py-2 border-b border-[var(--border)] last:border-b-0"
     >
-      <span class="font-semibold theme-text">{{ item.word }}</span>
-      <span class="text-sm theme-muted flex-1 mx-3 truncate">{{ localMeaning(item, currentLang) }}</span>
+      <span class="font-semibold text-content-original">{{ item.word }}</span>
+      <span class="text-sm text-content-translation mx-3 flex-1 truncate">{{ localMeaning(item, currentLang) }}</span>
       <span class="text-xs text-white bg-[#e74c3c] rounded-full px-2 py-0.5 shrink-0">
         ×{{ item.count }}
       </span>

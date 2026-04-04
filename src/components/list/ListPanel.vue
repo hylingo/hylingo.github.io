@@ -3,8 +3,6 @@ import { ref, computed } from 'vue'
 import { useAppStore } from '../../stores/app'
 import type { VocabItemWithCat } from '../../types'
 import {
-  listenDismissTick,
-  hasListenCleared,
   hasMasteryQuizPassed,
   milestoneStateTick,
 } from '@/learning'
@@ -32,10 +30,10 @@ const allItems = computed<VocabItemWithCat[]>(() => {
   if (store.currentCat === 'mix') {
     return [
       ...store.data.nouns.map(it => ({ ...it, _cat: 'nouns' as const })),
-      ...store.data.sentences.map(it => ({ ...it, _cat: 'sentences' as const })),
+      ...store.data.verbs.map(it => ({ ...it, _cat: 'verbs' as const })),
     ]
   }
-  const cat = store.currentCat as 'nouns' | 'sentences'
+  const cat = store.currentCat as 'nouns' | 'verbs'
   return (store.data[cat] || []).map(it => ({ ...it, _cat: cat }))
 })
 
@@ -62,7 +60,7 @@ const levels = computed(() => {
 })
 
 const filteredItems = computed<VocabItemWithCat[]>(() => {
-  listenDismissTick.value
+  milestoneStateTick.value // 触发重计算
   let items = allItems.value
 
   if (selectedTopic.value) {
@@ -89,7 +87,6 @@ const filteredItems = computed<VocabItemWithCat[]>(() => {
   milestoneStateTick.value
   return items.filter(it => {
     if (hasMasteryQuizPassed(it._cat, it.id)) return false
-    if (it._cat === 'sentences' && hasListenCleared('sentences', it.id)) return false
     return true
   })
 })
@@ -161,24 +158,36 @@ defineExpose({ stopSpeaking: () => { isSpeaking.value = false } })
 
 <template>
   <div>
-    <TopicChips
-      v-if="topics.length > 0 || levels.length > 0"
-      :topics="topics"
-      :selected="selectedTopic"
-      :levels="levels"
-      :selected-levels="selectedLevels"
-      @select="onTopicSelect"
-      @toggle-level="onLevelToggle"
-      @clear-levels="onLevelClear"
-    />
-    <ListToolbar
-      :total-items="filteredItems.length"
-      :is-speaking="isSpeaking"
-      :can-use-range="canUseRange"
-      @search="onSearch"
-      @speak="onSpeak"
-      @stop="onStop"
-    />
+    <div class="mb-2 px-4 md:mb-3 md:px-10">
+      <div class="list-controls-panel p-3 md:p-4">
+        <TopicChips
+          v-if="topics.length > 0 || levels.length > 0"
+          :topics="topics"
+          :selected="selectedTopic"
+          :levels="levels"
+          :selected-levels="selectedLevels"
+          @select="onTopicSelect"
+          @toggle-level="onLevelToggle"
+          @clear-levels="onLevelClear"
+        />
+        <div
+          :class="
+            topics.length > 0 || levels.length > 0
+              ? 'mt-3 border-t border-[var(--border)] pt-3'
+              : ''
+          "
+        >
+          <ListToolbar
+            :total-items="filteredItems.length"
+            :is-speaking="isSpeaking"
+            :can-use-range="canUseRange"
+            @search="onSearch"
+            @speak="onSpeak"
+            @stop="onStop"
+          />
+        </div>
+      </div>
+    </div>
     <ListContainer
       :items="pagedItems"
       :row-offset="(currentPage - 1) * PAGE_SIZE"

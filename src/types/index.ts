@@ -28,7 +28,7 @@ export interface VocabItemWithCat extends VocabItem {
   _cat: CategoryKey
 }
 
-export type CategoryKey = 'nouns' | 'sentences' | 'kana' | 'articles'
+export type CategoryKey = 'nouns' | 'verbs' | 'kana' | 'articles'
 
 /** 精读文章：短文或对话；word=该篇原文（日语或英语），jp/en/zh 为日英中对照 */
 export interface ArticleSegment {

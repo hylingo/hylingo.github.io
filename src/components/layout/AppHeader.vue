@@ -8,7 +8,7 @@ const store = useAppStore()
 
 <template>
   <header
-    class="sticky top-0 z-[400] px-6 py-2.5 md:px-10 md:py-3 theme-header flex items-center justify-between gap-4"
+    class="theme-header sticky top-0 z-[400] flex items-center justify-between gap-4 px-6 md:px-10"
     style="box-shadow: 0 4px 20px rgba(0,0,0,0.22)"
   >
     <h1 class="text-[22px] font-bold tracking-wider leading-none flex items-center shrink-0 min-w-0">

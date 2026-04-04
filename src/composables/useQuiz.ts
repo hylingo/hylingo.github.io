@@ -3,8 +3,18 @@ import { useAppStore } from '../stores/app'
 import { recordQuiz } from './useStats'
 import { readQuizScopeRaw, writeQuizScopeRaw, studyLangFromLocalStorage } from '@/learning/learnStorage'
 import { makeItemKey } from '@/learning/itemKey'
-import { quizQueueTick, getQuizQueueKeys, addToQuizQueue, removeFromQuizQueue, recordQuizFail, clearQuizFails } from '@/learning'
-import { markPracticeAnswerKnown, markPracticeAnswerUnknown, milestoneStateTick, hasMasteryQuizPassed, markMasteryQuizPassed } from '@/learning/milestones'
+import { quizQueueTick, getQuizQueueKeys, addToQuizQueue, removeFromQuizQueue } from '@/learning'
+import {
+  markPracticeAnswerKnown,
+  markPracticeAnswerUnknown,
+  milestoneStateTick,
+  getMasteryQuizPassedMap,
+  hasMasteryQuizPassed,
+  markMasteryQuizPassed,
+} from '@/learning/milestones'
+import { markArticlePracticeDone } from '@/learning/articlePracticeDone'
+import { articleToPracticeQuizItems } from '@/utils/articleQuiz'
+import { currentLang } from '@/i18n'
 import {
   getActiveItems,
   getQuizProgressSnapshot,
@@ -14,6 +24,7 @@ import {
   type QuizProgressSnapshot,
 } from './useSpacedRepetition'
 import { quiz as quizThresholds } from '@/config/thresholds'
+import { useFirebase } from '@/composables/useFirebase'
 
 export type QuizMode = 'word' | 'audio' | 'meaning'
 export type QuizScope = 'practice' | 'test'
@@ -24,6 +35,13 @@ const quizItems = ref<any[]>([])
 const quizIndex = ref(0)
 const isAnswered = ref(false)
 const quizLevels = ref<string[]>([])
+
+/** 本篇逐句练习刚跑完，供练页展示完成态 */
+export const articleBlockJustCompleted = ref<{ title: string; sentenceCount: number } | null>(null)
+
+function isArticleQuizItem(it: unknown): it is { _quizSource: 'article'; _articleId: string } {
+  return !!it && typeof it === 'object' && (it as { _quizSource?: string })._quizSource === 'article'
+}
 
 function migrateQuizScope(): QuizScope {
   const s = readQuizScopeRaw(studyLangFromLocalStorage())
@@ -43,22 +61,25 @@ function isBrandNewItem(it: { _cat?: string; id: number }, cat: string, snap: Qu
   return snapListenCount(snap, c, it.id) === 0 && snapItemCount(snap, c, it.id) === 0
 }
 
-/** 练习池排序：优先今天听过 > 听过次数 > 练习次数 */
+/** 练习池排序：优先今天听过 > 听过次数 > 练习次数（先算好键再 sort，避免比较器里重复读 snapshot） */
 function sortPracticePool(items: any[], cat: string, snap: QuizProgressSnapshot) {
-  const copy = [...items]
-  copy.sort(() => Math.random() - 0.5)
-  copy.sort((a, b) => {
-    const ca = a._cat || cat
-    const cb = b._cat || cat
-    const ta = snapIsListenedToday(snap, ca, a.id) ? 1 : 0
-    const tb = snapIsListenedToday(snap, cb, b.id) ? 1 : 0
-    if (tb !== ta) return tb - ta
-    const la = snapListenCount(snap, ca, a.id)
-    const lb = snapListenCount(snap, cb, b.id)
-    if (lb !== la) return lb - la
-    return snapItemCount(snap, cb, b.id) - snapItemCount(snap, ca, a.id)
+  const decorated = items.map((it) => {
+    const c = it._cat || cat
+    return {
+      it,
+      r: Math.random(),
+      t: snapIsListenedToday(snap, c, it.id) ? 1 : 0,
+      l: snapListenCount(snap, c, it.id),
+      ic: snapItemCount(snap, c, it.id),
+    }
   })
-  return copy
+  decorated.sort((a, b) => {
+    if (b.t !== a.t) return b.t - a.t
+    if (b.l !== a.l) return b.l - a.l
+    if (b.ic !== a.ic) return b.ic - a.ic
+    return a.r - b.r
+  })
+  return decorated.map((d) => d.it)
 }
 
 function startQuiz() {
@@ -66,10 +87,31 @@ function startQuiz() {
   const cat = store.currentCat
   const snap = getQuizProgressSnapshot()
 
+  articleBlockJustCompleted.value = null
+
+  if (store.practiceArticleId && quizScope.value === 'test') {
+    quizScope.value = 'practice'
+    writeQuizScopeRaw(store.studyLang, 'practice')
+  }
+
+  if (quizScope.value === 'practice' && store.practiceArticleId && (cat === 'articles' || cat === 'dialogues')) {
+    const art = store.articles.find((a) => a.id === store.practiceArticleId)
+    const formatMatch = art && ((cat === 'articles' && art.format === 'essay') || (cat === 'dialogues' && art.format === 'dialogue'))
+    if (!art) {
+      store.clearArticlePractice()
+    } else if (formatMatch) {
+      const items = articleToPracticeQuizItems(art, currentLang.value)
+      quizItems.value = items
+      const saved = store.practiceArticleIndex
+      quizIndex.value = saved > 0 && saved < items.length ? saved : 0
+      isAnswered.value = false
+      return
+    }
+  }
+
   if (quizScope.value === 'practice') {
     // 练习：听过/练过的（排除已掌握），空了补全新的
     let items = filterByLevel([...getActiveItems(cat)])
-      .filter((it) => !hasMasteryQuizPassed(it._cat || cat, it.id))
 
     // 先取已接触过的
     let studied = items.filter((it) => !isBrandNewItem(it, cat, snap))
@@ -90,8 +132,9 @@ function startQuiz() {
 
   // 测试：从队列取（跨分类）
   const keys = getQuizQueueKeys()
+  const masteryMap = getMasteryQuizPassedMap()
   const allPool = new Map<string, any>()
-  for (const c of ['nouns', 'sentences'] as const) {
+  for (const c of ['nouns', 'verbs'] as const) {
     for (const it of (store.data[c] || [])) {
       allPool.set(makeItemKey(c, it.id), { ...it, _cat: c })
     }
@@ -99,11 +142,22 @@ function startQuiz() {
   const testItems = keys
     .map((k) => allPool.get(k))
     .filter(Boolean)
-    .filter((it: any) => !hasMasteryQuizPassed(it._cat, it.id)) as any[]
+    .filter((it: any) => !masteryMap[makeItemKey(it._cat, it.id)]) as any[]
 
   quizItems.value = testItems.sort(() => Math.random() - 0.5)
   quizIndex.value = 0
   isAnswered.value = false
+}
+
+/** 同一事件环内多次触发（如同时改 practiceArticleId + mode）合并为一次抽题 */
+let practiceStartQuizCoalesce = false
+export function schedulePracticeStartQuiz() {
+  if (practiceStartQuizCoalesce) return
+  practiceStartQuizCoalesce = true
+  queueMicrotask(() => {
+    practiceStartQuizCoalesce = false
+    if (useAppStore().currentMode === 'practice') startQuiz()
+  })
 }
 
 function setQuizScope(scope: QuizScope) {
@@ -122,6 +176,10 @@ function submitCorrect() {
   const store = useAppStore()
   const it = quizItems.value[quizIndex.value]
   if (!it) return
+  if (isArticleQuizItem(it)) {
+    advanceIndex()
+    return
+  }
   const cat = it._cat || store.currentCat
   markPracticeAnswerKnown(cat, it.id)
   addToQuizQueue(cat, it.id)
@@ -129,15 +187,15 @@ function submitCorrect() {
   advanceIndex()
 }
 
-/** 练习模式：不认识 */
+/** 练习模式：不认识（若 UI 调用；当前练页主要由 showAnswer + advanceAfterWrong 驱动） */
 function submitWrong() {
   const store = useAppStore()
   const it = quizItems.value[quizIndex.value]
   if (!it) return
+  if (isArticleQuizItem(it)) return
   const cat = it._cat || store.currentCat
   markPracticeAnswerUnknown(cat, it.id)
   recordQuiz(it, false, cat)
-  // 不 advance，等用户看完答案点下一个
 }
 
 /** 不认识看完答案后，下一个 */
@@ -153,31 +211,54 @@ function testPass() {
   const cat = it._cat || store.currentCat
   markMasteryQuizPassed(cat, it.id)
   removeFromQuizQueue(cat, it.id)
-  clearQuizFails(cat, it.id)
   advanceIndex()
 }
 
-/** 测试模式：失败一次，返回是否被打回 */
-function testFail(): boolean {
-  const store = useAppStore()
-  const it = quizItems.value[quizIndex.value]
-  if (!it) return false
-  const cat = it._cat || store.currentCat
-  return recordQuizFail(cat, it.id)
+/** 测试模式：失败，跳过 */
+function testFail() {
+  // 不再累计失败次数，直接跳过
 }
 
-/** 测试模式：失败3次被打回后，下一个 */
+/** 测试模式：下一个 */
 function testAdvance() {
   advanceIndex()
 }
 
 function advanceIndex() {
+  const store = useAppStore()
+  const cur = quizItems.value[quizIndex.value]
+  const inArticleBlock =
+    quizItems.value.length > 0 && isArticleQuizItem(quizItems.value[0])
+
   quizIndex.value++
   isAnswered.value = false
+
+  // 本篇练习：保存进度
+  if (inArticleBlock) {
+    store.savePracticeArticleIndex(quizIndex.value)
+    useFirebase().debouncedSync()
+  }
+
   if (quizIndex.value >= quizItems.value.length) {
+    if (inArticleBlock && cur && isArticleQuizItem(cur)) {
+      const n = quizItems.value.length
+      const title = store.practiceArticleTitle || store.articles.find((a) => a.id === cur._articleId)?.titleWord || ''
+      markArticlePracticeDone(store.studyLang, cur._articleId)
+      articleBlockJustCompleted.value = { title, sentenceCount: n }
+      store.clearArticlePractice()
+      useFirebase().debouncedSync()
+      quizItems.value = []
+      quizIndex.value = 0
+      return
+    }
     quizIndex.value = 0
     startQuiz() // 重新加载池
   }
+}
+
+export function dismissArticleBlockComplete() {
+  articleBlockJustCompleted.value = null
+  startQuiz()
 }
 
 function setQuizLevels(levels: string[]) {
@@ -201,6 +282,7 @@ function bindQuizWatchersOnce() {
 
   watch([milestoneStateTick, quizQueueTick], () => {
     const store = useAppStore()
+    if (quizItems.value.length && isArticleQuizItem(quizItems.value[0])) return
     const cat = store.currentCat
     const before = quizItems.value.length
     quizItems.value = quizItems.value.filter((it) => {
@@ -211,6 +293,7 @@ function bindQuizWatchersOnce() {
       quizIndex.value = Math.max(0, quizItems.value.length - 1)
     }
   })
+
 }
 
 export function useQuiz() {
@@ -221,6 +304,8 @@ export function useQuiz() {
     isAnswered,
     quizScope,
     quizLevels,
+    articleBlockJustCompleted,
+    schedulePracticeStartQuiz,
     startQuiz,
     setQuizLevels,
     showAnswer,
@@ -231,5 +316,6 @@ export function useQuiz() {
     testFail,
     testAdvance,
     setQuizScope,
+    dismissArticleBlockComplete,
   }
 }

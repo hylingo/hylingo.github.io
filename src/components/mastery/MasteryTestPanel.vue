@@ -33,10 +33,8 @@ const {
   passedCount,
   totalCount,
   hasItems,
-  testPhase,
   rebuildItems,
   markPassed,
-  passPhase1,
   skip,
   nextAfterPass,
   returnToListenPractice,
@@ -88,17 +86,8 @@ function onSttDone(full: string) {
   }
   if (speechMatchesVocab(full, item)) {
     sttMismatch.value = false
-    if (testPhase.value === 'read') {
-      // 第一步通过，标记并回到随机池
-      passPhase1()
-      resetJaStt()
-      lastHeard.value = ''
-      return
-    } else {
-      // 第二步也通过，整体通过
-      justPassed.value = true
-      markPassed()
-    }
+    justPassed.value = true
+    markPassed()
   } else {
     sttMismatch.value = true
   }
@@ -143,11 +132,6 @@ const progressText = computed(() => {
     </div>
     <div v-if="progressText" class="text-sm theme-muted font-medium text-center px-1">{{ progressText }}</div>
 
-    <!-- Phase indicator -->
-    <div v-if="currentItem && hasItems && !isAnswered" class="text-xs font-medium px-3 py-1 rounded-full" :class="testPhase === 'read' ? 'bg-[#e8735a]/10 text-[#e8735a]' : 'bg-[#5b8a72]/10 text-[#5b8a72]'">
-      {{ testPhase === 'read' ? t('testPhaseRead') : t('testPhaseRecall') }}
-    </div>
-
     <!-- Card -->
     <div
       v-if="currentItem && hasItems"
@@ -155,36 +139,25 @@ const progressText = computed(() => {
       :class="isAnswered ? '' : 'cursor-pointer active:scale-[0.98]'"
       @click="speakCurrent"
     >
-      <!-- Phase 1 read: 显示日文原文 -->
-      <template v-if="testPhase === 'read' && !isAnswered">
-        <div class="text-3xl font-bold theme-text mb-3">
-          <RubyText v-if="currentItem.ruby" :tokens="currentItem.ruby" />
-          <template v-else>{{ currentItem.word }}</template>
-        </div>
-        <div v-if="currentItem.example" class="text-sm theme-muted leading-relaxed">
-          {{ currentItem.example }}
-        </div>
-      </template>
-
-      <!-- Phase 2 recall: 只显示释义 -->
-      <template v-else-if="testPhase === 'recall' && !isAnswered">
-        <div class="text-xl font-bold theme-text mb-4">{{ localMeaning(currentItem, lang) }}</div>
-        <div v-if="localExampleCn(currentItem, lang)" class="text-sm theme-muted leading-relaxed">
+      <!-- 未答：只显示释义 -->
+      <template v-if="!isAnswered">
+        <div class="mb-4 text-xl font-bold text-content-translation">{{ localMeaning(currentItem, lang) }}</div>
+        <div v-if="localExampleCn(currentItem, lang)" class="text-content-example text-sm leading-relaxed">
           {{ localExampleCn(currentItem, lang) }}
         </div>
       </template>
 
       <!-- 通过后：显示全部 -->
       <template v-else>
-        <div class="text-3xl font-bold theme-text mb-3">
+        <div class="text-content-original mb-3 text-3xl font-bold">
           <RubyText v-if="currentItem.ruby" :tokens="currentItem.ruby" />
           <template v-else>{{ currentItem.word }}</template>
         </div>
-        <div class="text-xl font-bold theme-text mb-4">{{ localMeaning(currentItem, lang) }}</div>
-        <div v-if="currentItem.example" class="text-sm theme-muted leading-relaxed">
+        <div class="mb-4 text-xl font-bold text-content-translation">{{ localMeaning(currentItem, lang) }}</div>
+        <div v-if="currentItem.example" class="text-content-example text-sm leading-relaxed">
           {{ currentItem.example }}
           <br v-if="localExampleCn(currentItem, lang)" />
-          <span v-if="localExampleCn(currentItem, lang)" class="text-[13px]" style="color: var(--accent)">{{ localExampleCn(currentItem, lang) }}</span>
+          <span v-if="localExampleCn(currentItem, lang)" class="text-[13px]">{{ localExampleCn(currentItem, lang) }}</span>
         </div>
       </template>
 

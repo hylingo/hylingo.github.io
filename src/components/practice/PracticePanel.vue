@@ -16,8 +16,10 @@ const lang = computed(() => currentLang.value)
 const store = useAppStore()
 const {
   quizItems, quizIndex, isAnswered, quizScope, quizLevels,
+  articleBlockJustCompleted,
   showAnswer, submitCorrect, advanceAfterWrong,
   testPass, testFail, testAdvance, setQuizScope, setQuizLevels,
+  dismissArticleBlockComplete,
 } = useQuiz()
 
 // 级别筛选
@@ -35,10 +37,34 @@ function toggleLevel(lv: string) {
   setQuizLevels(cur)
 }
 function clearLevels() { setQuizLevels([]); closeLevelDropdown() }
-const showLevelFilter = computed(() => store.currentCat === 'sentences' || store.currentCat === 'mix')
+const showLevelFilter = computed(() => store.currentCat === 'mix')
+
+const isArticleSentencePractice = computed(
+  () =>
+    !!store.practiceArticleId &&
+    quizItems.value.length > 0 &&
+    (quizItems.value[0] as { _quizSource?: string })?._quizSource === 'article',
+)
+
+const articlePracticeKindLabel = computed(() => {
+  if (!store.practiceArticleId) return ''
+  const art = store.articles.find((a) => a.id === store.practiceArticleId)
+  if (!art) return ''
+  return art.format === 'dialogue' ? t('articlePracticeKindDialogue') : t('articlePracticeKindEssay')
+})
 
 const currentItem = computed(() => quizItems.value[quizIndex.value] ?? null)
 const hasQuizItems = computed(() => quizItems.value.length > 0)
+
+/** 文章/对话分类下无单词池时的练页空态（与「听」详情无分句提示同文案） */
+const articleCategoryPracticeEmpty = computed(
+  () =>
+    (store.currentCat === 'articles' || store.currentCat === 'dialogues') &&
+    !store.practiceArticleId &&
+    !hasQuizItems.value &&
+    !articleBlockJustCompleted.value &&
+    quizScope.value === 'practice',
+)
 
 // 录音 & 语音识别
 const { recording, startRecording, stopRecording, clearRecording } = useVoiceRecorder()
@@ -46,8 +72,6 @@ const { supported: sttSupported, listening: sttListening, start: startStt, stopL
 const sttResult = ref('')
 const sttScore = ref<number | null>(null)
 const testPassed = ref(false)
-const testFailCount = ref(0)
-const testRemovedByFail = ref(false)
 
 function lcsLen(a: string, b: string): number {
   const m = a.length, n = b.length
@@ -82,8 +106,6 @@ function resetRecordState() {
   sttResult.value = ''
   sttScore.value = null
   testPassed.value = false
-  testFailCount.value = 0
-  testRemovedByFail.value = false
   clearRecording()
 }
 
@@ -135,12 +157,7 @@ function onTestSttDone(text: string) {
     testPassed.value = true
     testPass()
   } else {
-    const removed = testFail()
-    testFailCount.value++
-    if (removed) {
-      testRemovedByFail.value = true
-      setTimeout(() => onTestNext(), 1000)
-    }
+    testFail()
   }
 }
 
@@ -158,7 +175,17 @@ function playCurrentAudio() {
 watch(quizIndex, () => resetRecordState())
 
 const progressText = computed(() => {
+  if (articleBlockJustCompleted.value) return ''
+  if (isArticleSentencePractice.value && store.practiceArticleTitle) {
+    return t('articlePracticeProgressLine', {
+      kind: articlePracticeKindLabel.value,
+      title: store.practiceArticleTitle,
+      current: quizIndex.value + 1,
+      total: quizItems.value.length,
+    })
+  }
   if (hasQuizItems.value) return `${quizIndex.value + 1} / ${quizItems.value.length}`
+  if (articleCategoryPracticeEmpty.value) return ''
   return quizScope.value === 'test' ? t('testEmpty') : t('allMastered')
 })
 </script>
@@ -186,8 +213,26 @@ const progressText = computed(() => {
   </div>
 
   <div class="flex flex-col items-center gap-4 py-6">
-    <!-- 练习 / 测试 切换 -->
-    <div class="flex gap-2 w-full max-w-[400px]">
+    <!-- 本篇练完 -->
+    <template v-if="articleBlockJustCompleted">
+      <div class="w-full max-w-[400px] mx-auto rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.10)] theme-surface p-8 text-center space-y-3">
+        <div class="text-lg font-bold text-content-original">{{ t('articlePracticeCompleteTitle') }}</div>
+        <p class="text-sm theme-muted leading-relaxed">
+          {{ t('articlePracticeCompleteBody', { n: articleBlockJustCompleted.sentenceCount, title: articleBlockJustCompleted.title }) }}
+        </p>
+        <button
+          type="button"
+          class="w-full py-3 rounded-[10px] text-base font-semibold cursor-pointer btn-grad-primary"
+          @click="dismissArticleBlockComplete"
+        >
+          {{ t('articlePracticeDismiss') }}
+        </button>
+      </div>
+    </template>
+
+    <template v-else>
+    <!-- 练习 / 测试 切换（本篇逐句练仅练习模式） -->
+    <div v-if="!isArticleSentencePractice" class="flex gap-2 w-full max-w-[400px]">
       <button
         v-for="s in (['practice', 'test'] as const)" :key="s"
         class="flex-1 py-2 rounded-lg text-sm font-medium transition-all border-2"
@@ -198,33 +243,32 @@ const progressText = computed(() => {
       </button>
     </div>
 
-    <div class="text-sm theme-muted font-medium text-center px-1">{{ progressText }}</div>
+    <div class="text-sm theme-muted font-medium text-center px-1 whitespace-pre-line">{{ progressText }}</div>
 
     <!-- ========== 测试模式 ========== -->
     <template v-if="quizScope === 'test'">
       <template v-if="hasQuizItems && currentItem">
         <!-- 卡片：只显示释义 -->
         <div class="w-full max-w-[400px] mx-auto rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.10)] theme-surface p-10 text-center">
-          <div class="text-xl font-bold theme-text mb-4">{{ localMeaning(currentItem, lang) }}</div>
+          <div class="mb-4 text-xl font-bold text-content-translation">{{ localMeaning(currentItem, lang) }}</div>
 
           <template v-if="testPassed">
-            <div class="text-2xl font-bold text-[#4f8a6f] mb-2">
+            <div class="text-content-original mb-2 text-2xl font-bold">
               <RubyText v-if="currentItem.ruby" :tokens="currentItem.ruby" />
               <template v-else>{{ currentItem.word }}</template>
             </div>
-            <div class="text-sm text-[#4f8a6f]">✓ {{ t('masteryPassed') }}</div>
+            <div class="text-sm text-content-translation">✓ {{ t('masteryPassed') }}</div>
           </template>
 
           <template v-else-if="sttScore !== null && !recording">
             <div class="text-lg font-bold tabular-nums mb-1" :style="{ color: scoreColor(sttScore) }">{{ sttScore }}</div>
             <div v-if="sttResult" class="text-base theme-text mb-1">{{ sttResult }}</div>
-            <div v-if="testRemovedByFail" class="text-sm text-[#c45a3e]">{{ t('masteryFailedOut') }}</div>
-            <div v-else class="text-xs theme-muted">{{ t('masteryTryAgain') }} ({{ testFailCount }}/3)</div>
+            <div class="text-xs theme-muted">{{ t('masteryTryAgain') }}</div>
           </template>
         </div>
 
         <!-- 录音按钮 -->
-        <div v-if="!testPassed && !testRemovedByFail" class="flex items-center justify-center gap-3">
+        <div v-if="!testPassed" class="flex items-center justify-center gap-3">
           <div class="flex items-center gap-[3px] h-8">
             <span v-for="i in 5" :key="i" class="w-[3px] rounded-full transition-all duration-300" :class="recording ? 'bg-red-400 animate-wave' : 'bg-current opacity-20'" :style="{ height: recording ? undefined : '8px', animationDelay: recording ? (i * 0.12) + 's' : undefined, color: 'var(--text-secondary)' }" />
           </div>
@@ -252,11 +296,11 @@ const progressText = computed(() => {
         <!-- 不认识：显示答案 -->
         <template v-if="isAnswered">
           <div class="w-full max-w-[400px] mx-auto rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.10)] theme-surface p-10 text-center">
-            <div class="text-3xl font-bold theme-text mb-2 leading-relaxed">
+            <div class="text-content-original mb-2 text-3xl font-bold leading-relaxed">
               <RubyText v-if="currentItem.ruby" :tokens="currentItem.ruby" />
               <template v-else>{{ currentItem.word }}</template>
             </div>
-            <div class="text-xl font-bold theme-text mb-4">{{ localMeaning(currentItem, lang) }}</div>
+            <div class="mb-4 text-xl font-bold text-content-translation">{{ localMeaning(currentItem, lang) }}</div>
             <button type="button" class="w-12 h-12 rounded-full border-2 border-[#e8735a] text-[#e8735a] flex items-center justify-center mx-auto cursor-pointer hover:bg-[#e8735a]/10 active:scale-95" @click="playCurrentAudio">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="8,6 18,12 8,18" /></svg>
             </button>
@@ -285,7 +329,7 @@ const progressText = computed(() => {
         <!-- 出题：看日文（无注音） → 认识/不认识 -->
         <template v-else>
           <div class="w-full max-w-[400px] mx-auto rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.10)] theme-surface p-10 text-center">
-            <div class="text-3xl font-bold theme-text leading-relaxed">{{ currentItem.word }}</div>
+            <div class="text-content-original text-3xl font-bold leading-relaxed">{{ currentItem.word }}</div>
           </div>
           <div class="flex gap-3 w-full max-w-[400px]">
             <button class="flex-1 py-3 rounded-[10px] text-base font-semibold cursor-pointer transition-all btn-grad-accent" @click="onPracticeCorrect">{{ t('correct') }}</button>
@@ -294,8 +338,11 @@ const progressText = computed(() => {
         </template>
       </template>
       <template v-else>
-        <div class="text-sm theme-muted text-center py-10">{{ t('allMastered') }}</div>
+        <div class="text-sm theme-muted text-center py-10">
+          {{ articleCategoryPracticeEmpty ? t('articlePracticeEmptyShort') : t('allMastered') }}
+        </div>
       </template>
+    </template>
     </template>
   </div>
 </template>

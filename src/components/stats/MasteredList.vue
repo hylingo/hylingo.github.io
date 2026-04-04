@@ -18,7 +18,9 @@ const masteredItems = computed<MasteredItem[]>(() => {
   store.studyLang
   const result: MasteredItem[] = []
   const categories =
-    store.studyLang === 'en' ? (['sentences', 'nouns'] as const) : (['sentences', 'nouns', 'kana'] as const)
+    store.studyLang === 'en'
+      ? (['nouns'] as const)
+      : (['nouns', 'verbs', 'kana'] as const)
   for (const cat of categories) {
     for (const it of store.data[cat]) {
       if (hasMasteryQuizPassed(cat, it.id)) {
@@ -63,15 +65,15 @@ function onSpeak(item: MasteredItem) {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
         </div>
         <div class="flex-1 min-w-0">
-          <div class="text-base font-bold theme-text">
+          <div class="text-base font-bold text-content-original">
             <RubyText v-if="item.ruby" :tokens="item.ruby" />
             <template v-else>{{ item.word }}</template>
           </div>
-          <div class="text-sm theme-text mt-0.5">{{ localMeaning(item, currentLang) }}</div>
-          <div v-if="item.example" class="text-xs theme-muted mt-1 leading-relaxed">
+          <div class="text-sm mt-0.5 text-content-translation">{{ localMeaning(item, currentLang) }}</div>
+          <div v-if="item.example" class="text-content-example mt-1 text-xs leading-relaxed">
             {{ item.example }}
             <br v-if="localExampleCn(item, currentLang)" />
-            <span v-if="localExampleCn(item, currentLang)" class="text-[#5b8a72]">{{ localExampleCn(item, currentLang) }}</span>
+            <span v-if="localExampleCn(item, currentLang)">{{ localExampleCn(item, currentLang) }}</span>
           </div>
         </div>
         <button

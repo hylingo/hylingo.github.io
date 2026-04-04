@@ -191,6 +191,16 @@ async function copyDebugLogs() {
 }
 function clearDebugLogs() { clearLoopDebugLogs(); alert(t('debugCleared')) }
 function minimize() { collapsed.value = true }
+
+/** 点击卡片主体：普通模式暂停/播放；跟读模式且未在录音时播放原音 */
+function onCardMainClick() {
+  if (followMode.value) {
+    if (recording.value) return
+    playOriginal()
+  } else {
+    togglePlay()
+  }
+}
 </script>
 
 <template>
@@ -209,7 +219,7 @@ function minimize() { collapsed.value = true }
       <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="9" y1="6" x2="9" y2="18" /><line x1="15" y1="6" x2="15" y2="18" /></svg>
     </button>
     <div class="flex-1 min-w-0 text-left">
-      <div class="text-sm font-semibold theme-text truncate">{{ miniTitle }}</div>
+      <div class="text-sm font-semibold text-content-original truncate">{{ miniTitle }}</div>
       <div class="text-[11px] theme-muted">{{ loopIndex + 1 }} / {{ loopPlaylist.length }}</div>
     </div>
     <button type="button" class="shrink-0 w-9 h-9 flex items-center justify-center rounded-full cursor-pointer theme-surface border" style="border-color: var(--border); color: var(--text-secondary)" @click="collapsed = false">
@@ -230,24 +240,57 @@ function minimize() { collapsed.value = true }
             <span class="text-[#4f8a6f] font-medium">{{ readProgress }}</span>
           </template>
         </span>
-        <div class="flex items-center gap-1">
-          <button type="button" class="w-9 h-9 flex items-center justify-center rounded-full cursor-pointer" style="color: var(--text-secondary)" @click="minimize">
+        <div class="flex items-center gap-0.5">
+          <button
+            type="button"
+            class="w-9 h-9 flex items-center justify-center rounded-full cursor-pointer transition-colors"
+            :style="
+              followMode
+                ? { background: 'var(--primary-light)', color: 'var(--primary)', border: '1px solid color-mix(in srgb, var(--primary) 35%, transparent)' }
+                : { color: 'var(--text-secondary)' }
+            "
+            :aria-pressed="followMode"
+            :title="t('loopFollowToggle')"
+            @click="onFollowToggle"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
+            </svg>
+          </button>
+          <!-- 普通播放模式：底栏已有收起，顶栏不再重复 -->
+          <button
+            v-if="followMode"
+            type="button"
+            class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full"
+            style="color: var(--text-secondary)"
+            @click="minimize"
+          >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
           </button>
           <button type="button" class="w-9 h-9 flex items-center justify-center rounded-full cursor-pointer text-sm" style="color: var(--text-secondary)" @click="stop">✕</button>
         </div>
       </div>
 
-      <!-- Word card -->
-      <div v-if="currentItem" class="px-4 py-5 md:px-5 md:py-6 text-center overflow-y-auto flex-1 min-h-0">
-        <div class="text-3xl font-bold leading-snug theme-text">
-          <RubyText v-if="currentItem.ruby" :tokens="currentItem.ruby" />
-          <template v-else>{{ currentItem.word }}</template>
+      <!-- Word card：点击原文区播放（普通模式 暂停/继续；跟读未录音时 播原音） -->
+      <div v-if="currentItem" class="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-5 text-center md:px-5 md:py-6">
+        <div
+          class="-mx-1 cursor-pointer rounded-xl px-2 py-2 text-center outline-none transition-colors hover:bg-black/[0.04] focus-visible:ring-2 focus-visible:ring-[var(--primary)]/30 dark:hover:bg-white/[0.06]"
+          role="button"
+          tabindex="0"
+          :title="t('loopTapToPlay')"
+          @click="onCardMainClick"
+          @keydown.enter.prevent="onCardMainClick"
+          @keydown.space.prevent="onCardMainClick"
+        >
+          <div class="text-content-original text-3xl font-bold leading-snug">
+            <RubyText v-if="currentItem.ruby" :tokens="currentItem.ruby" />
+            <template v-else>{{ currentItem.word }}</template>
+          </div>
+          <div class="mt-2 text-[15px] text-content-translation">{{ localMeaning(currentItem, currentLang) }}</div>
         </div>
-        <div class="text-[15px] theme-muted mt-2">{{ localMeaning(currentItem, currentLang) }}</div>
 
         <!-- 跟读区域：固定结构，不因状态变化改变高度 -->
-        <div v-if="followMode" class="mt-4 flex flex-col items-center">
+        <div v-if="followMode" class="mt-4 flex flex-col items-center" @click.stop>
 
           <!-- 结果区域（固定高度，在录音按钮上方） -->
           <div class="h-[100px] flex flex-col items-center justify-center w-full">
@@ -278,33 +321,10 @@ function minimize() { collapsed.value = true }
               <div class="text-sm font-medium text-[#4f8a6f]">✓ {{ t('followPassed') }}</div>
             </template>
 
-            <!-- 录音中 / 待录音 -->
+            <!-- 录音中 / 待录音（录音按钮在底栏） -->
             <template v-else>
               <div v-if="recording" class="text-xs theme-muted opacity-50">{{ t('followRecording') }}</div>
             </template>
-          </div>
-
-          <!-- 音波 + 录音按钮 -->
-          <div class="flex items-center justify-center gap-3 my-3">
-            <div class="flex items-center gap-[3px] h-8">
-              <span v-for="i in 5" :key="i" class="w-[3px] rounded-full transition-all duration-300" :class="recording ? 'bg-red-400 animate-wave' : 'bg-current opacity-20'" :style="{ height: recording ? undefined : '8px', animationDelay: recording ? (i * 0.12) + 's' : undefined, color: 'var(--text-secondary)' }" />
-            </div>
-            <button
-              type="button"
-              class="w-14 h-14 flex items-center justify-center rounded-full text-white cursor-pointer active:scale-[0.96] transition-all shrink-0"
-              :class="recording ? 'bg-red-500 shadow-[0_6px_20px_rgba(239,68,68,0.35)]' : 'bg-gradient-to-b from-[#f38a73] to-[#e8735a] shadow-[0_6px_20px_rgba(232,115,90,0.3)]'"
-              style="touch-action: none"
-              @pointerdown.prevent="onRecordDown"
-              @pointerup.prevent="onRecordUp"
-              @pointercancel="onRecordUp"
-            >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-              </svg>
-            </button>
-            <div class="flex items-center gap-[3px] h-8">
-              <span v-for="i in 5" :key="'r'+i" class="w-[3px] rounded-full transition-all duration-300" :class="recording ? 'bg-red-400 animate-wave' : 'bg-current opacity-20'" :style="{ height: recording ? undefined : '8px', animationDelay: recording ? ((6-i) * 0.12) + 's' : undefined, color: 'var(--text-secondary)' }" />
-            </div>
           </div>
 
           <!-- 全部完成 -->
@@ -314,51 +334,59 @@ function minimize() { collapsed.value = true }
         </div>
       </div>
 
-      <!-- Controls -->
-      <div class="flex items-center justify-center gap-3 md:gap-4 px-4 pb-4 pt-1 md:px-5 md:pb-5 shrink-0">
+      <!-- Controls：跟读模式底栏 = 音波+录音（原播放位）+ 下一首；听原音点原文区 -->
+      <div class="flex shrink-0 items-center justify-center gap-3 px-4 pt-1 pb-4 md:gap-4 md:px-5 md:pb-5">
         <template v-if="followMode">
-          <!-- 跟读模式：只有跟读开关 + 播放原音 + 下一句 -->
-          <button
-            class="w-10 h-10 flex items-center justify-center rounded-full border cursor-pointer transition-colors"
-            style="background: #e8735a15; color: #c45a3e; border-color: #e8735a"
-            @click="onFollowToggle"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
-            </svg>
-          </button>
-
-          <button
-            type="button"
-            class="w-14 h-14 flex items-center justify-center rounded-full bg-gradient-to-b from-[#f38a73] to-[#e8735a] text-white cursor-pointer shadow-[0_8px_22px_rgba(232,115,90,0.35)] active:scale-[0.98] transition-transform"
-            @click="playOriginal"
-          >
-            <svg v-if="!loopPaused" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="9" y1="6" x2="9" y2="18" /><line x1="15" y1="6" x2="15" y2="18" /></svg>
-            <svg v-else width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="8,6 18,12 8,18" /></svg>
-          </button>
-
-          <button
-            class="w-10 h-10 flex items-center justify-center rounded-full border cursor-pointer"
-            style="border-color: var(--border); background: var(--card); color: var(--text-secondary)"
-            @click="nextTrack"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="19" y2="19" /><polygon points="17 12 7 19 7 5 17 12" /></svg>
-          </button>
+          <div class="flex w-full max-w-md items-center gap-2">
+            <div class="w-10 shrink-0" aria-hidden="true" />
+            <div class="flex min-w-0 flex-1 items-center justify-center gap-3">
+              <div class="flex h-8 items-center gap-[3px]">
+                <span
+                  v-for="i in 5"
+                  :key="i"
+                  class="w-[3px] rounded-full transition-all duration-300"
+                  :class="recording ? 'bg-red-400 animate-wave' : 'bg-current opacity-20'"
+                  :style="{ height: recording ? undefined : '8px', animationDelay: recording ? (i * 0.12) + 's' : undefined, color: 'var(--text-secondary)' }"
+                />
+              </div>
+              <button
+                type="button"
+                class="flex h-16 w-16 shrink-0 cursor-pointer items-center justify-center rounded-full text-white transition-transform active:scale-[0.96]"
+                :class="recording ? 'bg-red-500 shadow-[0_6px_20px_rgba(239,68,68,0.35)]' : 'bg-gradient-to-b from-[#f38a73] to-[#e8735a] shadow-[0_6px_20px_rgba(232,115,90,0.3)]'"
+                style="touch-action: none"
+                :title="t('followHint')"
+                @pointerdown.prevent="onRecordDown"
+                @pointerup.prevent="onRecordUp"
+                @pointercancel="onRecordUp"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                </svg>
+              </button>
+              <div class="flex h-8 items-center gap-[3px]">
+                <span
+                  v-for="i in 5"
+                  :key="'r' + i"
+                  class="w-[3px] rounded-full transition-all duration-300"
+                  :class="recording ? 'bg-red-400 animate-wave' : 'bg-current opacity-20'"
+                  :style="{ height: recording ? undefined : '8px', animationDelay: recording ? ((6 - i) * 0.12) + 's' : undefined, color: 'var(--text-secondary)' }"
+                />
+              </div>
+            </div>
+            <button
+              type="button"
+              class="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border"
+              style="border-color: var(--border); background: var(--card); color: var(--text-secondary)"
+              @click="nextTrack"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="19" y2="19" /><polygon points="17 12 7 19 7 5 17 12" /></svg>
+            </button>
+          </div>
         </template>
 
         <template v-else>
-          <!-- 普通模式：全部按钮 -->
           <button
-            class="w-10 h-10 flex items-center justify-center rounded-full border cursor-pointer transition-colors"
-            :style="{ background: 'var(--card)', color: 'var(--text-secondary)', borderColor: 'var(--border)' }"
-            @click="onFollowToggle"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
-            </svg>
-          </button>
-          <button
-            class="w-10 h-10 flex items-center justify-center rounded-full border cursor-pointer transition-colors"
+            class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border transition-colors"
             :style="loopRepeat ? { background: 'var(--primary-light)', color: 'var(--primary)', borderColor: 'var(--primary)' } : { background: 'var(--card)', color: 'var(--text-secondary)', borderColor: 'var(--border)' }"
             @click="toggleRepeat"
           >
@@ -367,21 +395,22 @@ function minimize() { collapsed.value = true }
               <text x="10" y="14" font-size="7" font-weight="bold" stroke="none" fill="currentColor" text-anchor="middle">1</text>
             </svg>
           </button>
-          <button class="w-10 h-10 flex items-center justify-center rounded-full border cursor-pointer" style="border-color: var(--border); background: var(--card); color: var(--text-secondary)" @click="prevTrack">
+          <button class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border" style="border-color: var(--border); background: var(--card); color: var(--text-secondary)" @click="prevTrack">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="5" x2="5" y2="19" /><polygon points="7 12 17 19 17 5 7 12" /></svg>
           </button>
           <button
             type="button"
-            class="w-14 h-14 flex items-center justify-center rounded-full bg-gradient-to-b from-[#f38a73] to-[#e8735a] text-white cursor-pointer shadow-[0_8px_22px_rgba(232,115,90,0.35)] active:scale-[0.98] transition-transform"
+            class="flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-gradient-to-b from-[#f38a73] to-[#e8735a] text-white shadow-[0_8px_22px_rgba(232,115,90,0.35)] transition-transform active:scale-[0.98]"
+            :title="t('loopTapToPlay')"
             @click="togglePlay"
           >
             <svg v-if="loopPaused" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="8,6 18,12 8,18" /></svg>
             <svg v-else width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="9" y1="6" x2="9" y2="18" /><line x1="15" y1="6" x2="15" y2="18" /></svg>
           </button>
-          <button class="w-10 h-10 flex items-center justify-center rounded-full border cursor-pointer" style="border-color: var(--border); background: var(--card); color: var(--text-secondary)" @click="nextTrack">
+          <button class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border" style="border-color: var(--border); background: var(--card); color: var(--text-secondary)" @click="nextTrack">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="19" y2="19" /><polygon points="17 12 7 19 7 5 17 12" /></svg>
           </button>
-          <button type="button" class="w-10 h-10 flex items-center justify-center rounded-full border cursor-pointer" style="border-color: var(--border); background: var(--card); color: var(--text-secondary)" @click="minimize">
+          <button type="button" class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border" style="border-color: var(--border); background: var(--card); color: var(--text-secondary)" @click="minimize">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
           </button>
         </template>

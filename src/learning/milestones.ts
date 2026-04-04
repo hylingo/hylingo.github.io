@@ -4,7 +4,6 @@
  */
 import { makeItemKey } from './itemKey'
 import { milestoneStateTick } from './milestoneTick'
-import { listenDismissClear, isListenDismissed, listenDismissTick } from '@/composables/useListenListDismiss'
 import { recordItemSeen, delayItem } from '@/composables/useSpacedRepetition'
 import { useFirebase } from '@/composables/useFirebase'
 import { practice as practiceThresholds } from '@/config/thresholds'
@@ -34,18 +33,6 @@ function writeTrueMapFor(ck: TrueMapKey, r: Record<string, true>) {
   milestoneStateTick.value++
 }
 
-export { listenDismissTick }
-
-// --- 听列表隐藏（jp_listen_dismissed；左滑「听清了」已下线，进入测验模式会清空并恢复列表展示）---
-
-export function hasListenCleared(cat: string, id: number): boolean {
-  return isListenDismissed(cat, id)
-}
-
-export function markListenCleared(cat: string, id: number): void {
-  listenDismissClear(cat, id)
-}
-
 // --- 练习：认识 / 不认识（次数仍走 recordItemSeen）---
 
 /** 练习中点「✓ 认识」：计次 + 短期推迟 + 写入「曾认识」里程碑（供将来掌握条件） */
@@ -69,6 +56,11 @@ export function hasPracticeRecognized(cat: string, id: number): boolean {
 }
 
 // --- 掌握测验（预留：测验通过后调用 markMasteryQuizPassed）---
+
+/** 练页抽题等批量筛选时一次性读取，避免对每个 id 重复 parse localStorage */
+export function getMasteryQuizPassedMap(): Record<string, true> {
+  return readTrueMapFor('masteryQuizPassed')
+}
 
 export function hasMasteryQuizPassed(cat: string, id: number): boolean {
   return !!readTrueMapFor('masteryQuizPassed')[makeItemKey(cat, id)]

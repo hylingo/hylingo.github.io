@@ -1,14 +1,11 @@
 export { makeItemKey, parseItemKey } from './itemKey'
-export { restoreListenListHiddenOnTestMode } from '@/composables/useListenListDismiss'
 export {
-  listenDismissTick,
   milestoneStateTick,
-  hasListenCleared,
-  markListenCleared,
   markPracticeAnswerKnown,
   markPracticeAnswerUnknown,
   hasPracticeRecognized,
   hasMasteryQuizPassed,
+  getMasteryQuizPassedMap,
   markMasteryQuizPassed,
   isItemMastered,
 } from './milestones'
@@ -16,14 +13,9 @@ export {
   quizQueueTick,
   canJoinQuizQueue,
   getQuizQueueKeys,
+  getQuizQueueKeySet,
   getQuizQueueSize,
   isInQuizQueue,
   addToQuizQueue,
   removeFromQuizQueue,
-  recordQuizFail,
-  getQuizFailCount,
-  clearQuizFails,
-  markPhase1Passed,
-  hasPhase1Passed,
-  clearPhase1,
 } from './quizQueue'

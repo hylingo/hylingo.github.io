@@ -53,85 +53,101 @@ function onSpeakRange() {
 </script>
 
 <template>
-  <div class="flex flex-col gap-2 px-4 pb-3 md:px-10">
-    <div class="relative">
-      <input
-        v-model="searchQuery"
-        type="text"
-        :placeholder="t('search')"
-        class="w-full pl-10 pr-4 py-2.5 rounded-[10px] border border-[#e8e2dc] theme-surface text-sm outline-none focus:border-[#e8735a] transition-colors"
-        @input="onSearch"
-      />
-      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 theme-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
-      </svg>
-    </div>
-    <div class="w-full flex flex-col gap-2">
-      <div class="flex flex-wrap items-center gap-2">
+  <div class="flex flex-col gap-2.5">
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+      <div class="relative min-w-0 flex-1">
+        <input
+          v-model="searchQuery"
+          type="text"
+          :placeholder="t('search')"
+          class="list-toolbar-search theme-text w-full rounded-xl border border-[var(--border)] bg-[var(--card)] py-2.5 pr-3 pl-10 text-sm outline-none transition-[border-color,box-shadow] focus:border-[var(--primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--primary)_18%,transparent)]"
+          @input="onSearch"
+        />
+        <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 theme-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+        </svg>
+      </div>
+      <div class="flex shrink-0 items-center gap-2 self-stretch sm:self-center sm:justify-end">
+        <!-- 实心渐变 + 胶囊形：与浅色搜索框区分，明确为「播放」操作而非第二个输入框 -->
         <button
           v-if="!isSpeaking"
           type="button"
-          class="inline-flex items-center justify-center gap-2 min-h-[44px] px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.06)]"
+          class="list-toolbar-play-btn inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-[filter,box-shadow,opacity] sm:min-h-[42px] sm:max-w-[min(100%,280px)] sm:flex-none sm:px-5"
           :class="
             totalItems < 1
-              ? 'opacity-40 cursor-not-allowed border-[var(--border)] theme-muted'
+              ? 'cursor-not-allowed bg-[var(--border)] text-[var(--text-secondary)] opacity-55 shadow-none'
               : enableListSpeakSequenceRange && canUseRange && showRange
-                ? 'bg-[#e8735a]/15 border-[#e8735a]/45 text-[#c45a3e] cursor-pointer'
-                : 'border-[#e8e2dc] theme-surface theme-text hover:border-[#e8735a]/50 hover:shadow-[0_4px_14px_rgba(232,115,90,0.12)] cursor-pointer'
+                ? 'btn-grad-primary btn-grad-primary--borderless btn-grad-primary--pressed cursor-pointer text-white'
+                : 'btn-grad-primary btn-grad-primary--borderless cursor-pointer text-white'
           "
           :disabled="totalItems < 1"
+          :aria-label="t('listSpeak')"
           @click="onToggleSpeak"
         >
-          <svg class="w-5 h-5 shrink-0 text-[#e8735a]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-          <span>{{ t('listSpeak') }}</span>
+          <span
+            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
+            :class="totalItems < 1 ? 'bg-black/[0.06]' : 'bg-white/20'"
+          >
+            <svg
+              class="ml-0.5 h-4 w-4"
+              :class="totalItems < 1 ? 'text-[var(--text-secondary)]' : 'text-white'"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            ><path d="M8 5v14l11-7z"/></svg>
+          </span>
+          <span class="whitespace-nowrap">{{ t('listSpeak') }}</span>
         </button>
         <button
           v-else
           type="button"
-          class="inline-flex items-center justify-center gap-2 min-h-[44px] px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-all cursor-pointer bg-[#e8735a]/12 border-[#e8735a]/45 text-[#c45a3e] shadow-[0_2px_10px_rgba(232,115,90,0.15)]"
+          class="inline-flex min-h-[44px] flex-1 cursor-pointer items-center justify-center gap-2 rounded-full border-2 border-[var(--primary)] bg-[var(--card)] px-4 py-2 text-sm font-semibold text-[var(--primary-dark)] shadow-sm transition-colors hover:bg-[var(--primary-light)] sm:min-h-[42px] sm:max-w-[min(100%,280px)] sm:flex-none sm:px-5"
+          :aria-label="t('listStop')"
           @click="onToggleSpeak"
         >
-          <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 6h12v12H6z"/></svg>
-          <span>{{ t('listStop') }}</span>
+          <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[var(--primary)]/50 bg-[var(--primary-light)]">
+            <svg class="h-3.5 w-3.5 text-[var(--primary-dark)]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 6h12v12H6z"/></svg>
+          </span>
+          <span class="whitespace-nowrap">{{ t('listStop') }}</span>
         </button>
       </div>
-      <div
-        v-if="enableListSpeakSequenceRange && canUseRange && showRange"
-        class="flex flex-col gap-2 px-3 py-2.5 rounded-xl theme-surface border border-[var(--border)]"
-      >
-        <div class="flex items-center justify-center gap-2">
-        <span class="text-[13px] theme-muted whitespace-nowrap">{{ t('from') }}</span>
+    </div>
+    <div
+      v-if="enableListSpeakSequenceRange && canUseRange && showRange"
+      class="theme-surface flex flex-col gap-2 rounded-xl border border-[var(--border)] px-3 py-2.5"
+    >
+      <div class="flex items-center justify-center gap-2">
+        <span class="text-[13px] whitespace-nowrap theme-muted">{{ t('from') }}</span>
         <input
           v-model.number="listenFrom"
           type="number"
           min="1"
           :max="totalItems"
-          class="w-14 py-1 px-1 border border-[#e8e2dc] rounded-lg text-sm text-center theme-surface outline-none focus:border-[#e8735a]"
+          class="w-14 rounded-lg border border-[var(--border)] px-1 py-1 text-center text-sm theme-surface outline-none focus:border-[var(--primary)]"
         />
-        <span class="text-[13px] theme-muted whitespace-nowrap">{{ t('to') }}</span>
+        <span class="text-[13px] whitespace-nowrap theme-muted">{{ t('to') }}</span>
         <input
           v-model.number="listenTo"
           type="number"
           min="1"
           :max="totalItems"
           :placeholder="String(totalItems)"
-          class="w-14 py-1 px-1 border border-[#e8e2dc] rounded-lg text-sm text-center theme-surface outline-none focus:border-[#e8735a]"
+          class="w-14 rounded-lg border border-[var(--border)] px-1 py-1 text-center text-sm theme-surface outline-none focus:border-[var(--primary)]"
         />
-        </div>
-        <div class="flex items-center justify-end gap-2">
-          <button
-            class="px-3 py-1.5 rounded-lg border border-[#e8e2dc] theme-muted text-xs font-medium hover:border-[#d8d2cc]"
-            @click="showRange = false"
-          >
-            {{ t('cancel') }}
-          </button>
-          <button
-            class="px-3 py-1.5 rounded-lg text-white text-xs font-semibold btn-grad-primary btn-grad-primary--borderless"
-            @click="onSpeakRange"
-          >
-            {{ t('confirm') }}
-          </button>
-        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2">
+        <button
+          class="rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs font-medium theme-muted hover:border-[var(--border)]"
+          @click="showRange = false"
+        >
+          {{ t('cancel') }}
+        </button>
+        <button
+          class="btn-grad-primary btn-grad-primary--borderless rounded-lg px-3 py-1.5 text-xs font-semibold text-white"
+          @click="onSpeakRange"
+        >
+          {{ t('confirm') }}
+        </button>
       </div>
     </div>
   </div>

@@ -29,7 +29,7 @@ defineEmits<{
   >
     <!-- MODE: word (original) — show Japanese word, recall meaning + reading -->
     <template v-if="mode === 'word'">
-      <div class="text-3xl font-bold theme-text mb-4 leading-relaxed">
+      <div class="text-content-original mb-4 text-3xl font-bold leading-relaxed">
         <template v-if="item?.tokens && item.tokens.length">
           <span
             v-for="(tk, i) in item.tokens"
@@ -60,22 +60,22 @@ defineEmits<{
     <!-- MODE: meaning — show Chinese meaning, recall Japanese word + reading -->
     <template v-if="mode === 'meaning'">
       <div v-if="!isAnswered">
-        <div class="text-2xl font-bold mb-3" style="color: var(--accent)">{{ item ? localMeaning(item, lang) : '' }}</div>
+        <div class="mb-3 text-2xl font-bold text-content-translation">{{ item ? localMeaning(item, lang) : '' }}</div>
         <div class="text-sm theme-muted">{{ t('quizHintMeaning') }}</div>
       </div>
     </template>
 
     <!-- ANSWER (all modes) -->
     <template v-if="isAnswered && item">
-      <div v-if="mode !== 'word'" class="text-3xl font-bold theme-text mb-2 leading-relaxed">
+      <div v-if="mode !== 'word'" class="text-content-original mb-2 text-3xl font-bold leading-relaxed">
         <RubyText v-if="item.ruby" :tokens="item.ruby" />
         <template v-else>{{ item.word }}</template>
       </div>
-      <div class="text-xl font-bold theme-text mb-4">{{ localMeaning(item, lang) }}</div>
-      <div v-if="item.example" class="text-sm theme-muted leading-relaxed">
+      <div class="mb-4 text-xl font-bold text-content-translation">{{ localMeaning(item, lang) }}</div>
+      <div v-if="item.example" class="text-content-example text-sm leading-relaxed">
         {{ item.example }}
         <br v-if="localExampleCn(item, lang)" />
-        <span v-if="localExampleCn(item, lang)" class="text-[13px]" style="color: var(--accent)">{{ localExampleCn(item, lang) }}</span>
+        <span v-if="localExampleCn(item, lang)" class="text-[13px]">{{ localExampleCn(item, lang) }}</span>
       </div>
     </template>
   </div>

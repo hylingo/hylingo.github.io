@@ -8,6 +8,12 @@ import type { ArticleItem, ArticleEssay, ArticleDialogue, ArticleSegment } from 
 import RubyText from '@/components/common/RubyText.vue'
 import type { DataItem } from '@/stores/app'
 import { readArticlePrefRaw, writeArticlePrefRaw } from '@/learning/learnStorage'
+import { useFirebase } from '@/composables/useFirebase'
+
+const props = withDefaults(
+  defineProps<{ filterFormat: 'essay' | 'dialogue' }>(),
+  { filterFormat: 'essay' },
+)
 
 const store = useAppStore()
 const { t, currentLang } = useLang()
@@ -129,7 +135,7 @@ watch(
   },
 )
 
-const list = computed(() => store.articles)
+const list = computed(() => store.articles.filter((a) => a.format === props.filterFormat))
 
 const selected = computed(() => {
   if (!selectedId.value) return null
@@ -217,6 +223,14 @@ function playAllWithLoopPlayer() {
   if (items.length) startLoop(items)
 }
 
+function startPracticeFromArticle() {
+  if (!selected.value || flatSentences.value.length === 0) return
+  stopLoop()
+  invalidateArticlePlayback()
+  store.startArticlePractice(selected.value.id)
+  useFirebase().debouncedSync()
+}
+
 /** 单句模式：点击某句，从该句开始启动 LoopPlayer */
 function playSentenceAt(index: number) {
   invalidateArticlePlayback()
@@ -267,7 +281,9 @@ onUnmounted(() => {
   <div class="px-4 pb-24 md:px-10 md:max-w-[720px] md:mx-auto">
     <!-- 列表 -->
     <div v-if="!selected" class="space-y-3 pt-1">
-      <p class="text-sm theme-muted mb-3">{{ t('articleIntro') }}</p>
+      <p class="text-sm theme-muted mb-3">
+        {{ props.filterFormat === 'dialogue' ? t('dialogueIntro') : t('articleIntro') }}
+      </p>
       <button
         v-for="it in list"
         :key="it.id"
@@ -276,10 +292,10 @@ onUnmounted(() => {
         @click="openItem(it.id)"
       >
         <div class="text-xs font-medium theme-muted mb-1">{{ formatLabel(it) }}</div>
-        <div class="text-base font-bold theme-text leading-snug">{{ it.titleWord }}</div>
-        <div v-if="currentLang === 'zh'" class="text-sm mt-1" style="color: var(--accent)">{{ it.titleZh }}</div>
-        <div v-else-if="currentLang === 'en'" class="text-sm mt-1 theme-muted">{{ it.titleEn }}</div>
-        <div v-else class="text-sm mt-1 theme-muted">{{ it.titleJp ?? it.titleZh }}</div>
+        <div class="text-base font-bold text-content-original leading-snug">{{ it.titleWord }}</div>
+        <div v-if="currentLang === 'zh'" class="text-sm mt-1 text-content-translation">{{ it.titleZh }}</div>
+        <div v-else-if="currentLang === 'en'" class="text-sm mt-1 text-content-translation opacity-90">{{ it.titleEn }}</div>
+        <div v-else class="text-sm mt-1 text-content-translation opacity-90">{{ it.titleJp ?? it.titleZh }}</div>
       </button>
       <p v-if="!list.length" class="text-sm theme-muted py-8 text-center">{{ t('articleEmpty') }}</p>
     </div>
@@ -295,14 +311,12 @@ onUnmounted(() => {
       </button>
 
       <header class="mb-6">
-        <h1 v-if="showReading && selected!.titleRuby" class="text-xl font-bold theme-text"><RubyText :tokens="selected!.titleRuby" /></h1>
-        <h1 v-else class="text-xl font-bold theme-text leading-snug">{{ selected!.titleWord }}</h1>
+        <h1 v-if="showReading && selected!.titleRuby" class="text-xl font-bold text-content-original"><RubyText :tokens="selected!.titleRuby" /></h1>
+        <h1 v-else class="text-xl font-bold text-content-original leading-snug">{{ selected!.titleWord }}</h1>
         <template v-if="showTranslation">
-          <p v-if="currentLang === 'zh'" class="text-base mt-2" style="color: var(--accent)">{{ selected!.titleZh }}</p>
-          <p v-else-if="currentLang === 'ja'" class="text-base mt-2 theme-muted">{{ selected!.titleJp ?? selected!.titleZh }}</p>
-          <p v-else class="text-base mt-2 theme-muted">{{ selected!.titleEn ?? selected!.titleZh }}</p>
-          <p v-if="store.studyLang === 'ja' && currentLang !== 'en' && selected!.titleEn" class="text-sm mt-1.5 theme-muted leading-snug">{{ selected!.titleEn }}</p>
-          <p v-if="store.studyLang === 'en' && currentLang !== 'ja' && selected!.titleJp" class="text-sm mt-1.5 theme-muted leading-snug">{{ selected!.titleJp }}</p>
+          <p v-if="currentLang === 'zh'" class="mt-2 text-base text-content-translation">{{ selected!.titleZh }}</p>
+          <p v-else-if="currentLang === 'ja'" class="mt-2 text-base text-content-translation opacity-90">{{ selected!.titleJp ?? selected!.titleZh }}</p>
+          <p v-else class="mt-2 text-base text-content-translation opacity-90">{{ selected!.titleEn ?? selected!.titleZh }}</p>
         </template>
 
         <div class="flex flex-wrap items-center gap-2 mt-4">
@@ -364,6 +378,14 @@ onUnmounted(() => {
               {{ t('articleStopPlayback') }}
             </button>
           </template>
+          <button
+            v-if="flatSentences.length > 0"
+            type="button"
+            class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all active:scale-[0.98] btn-grad-primary btn-grad-primary--borderless text-white shadow-[0_3px_12px_rgba(232,115,90,0.3)]"
+            @click="startPracticeFromArticle"
+          >
+            {{ t('articlePracticeButton') }}
+          </button>
           <!-- 单句/全文 切换滑块 -->
           <div
             class="inline-flex items-center rounded-full border border-[var(--border)] p-0.5 ml-auto cursor-pointer select-none text-xs font-medium"
@@ -379,6 +401,18 @@ onUnmounted(() => {
             >{{ t('articleModeSingle') }}</span>
           </div>
         </div>
+        <p
+          v-if="flatSentences.length > 0"
+          class="mt-3 text-xs theme-muted leading-relaxed opacity-90"
+        >
+          {{ t('articlePracticeHowToHint') }}
+        </p>
+        <p
+          v-else
+          class="mt-3 text-sm theme-muted"
+        >
+          {{ t('articlePracticeEmptyShort') }}
+        </p>
       </header>
 
       <!-- ====== 单句列表模式 ====== -->
@@ -392,14 +426,12 @@ onUnmounted(() => {
           <div class="flex items-start gap-3">
             <div class="flex-1 min-w-0">
               <div v-if="seg.speaker" class="text-xs font-bold mb-1" style="color: var(--primary)">{{ seg.speaker }}</div>
-              <p v-if="showReading && seg.ruby" class="text-[15px] font-medium theme-text"><RubyText :tokens="seg.ruby" /></p>
-              <p v-else class="text-[15px] font-medium theme-text leading-relaxed">{{ seg.word }}</p>
+              <p v-if="showReading && seg.ruby" class="text-[15px] font-medium text-content-original"><RubyText :tokens="seg.ruby" /></p>
+              <p v-else class="text-[15px] font-medium text-content-original leading-relaxed">{{ seg.word }}</p>
               <template v-if="showTranslation">
-                <p v-if="currentLang === 'zh'" class="text-sm mt-2 leading-relaxed" style="color: var(--accent)">{{ seg.zh }}</p>
-                <p v-else-if="currentLang === 'ja'" class="text-sm mt-2 leading-relaxed theme-muted">{{ seg.jp ?? seg.zh }}</p>
-                <p v-else class="text-sm mt-2 leading-relaxed theme-muted">{{ seg.en ?? seg.zh }}</p>
-                <p v-if="store.studyLang === 'ja' && currentLang !== 'en' && seg.en" class="text-xs mt-1.5 leading-relaxed theme-muted opacity-90">{{ seg.en }}</p>
-                <p v-if="store.studyLang === 'en' && currentLang !== 'ja' && seg.jp" class="text-xs mt-1.5 leading-relaxed theme-muted opacity-90">{{ seg.jp }}</p>
+                <p v-if="currentLang === 'zh'" class="mt-2 text-sm leading-relaxed text-content-translation">{{ seg.zh }}</p>
+                <p v-else-if="currentLang === 'ja'" class="mt-2 text-sm leading-relaxed text-content-translation opacity-90">{{ seg.jp ?? seg.zh }}</p>
+                <p v-else class="mt-2 text-sm leading-relaxed text-content-translation opacity-90">{{ seg.en ?? seg.zh }}</p>
               </template>
             </div>
             <button
@@ -432,7 +464,7 @@ onUnmounted(() => {
               :key="pi"
               class="rounded-md -mx-0.5 px-0.5 py-0.5"
             >
-              <p v-if="showReading" class="text-[15px] font-medium theme-text leading-[1.85] [text-indent:1em]">
+              <p v-if="showReading" class="text-[15px] font-medium text-content-original leading-[1.85] [text-indent:1em]">
                 <span
                   v-for="(seg, si) in para"
                   :key="`${pi}-${si}`"
@@ -440,7 +472,7 @@ onUnmounted(() => {
                   :class="linePlaying(seg.word) ? 'bg-[#e8735a]/25 ring-1 ring-[#e8735a]/30' : ''"
                 ><RubyText v-if="seg.ruby" :tokens="seg.ruby" /><template v-else>{{ seg.word }}</template></span>
               </p>
-              <p v-else class="text-[15px] font-medium theme-text leading-[1.85] [text-indent:1em]">
+              <p v-else class="text-[15px] font-medium text-content-original leading-[1.85] [text-indent:1em]">
                 <span
                   v-for="(seg, si) in para"
                   :key="`${pi}-${si}-nr`"
@@ -451,25 +483,16 @@ onUnmounted(() => {
               <template v-if="showTranslation">
                 <p
                   v-if="currentLang === 'zh'"
-                  class="text-sm mt-2 leading-relaxed pl-[1em]"
-                  style="color: var(--accent)"
+                  class="mt-2 pl-[1em] text-sm leading-relaxed text-content-translation"
                 >{{ para.map((s) => s.zh).join('') }}</p>
                 <p
                   v-else-if="currentLang === 'ja'"
-                  class="text-sm mt-2 leading-relaxed theme-muted pl-[1em]"
+                  class="mt-2 pl-[1em] text-sm leading-relaxed text-content-translation opacity-90"
                 >{{ para.map((s) => s.jp ?? s.zh).join('') }}</p>
                 <p
                   v-else
-                  class="text-sm mt-2 leading-relaxed theme-muted pl-[1em]"
+                  class="mt-2 pl-[1em] text-sm leading-relaxed text-content-translation opacity-90"
                 >{{ para.map((s) => s.en ?? s.zh).join('') }}</p>
-                <p
-                  v-if="store.studyLang === 'ja' && currentLang !== 'en' && para.some((s) => s.en)"
-                  class="text-xs mt-1.5 leading-relaxed theme-muted pl-[1em] opacity-90"
-                >{{ para.map((s) => s.en).join('') }}</p>
-                <p
-                  v-if="store.studyLang === 'en' && currentLang !== 'ja' && para.some((s) => s.jp)"
-                  class="text-xs mt-1.5 leading-relaxed theme-muted pl-[1em] opacity-90"
-                >{{ para.map((s) => s.jp).join('') }}</p>
               </template>
             </div>
           </div>
@@ -487,11 +510,10 @@ onUnmounted(() => {
           <section v-for="(sec, si) in (selected as ArticleDialogue).sections" :key="si" class="space-y-4">
             <div class="flex items-center gap-2 flex-wrap">
               <span v-if="sec.badge" class="text-lg" aria-hidden="true">{{ sec.badge }}</span>
-              <span class="text-sm font-semibold theme-text">{{ sec.headingWord }}</span>
-              <span v-if="showTranslation && currentLang === 'zh'" class="text-xs theme-muted">（{{ sec.headingZh }}）</span>
-              <span v-else-if="showTranslation && currentLang === 'ja' && sec.headingJp" class="text-xs theme-muted">（{{ sec.headingJp }}）</span>
-              <span v-if="showTranslation && store.studyLang === 'en' && sec.headingJp" class="text-xs theme-muted ml-1">· {{ sec.headingJp }}</span>
-              <span v-if="showTranslation && store.studyLang === 'ja' && sec.headingEn" class="text-xs theme-muted ml-1">· {{ sec.headingEn }}</span>
+              <span class="text-sm font-semibold text-content-original">{{ sec.headingWord }}</span>
+              <span v-if="showTranslation && currentLang === 'zh'" class="text-xs text-content-translation">（{{ sec.headingZh }}）</span>
+              <span v-else-if="showTranslation && currentLang === 'ja'" class="text-xs text-content-translation opacity-90">（{{ sec.headingJp ?? sec.headingZh }}）</span>
+              <span v-else-if="showTranslation && currentLang === 'en'" class="text-xs text-content-translation opacity-90">（{{ sec.headingEn ?? sec.headingZh }}）</span>
             </div>
             <div
               v-for="(line, li) in sec.lines"
@@ -500,14 +522,12 @@ onUnmounted(() => {
               :class="linePlaying(line.word) ? 'bg-[#e8735a]/10' : ''"
             >
               <div class="text-xs font-bold mb-0.5" style="color: var(--primary)">{{ line.speaker }}</div>
-              <p v-if="showReading && line.ruby" class="text-[15px] theme-text"><RubyText :tokens="line.ruby" /></p>
-              <p v-else class="text-[15px] theme-text leading-relaxed">{{ line.word }}</p>
+              <p v-if="showReading && line.ruby" class="text-[15px] text-content-original"><RubyText :tokens="line.ruby" /></p>
+              <p v-else class="text-[15px] text-content-original leading-relaxed">{{ line.word }}</p>
               <template v-if="showTranslation">
-                <p v-if="currentLang === 'zh'" class="text-sm mt-2" style="color: var(--accent)">{{ line.zh }}</p>
-                <p v-else-if="currentLang === 'ja'" class="text-sm mt-2 theme-muted">{{ line.jp ?? line.zh }}</p>
-                <p v-else class="text-sm mt-2 theme-muted">{{ line.en ?? line.zh }}</p>
-                <p v-if="store.studyLang === 'ja' && currentLang !== 'en' && line.en" class="text-xs mt-1 theme-muted opacity-90">{{ line.en }}</p>
-                <p v-if="store.studyLang === 'en' && currentLang !== 'ja' && line.jp" class="text-xs mt-1 theme-muted opacity-90">{{ line.jp }}</p>
+                <p v-if="currentLang === 'zh'" class="mt-2 text-sm text-content-translation">{{ line.zh }}</p>
+                <p v-else-if="currentLang === 'ja'" class="mt-2 text-sm text-content-translation opacity-90">{{ line.jp ?? line.zh }}</p>
+                <p v-else class="mt-2 text-sm text-content-translation opacity-90">{{ line.en ?? line.zh }}</p>
               </template>
             </div>
           </section>

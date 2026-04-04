@@ -22,7 +22,7 @@ export interface DataItem {
 
 export interface AppData {
   nouns: DataItem[]
-  sentences: DataItem[]
+  verbs: DataItem[]
   kana: DataItem[]
 }
 
@@ -134,29 +134,132 @@ export const useAppStore = defineStore('app', () => {
     if (lang === 'en' && currentCat.value === 'kana') {
       currentCat.value = 'articles'
     }
+    if (lang === 'en' && currentCat.value === 'verbs') {
+      currentCat.value = 'nouns'
+    }
     await loadData()
   }
 
   const currentMode = ref<string>('list')
   const currentCat = ref<string>('articles')
-  const data = ref<AppData>({ nouns: [], sentences: [], kana: KANA_DATA })
+  const data = ref<AppData>({ nouns: [], verbs: [], kana: KANA_DATA })
   /** 精读文章（短文 / 对话）：日语 ja_articles.json，英语 en_articles.json */
   const articles = ref<ArticleItem[]>([])
   const isDataLoaded = ref(false)
 
+  // --- 本篇练习：按 format 分别存储（essay / dialogue 各一篇） ---
+
+  type PracticeSlot = { id: string; title: string; index: number }
+
+  function readSlot(format: string): PracticeSlot | null {
+    const id = localStorage.getItem(`practice_${format}_id`)
+    if (!id) return null
+    return {
+      id,
+      title: localStorage.getItem(`practice_${format}_title`) || '',
+      index: Number(localStorage.getItem(`practice_${format}_index`) || '0'),
+    }
+  }
+
+  function writeSlot(format: string, slot: PracticeSlot | null) {
+    if (slot) {
+      localStorage.setItem(`practice_${format}_id`, slot.id)
+      localStorage.setItem(`practice_${format}_title`, slot.title)
+      localStorage.setItem(`practice_${format}_index`, String(slot.index))
+    } else {
+      localStorage.removeItem(`practice_${format}_id`)
+      localStorage.removeItem(`practice_${format}_title`)
+      localStorage.removeItem(`practice_${format}_index`)
+    }
+  }
+
+  // 当前激活的本篇练习（根据 currentCat 动态切换）
+  const practiceArticleId = ref<string | null>(null)
+  const practiceArticleTitle = ref('')
+  const practiceArticleIndex = ref(0)
+
+  function catToFormat(cat: string): string | null {
+    if (cat === 'articles') return 'essay'
+    if (cat === 'dialogues') return 'dialogue'
+    return null
+  }
+
+  /** 从 localStorage 加载当前分类对应的练习槽位 */
+  function syncSlotToCat() {
+    const fmt = catToFormat(currentCat.value)
+    if (!fmt) {
+      // 单词/50音分类，不清除内存，只是不显示
+      practiceArticleId.value = null
+      practiceArticleTitle.value = ''
+      practiceArticleIndex.value = 0
+      return
+    }
+    const slot = readSlot(fmt)
+    if (slot) {
+      practiceArticleId.value = slot.id
+      practiceArticleTitle.value = slot.title
+      practiceArticleIndex.value = slot.index
+    } else {
+      practiceArticleId.value = null
+      practiceArticleTitle.value = ''
+      practiceArticleIndex.value = 0
+    }
+  }
+
+  function clearArticlePractice() {
+    const fmt = catToFormat(currentCat.value)
+    if (fmt) writeSlot(fmt, null)
+    practiceArticleId.value = null
+    practiceArticleTitle.value = ''
+    practiceArticleIndex.value = 0
+  }
+
+  function savePracticeArticleIndex(index: number) {
+    practiceArticleIndex.value = index
+    // 找到这篇文章的 format 来存到对应槽位
+    const art = articles.value.find((a) => a.id === practiceArticleId.value)
+    const fmt = art?.format || catToFormat(currentCat.value)
+    if (fmt) {
+      localStorage.setItem(`practice_${fmt}_index`, String(index))
+    }
+  }
+
+  function startArticlePractice(articleId: string) {
+    const art = articles.value.find((a) => a.id === articleId)
+    if (!art) return
+    const fmt = art.format // 'essay' | 'dialogue'
+    const slot: PracticeSlot = { id: articleId, title: art.titleWord ?? '', index: 0 }
+    writeSlot(fmt, slot)
+    practiceArticleId.value = articleId
+    practiceArticleTitle.value = slot.title
+    practiceArticleIndex.value = 0
+    switchMode('practice')
+  }
+
+  /** 云端拉取后从 localStorage 刷新练习状态到 Pinia */
+  function restorePracticeArticleFromLS() {
+    syncSlotToCat()
+    if (practiceArticleId.value) {
+      currentMode.value = 'practice'
+    }
+  }
+
   function switchMode(mode: string) {
-    // 「文章」无练题库，切到练时回到句子
-    if (mode === 'practice' && currentCat.value === 'articles') {
-      currentCat.value = 'sentences'
+    // 精读列表切到练：无指定篇目时仍进单词练习
+    if (mode === 'practice') {
+      syncSlotToCat()
+      if (!practiceArticleId.value && (currentCat.value === 'articles' || currentCat.value === 'dialogues')) {
+        currentCat.value = 'nouns'
+      }
     }
     currentMode.value = mode
   }
 
   function switchCat(cat: string) {
-    if (cat === 'articles') {
-      currentMode.value = 'list'
-    }
     currentCat.value = cat
+    if (currentMode.value === 'practice') {
+      syncSlotToCat()
+    }
   }
 
   async function loadData() {
@@ -165,18 +268,31 @@ export const useAppStore = defineStore('app', () => {
       const ja = studyLang.value === 'ja'
 
       const nounPath = ja ? 'data/nouns.json' : 'data/en_nouns.json'
-      const sentPath = ja ? 'data/sentences.json' : 'data/en_sentences.json'
+      const verbPath = ja ? 'data/verbs.json' : ''
       const artPath = ja ? 'data/ja_articles.json' : 'data/en_articles.json'
 
-      const [nouns, sentences, articlesData] = await Promise.all([
+      const [nouns, verbsRes, articlesData] = await Promise.all([
         fetch(`${base}${nounPath}`).then(r => r.json()),
-        fetch(`${base}${sentPath}`).then(r => r.json()),
+        verbPath
+          ? fetch(`${base}${verbPath}`).then(r => r.json())
+          : Promise.resolve([]),
         fetch(`${base}${artPath}`).then(r => r.json()),
       ])
       data.value.nouns = nouns
-      data.value.sentences = sentences
+      data.value.verbs = Array.isArray(verbsRes) ? verbsRes : []
       articles.value = Array.isArray(articlesData?.items) ? articlesData.items : []
       isDataLoaded.value = true
+
+      // 恢复上次未完成的本篇练习
+      syncSlotToCat()
+      if (practiceArticleId.value) {
+        const art = articles.value.find((a) => a.id === practiceArticleId.value)
+        if (art) {
+          currentMode.value = 'practice'
+        } else {
+          clearArticlePractice()
+        }
+      }
     } catch (e) {
       console.error('Failed to load data', e)
       throw e
@@ -191,6 +307,13 @@ export const useAppStore = defineStore('app', () => {
     data,
     articles,
     isDataLoaded,
+    practiceArticleId,
+    practiceArticleTitle,
+    practiceArticleIndex,
+    savePracticeArticleIndex,
+    startArticlePractice,
+    clearArticlePractice,
+    restorePracticeArticleFromLS,
     switchMode,
     switchCat,
     loadData,

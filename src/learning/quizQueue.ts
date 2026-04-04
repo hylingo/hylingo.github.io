@@ -9,9 +9,7 @@ import { useFirebase } from '@/composables/useFirebase'
 import { readSyncedJson, writeSyncedJson } from '@/learning/learnStorage'
 import { useAppStore } from '@/stores/app'
 
-const MAX_FAILS = 3
-
-const { debouncedSync } = useFirebase()
+const { syncToCloud } = useFirebase()
 
 /** 列表「加入测验 / 可以测验了」行刷新用 */
 export const quizQueueTick = ref(0)
@@ -31,99 +29,15 @@ function readStore(): Record<string, number> {
   }
 }
 
+/** 列表/练页筛选时一次性读取，避免对每个词条调用 isInQuizQueue 重复 parse */
+export function getQuizQueueKeySet(): Set<string> {
+  return new Set(Object.keys(readStore()))
+}
+
 function writeStore(r: Record<string, number>) {
   writeSyncedJson(useAppStore().studyLang, 'quizQueue', r)
-  debouncedSync()
+  syncToCloud()
   quizQueueTick.value++
-}
-
-// --- 失败计数 ---
-
-function readFails(): Record<string, number> {
-  try {
-    const p = readSyncedJson(useAppStore().studyLang, 'quizFails')
-    if (!p || typeof p !== 'object' || Array.isArray(p)) return {}
-    const out: Record<string, number> = {}
-    for (const k of Object.keys(p)) {
-      const n = Number((p as Record<string, unknown>)[k])
-      if (k && Number.isFinite(n)) out[k] = n
-    }
-    return out
-  } catch {
-    return {}
-  }
-}
-
-function writeFails(r: Record<string, number>) {
-  writeSyncedJson(useAppStore().studyLang, 'quizFails', r)
-  debouncedSync()
-}
-
-/** 记录一次测验失败，达到 3 次自动移出队列并返回 true */
-export function recordQuizFail(cat: string, id: number): boolean {
-  const k = makeItemKey(cat, id)
-  const f = readFails()
-  f[k] = (f[k] || 0) + 1
-  writeFails(f)
-  if (f[k] >= MAX_FAILS) {
-    removeFromQuizQueue(cat, id)
-    clearQuizFails(cat, id)
-    return true
-  }
-  return false
-}
-
-export function getQuizFailCount(cat: string, id: number): number {
-  return readFails()[makeItemKey(cat, id)] || 0
-}
-
-export function clearQuizFails(cat: string, id: number): void {
-  const k = makeItemKey(cat, id)
-  const f = readFails()
-  if (k in f) {
-    delete f[k]
-    writeFails(f)
-  }
-}
-
-// --- 第一步（读原文）通过记录 ---
-
-function readPhase1(): Record<string, true> {
-  try {
-    const p = readSyncedJson(useAppStore().studyLang, 'quizPhase1')
-    if (!p || typeof p !== 'object' || Array.isArray(p)) return {}
-    return p as Record<string, true>
-  } catch {
-    return {}
-  }
-}
-
-function writePhase1(r: Record<string, true>) {
-  writeSyncedJson(useAppStore().studyLang, 'quizPhase1', r)
-  debouncedSync()
-}
-
-/** 标记第一步通过 */
-export function markPhase1Passed(cat: string, id: number): void {
-  const k = makeItemKey(cat, id)
-  const r = readPhase1()
-  r[k] = true
-  writePhase1(r)
-}
-
-/** 是否已通过第一步 */
-export function hasPhase1Passed(cat: string, id: number): boolean {
-  return !!readPhase1()[makeItemKey(cat, id)]
-}
-
-/** 清除第一步记录（完全通过或被打回时） */
-export function clearPhase1(cat: string, id: number): void {
-  const k = makeItemKey(cat, id)
-  const r = readPhase1()
-  if (k in r) {
-    delete r[k]
-    writePhase1(r)
-  }
 }
 
 /** 任意词均可加入测验队列 */

@@ -40,6 +40,12 @@ input, select, textarea {
   --overlay-scrim: rgba(20, 18, 16, 0.2);
   --kana-cell: #faf7f4;
   --kana-cell-hover: #fdf0ed;
+  /* 学习内容三色：原句 / 翻译 / 例句（含例句译文），全站统一 */
+  --content-original: var(--text);
+  /* 翻译：灰蓝（避免与 accent 绿雷同，和暖底、例句棕、主色珊瑚都易区分） */
+  --content-translation: #354654;
+  --content-example: #6a5340;
+  --content-ruby: color-mix(in srgb, var(--primary) 34%, var(--text-secondary));
 }
 
 body {
@@ -74,6 +80,10 @@ body {
   --overlay-scrim: rgba(0, 0, 0, 0.48);
   --kana-cell: #2a2d30;
   --kana-cell-hover: #33373b;
+  --content-original: var(--text);
+  --content-translation: #7f95a8;
+  --content-example: #c9a87a;
+  --content-ruby: color-mix(in srgb, var(--primary) 42%, var(--text-secondary));
 }
 
 body::before {
@@ -97,6 +107,16 @@ body::before {
 #app {
   position: relative;
   z-index: 1;
+}
+
+.text-content-original {
+  color: var(--content-original);
+}
+.text-content-translation {
+  color: var(--content-translation);
+}
+.text-content-example {
+  color: var(--content-example);
 }
 
 /* 顶部分类 Tab（句子/单词/50音）：浅色用暖杏底 + 主色勾边，避免灰轨 */
@@ -191,6 +211,29 @@ body::before {
   color: var(--text);
 }
 
+/* 列表页：筛选 + 搜索 + 播放 一体化工具区 */
+.list-controls-panel {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--primary) 5%, var(--card)) 0%,
+    var(--card) 40%
+  );
+  border: 1px solid color-mix(in srgb, var(--primary) 14%, var(--border));
+  box-shadow:
+    var(--shadow),
+    inset 0 1px 0 color-mix(in srgb, #ffffff 55%, transparent);
+}
+
+:root.theme-dark .list-controls-panel {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--primary) 8%, var(--card)) 0%,
+    var(--card) 45%
+  );
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+}
+
 /* 3D Card Flip */
 .perspective-1000 {
   perspective: 1000px;
@@ -218,6 +261,16 @@ body::before {
 .theme-header {
   background: var(--header-grad);
   color: var(--header-title);
+  /* PWA / iOS 添加到主屏幕、Chrome 全屏：与状态栏、刘海、灵动岛错位 */
+  padding-top: calc(env(safe-area-inset-top, 0px) + 0.625rem);
+  padding-bottom: 0.625rem;
+}
+
+@media (min-width: 768px) {
+  .theme-header {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 0.75rem);
+    padding-bottom: 0.75rem;
+  }
 }
 
 /* Study language toggle (in stats panel) */

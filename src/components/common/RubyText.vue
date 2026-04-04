@@ -27,7 +27,7 @@ defineProps<{
 .ruby-text rt {
   font-size: 0.55em;
   font-weight: normal;
-  color: var(--muted, #999);
+  color: var(--content-ruby, var(--text-secondary));
   letter-spacing: 0.02em;
 }
 </style>
