@@ -60,7 +60,7 @@ function onSpeakRange() {
           v-model="searchQuery"
           type="text"
           :placeholder="t('search')"
-          class="list-toolbar-search theme-text w-full rounded-xl border border-[var(--border)] bg-[var(--card)] py-2.5 pr-3 pl-10 text-sm outline-none transition-[border-color,box-shadow] focus:border-[var(--primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--primary)_18%,transparent)]"
+          class="list-toolbar-search theme-text w-full rounded-xl border border-[var(--border)] bg-transparent py-2 pr-3 pl-9 text-sm outline-none transition-[border-color,box-shadow] focus:border-[var(--primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--primary)_18%,transparent)]"
           @input="onSearch"
         />
         <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 theme-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -72,7 +72,7 @@ function onSpeakRange() {
         <button
           v-if="!isSpeaking"
           type="button"
-          class="list-toolbar-play-btn inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-[filter,box-shadow,opacity] sm:min-h-[42px] sm:max-w-[min(100%,280px)] sm:flex-none sm:px-5"
+          class="list-toolbar-play-btn inline-flex min-h-[36px] flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold transition-[filter,box-shadow,opacity] sm:min-h-[36px] sm:max-w-[min(100%,220px)] sm:flex-none sm:px-4"
           :class="
             totalItems < 1
               ? 'cursor-not-allowed bg-[var(--border)] text-[var(--text-secondary)] opacity-55 shadow-none'
@@ -84,30 +84,23 @@ function onSpeakRange() {
           :aria-label="t('listSpeak')"
           @click="onToggleSpeak"
         >
-          <span
-            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
-            :class="totalItems < 1 ? 'bg-black/[0.06]' : 'bg-white/20'"
-          >
-            <svg
-              class="ml-0.5 h-4 w-4"
-              :class="totalItems < 1 ? 'text-[var(--text-secondary)]' : 'text-white'"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden="true"
-            ><path d="M8 5v14l11-7z"/></svg>
-          </span>
+          <svg
+            class="ml-0.5 h-3.5 w-3.5 shrink-0"
+            :class="totalItems < 1 ? 'text-[var(--text-secondary)]' : 'text-white'"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+          ><path d="M8 5v14l11-7z"/></svg>
           <span class="whitespace-nowrap">{{ t('listSpeak') }}</span>
         </button>
         <button
           v-else
           type="button"
-          class="inline-flex min-h-[44px] flex-1 cursor-pointer items-center justify-center gap-2 rounded-full border-2 border-[var(--primary)] bg-[var(--card)] px-4 py-2 text-sm font-semibold text-[var(--primary-dark)] shadow-sm transition-colors hover:bg-[var(--primary-light)] sm:min-h-[42px] sm:max-w-[min(100%,280px)] sm:flex-none sm:px-5"
+          class="inline-flex min-h-[36px] flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-full border-2 border-[var(--primary)] bg-[var(--card)] px-3 py-1.5 text-[13px] font-semibold text-[var(--primary-dark)] shadow-sm transition-colors hover:bg-[var(--primary-light)] sm:min-h-[36px] sm:max-w-[min(100%,220px)] sm:flex-none sm:px-4"
           :aria-label="t('listStop')"
           @click="onToggleSpeak"
         >
-          <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[var(--primary)]/50 bg-[var(--primary-light)]">
-            <svg class="h-3.5 w-3.5 text-[var(--primary-dark)]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 6h12v12H6z"/></svg>
-          </span>
+          <svg class="h-3.5 w-3.5 shrink-0 text-[var(--primary-dark)]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 6h12v12H6z"/></svg>
           <span class="whitespace-nowrap">{{ t('listStop') }}</span>
         </button>
       </div>

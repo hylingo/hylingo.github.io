@@ -288,10 +288,10 @@ onUnmounted(() => {
         v-for="it in list"
         :key="it.id"
         type="button"
-        class="w-full text-left rounded-2xl theme-surface shadow-[0_2px_16px_rgba(0,0,0,0.06)] p-4 transition hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:scale-[0.99] cursor-pointer border-0"
+        class="w-full text-left rounded-2xl theme-surface shadow-[0_2px_16px_rgba(0,0,0,0.06)] p-4 pl-5 transition hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:scale-[0.99] cursor-pointer border-0 border-l-[3px] border-l-[var(--primary)]/40"
         @click="openItem(it.id)"
       >
-        <div class="text-xs font-medium theme-muted mb-1">{{ formatLabel(it) }}</div>
+        <div class="text-[11px] font-medium theme-muted mb-1.5 tracking-wide">{{ formatLabel(it) }}</div>
         <div class="text-base font-bold text-content-original leading-snug">{{ it.titleWord }}</div>
         <div v-if="currentLang === 'zh'" class="text-sm mt-1 text-content-translation">{{ it.titleZh }}</div>
         <div v-else-if="currentLang === 'en'" class="text-sm mt-1 text-content-translation opacity-90">{{ it.titleEn }}</div>

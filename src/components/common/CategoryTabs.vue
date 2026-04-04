@@ -2,22 +2,25 @@
 import { computed } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { useLang } from '@/i18n'
+import { starredTick, getStarredCount } from '@/learning'
 
 const store = useAppStore()
 const { t } = useLang()
 
 const isWordsCat = computed(
-  () => store.currentCat === 'nouns' || store.currentCat === 'verbs',
+  () => store.currentCat === 'nouns' || store.currentCat === 'verbs' || store.currentCat === 'starred',
 )
+
+const starredCount = computed(() => {
+  starredTick.value
+  return getStarredCount()
+})
 
 const wordCount = computed(() => store.data.nouns.length + store.data.verbs.length)
 
 const essayCount = computed(() => store.articles.filter((a) => a.format === 'essay').length)
 const dialogueCount = computed(() => store.articles.filter((a) => a.format === 'dialogue').length)
 
-const showWordSubTabs = computed(
-  () => store.studyLang === 'ja' && store.data.verbs.length > 0,
-)
 
 const categories = computed(() => {
   const base = [
@@ -47,11 +50,24 @@ function mainTabSelected(key: string): boolean {
   if (key === 'words') return isWordsCat.value
   return store.currentCat === key
 }
+
+const wordSubTabs = computed(() => {
+  const tabs: { key: string; label: string; count: number }[] = [
+    { key: 'nouns', label: t('catNouns'), count: store.data.nouns.length },
+  ]
+  if (store.studyLang === 'ja' && store.data.verbs.length > 0) {
+    tabs.push({ key: 'verbs', label: t('catVerbs'), count: store.data.verbs.length })
+  }
+  if (starredCount.value > 0) {
+    tabs.push({ key: 'starred', label: t('catStarred'), count: starredCount.value })
+  }
+  return tabs
+})
 </script>
 
 <template>
   <div
-    v-if="store.currentMode !== 'stats' && store.currentMode !== 'test'"
+    v-if="store.currentMode !== 'stats'"
     class="w-full min-w-0 px-4 pt-2 pb-2 md:px-10 md:max-w-[800px] md:mx-auto md:pb-3"
   >
     <div
@@ -82,51 +98,33 @@ function mainTabSelected(key: string): boolean {
       </button>
     </div>
 
-    <!-- 单词：名词 / 动词（仅日语且有动词数据时） -->
+    <!-- 单词子 tab：名词 / 动词 / 收藏 + 筛选 -->
     <div
-      v-if="showWordSubTabs && isWordsCat"
-      class="mt-2 flex w-full max-w-full flex-wrap gap-1.5 rounded-2xl border border-[var(--border)] bg-[var(--card)]/60 p-1.5 sm:flex-nowrap"
+      v-show="isWordsCat"
+      class="mt-1.5 flex items-center gap-1"
       role="tablist"
       :aria-label="t('catWords')"
     >
-      <button
-        type="button"
-        role="tab"
-        :aria-selected="store.currentCat === 'nouns'"
-        class="min-h-[36px] min-w-0 flex-1 rounded-[10px] px-3 py-1.5 text-center text-[12px] font-semibold transition-all outline-none cursor-pointer focus-visible:ring-2 focus-visible:ring-[var(--primary)]/35"
-        :class="
-          store.currentCat === 'nouns'
-            ? 'category-tab-btn--active'
-            : 'category-tab-btn--inactive opacity-85'
-        "
-        @click="store.switchCat('nouns')"
-      >
-        <span class="inline-flex items-baseline justify-center gap-1.5">
-          {{ t('catNouns') }}
-          <span class="category-tab-count text-[11px] font-medium tabular-nums">{{
-            store.data.nouns.length
-          }}</span>
-        </span>
-      </button>
-      <button
-        type="button"
-        role="tab"
-        :aria-selected="store.currentCat === 'verbs'"
-        class="min-h-[36px] min-w-0 flex-1 rounded-[10px] px-3 py-1.5 text-center text-[12px] font-semibold transition-all outline-none cursor-pointer focus-visible:ring-2 focus-visible:ring-[var(--primary)]/35"
-        :class="
-          store.currentCat === 'verbs'
-            ? 'category-tab-btn--active'
-            : 'category-tab-btn--inactive opacity-85'
-        "
-        @click="store.switchCat('verbs')"
-      >
-        <span class="inline-flex items-baseline justify-center gap-1.5">
-          {{ t('catVerbs') }}
-          <span class="category-tab-count text-[11px] font-medium tabular-nums">{{
-            store.data.verbs.length
-          }}</span>
-        </span>
-      </button>
+      <template v-if="isWordsCat">
+        <button
+          v-for="sub in wordSubTabs"
+          :key="sub.key"
+          type="button"
+          role="tab"
+          :aria-selected="store.currentCat === sub.key"
+          class="category-sub-tab min-h-[32px] rounded-[9px] px-3 py-1.5 text-[12px] font-semibold cursor-pointer transition-all duration-200 outline-none border-none"
+          :class="store.currentCat === sub.key ? 'category-tab-btn--active' : 'category-tab-btn--inactive'"
+          @click="store.switchCat(sub.key)"
+        >
+          <span class="flex items-baseline justify-center gap-1 whitespace-nowrap">
+            <span>{{ sub.label }}</span>
+            <span class="category-tab-count text-[10px] font-medium tabular-nums">{{ sub.count }}</span>
+          </span>
+        </button>
+      </template>
+      <div class="flex-1" />
+      <!-- 听页面的筛选按钮通过 Teleport 注入到这里 -->
+      <div id="sub-tab-right-slot" class="flex items-center gap-1" />
     </div>
   </div>
 </template>

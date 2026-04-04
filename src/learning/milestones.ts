@@ -1,6 +1,7 @@
 /**
- * 学习里程碑：听列表隐藏（遗留数据）、练习·认识、掌握测验。
- * 正式掌握测验的抽题范围以 `getQuizQueueKeys()`（`learning/quizQueue.ts`）为准，不得从全量词表抽题。
+ * 学习里程碑：练习·认识、连续答对自动掌握。
+ * 单词掌握条件：连续答对 N 次（MASTERY_STREAK）自动标记。
+ * 文章/对话掌握：由 articlePracticeDone 按篇管理，不走本模块。
  */
 import { makeItemKey } from './itemKey'
 import { milestoneStateTick } from './milestoneTick'
@@ -14,69 +15,98 @@ const { debouncedSync } = useFirebase()
 
 export { milestoneStateTick }
 
-type TrueMapKey = 'practiceRecognized' | 'masteryQuizPassed'
+/** 连续答对几次自动掌握 */
+const MASTERY_STREAK = 3
 
-function readTrueMapFor(ck: TrueMapKey): Record<string, true> {
+type SyncedMapKey = 'practiceRecognized' | 'masteryQuizPassed' | 'practiceStreak'
+
+function readJsonMap<T = Record<string, unknown>>(ck: SyncedMapKey): T {
   try {
     const lang = useAppStore().studyLang
     const p = readSyncedJson(lang, ck)
-    if (!p || typeof p !== 'object' || Array.isArray(p)) return {}
-    return p as Record<string, true>
+    if (!p || typeof p !== 'object' || Array.isArray(p)) return {} as T
+    return p as T
   } catch {
-    return {}
+    return {} as T
   }
 }
 
-function writeTrueMapFor(ck: TrueMapKey, r: Record<string, true>) {
+function writeJsonMap(ck: SyncedMapKey, r: unknown) {
   writeSyncedJson(useAppStore().studyLang, ck, r)
   debouncedSync()
   milestoneStateTick.value++
 }
 
-// --- 练习：认识 / 不认识（次数仍走 recordItemSeen）---
+// --- 连续答对计数 ---
 
-/** 练习中点「✓ 认识」：计次 + 短期推迟 + 写入「曾认识」里程碑（供将来掌握条件） */
+function readStreakMap(): Record<string, number> {
+  return readJsonMap<Record<string, number>>('practiceStreak')
+}
+
+function writeStreakMap(r: Record<string, number>) {
+  writeJsonMap('practiceStreak', r)
+}
+
+// --- 练习：认识 / 不认识 ---
+
+/** 练习中点「✓ 认识」：计次 + 短期推迟 + 连续答对计数（达标自动掌握） */
 export function markPracticeAnswerKnown(cat: string, id: number): void {
   const k = makeItemKey(cat, id)
-  const r = readTrueMapFor('practiceRecognized')
+
+  // 写入「曾认识」
+  const r = readJsonMap<Record<string, true>>('practiceRecognized')
   r[k] = true
-  writeTrueMapFor('practiceRecognized', r)
+  writeJsonMap('practiceRecognized', r)
+
+  // 连续答对 +1，达标自动掌握
+  const streaks = readStreakMap()
+  const next = (streaks[k] || 0) + 1
+  streaks[k] = next
+  writeStreakMap(streaks)
+
+  if (next >= MASTERY_STREAK) {
+    markMasteryPassed(cat, id)
+  }
+
   recordItemSeen(cat, id)
   delayItem(cat, id, practiceThresholds.knownDelayDays)
 }
 
-/** 练习中点「✗ 不认识」：仅计练习次数 */
+/** 练习中点「✗ 不认识」：重置连续答对计数 + 计练习次数 */
 export function markPracticeAnswerUnknown(cat: string, id: number): void {
+  const k = makeItemKey(cat, id)
+  const streaks = readStreakMap()
+  if (streaks[k]) {
+    streaks[k] = 0
+    writeStreakMap(streaks)
+  }
   recordItemSeen(cat, id)
 }
 
-/** 是否曾在练习中点过「认识」（持久标志，与当日 delay 无关） */
+/** 是否曾在练习中点过「认识」 */
 export function hasPracticeRecognized(cat: string, id: number): boolean {
-  return !!readTrueMapFor('practiceRecognized')[makeItemKey(cat, id)]
+  return !!readJsonMap<Record<string, true>>('practiceRecognized')[makeItemKey(cat, id)]
 }
 
-// --- 掌握测验（预留：测验通过后调用 markMasteryQuizPassed）---
+// --- 掌握 ---
 
-/** 练页抽题等批量筛选时一次性读取，避免对每个 id 重复 parse localStorage */
 export function getMasteryQuizPassedMap(): Record<string, true> {
-  return readTrueMapFor('masteryQuizPassed')
+  return readJsonMap<Record<string, true>>('masteryQuizPassed')
 }
 
 export function hasMasteryQuizPassed(cat: string, id: number): boolean {
-  return !!readTrueMapFor('masteryQuizPassed')[makeItemKey(cat, id)]
+  return !!readJsonMap<Record<string, true>>('masteryQuizPassed')[makeItemKey(cat, id)]
 }
 
-/** 掌握测验通过时由测验模块调用；合并策略与「听清了」一致（多设备取并集） */
-export function markMasteryQuizPassed(cat: string, id: number): void {
+/** 标记单词掌握（连续答对达标时自动调用） */
+function markMasteryPassed(cat: string, id: number): void {
   const k = makeItemKey(cat, id)
-  const r = readTrueMapFor('masteryQuizPassed')
+  const r = readJsonMap<Record<string, true>>('masteryQuizPassed')
   r[k] = true
-  writeTrueMapFor('masteryQuizPassed', r)
+  writeJsonMap('masteryQuizPassed', r)
 }
 
-/**
- * 已掌握：练习认识 + 测验通过（句子「听清」左滑已下线，不再作为条件）。
- */
+/** 已掌握：连续答对 N 次自动标记 */
 export function isItemMastered(cat: string, id: number): boolean {
-  return hasPracticeRecognized(cat, id) && hasMasteryQuizPassed(cat, id)
+  return !!readJsonMap<Record<string, true>>('masteryQuizPassed')[makeItemKey(cat, id)]
 }

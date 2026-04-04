@@ -140,50 +140,47 @@ function onLevelClear() {
 </script>
 
 <template>
-  <div class="flex flex-wrap items-center gap-2">
+  <div class="flex items-center gap-1">
     <!-- 全部 -->
     <button
       type="button"
-      class="filter-chip shrink-0 px-3 py-1.5 rounded-full text-[13px] font-medium cursor-pointer whitespace-nowrap"
+      class="shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-medium cursor-pointer transition-all border-none outline-none whitespace-nowrap"
       :class="selected === '' && (!selectedLevels || selectedLevels.length === 0)
-        ? 'filter-chip--on'
-        : 'filter-chip--off'"
+        ? 'bg-[var(--primary)]/12 text-[var(--primary)]'
+        : 'bg-transparent theme-muted hover:text-[var(--primary)]'"
       @click="onSelect(''); onLevelClear()"
     >
       {{ t('allTopics') }}
     </button>
 
-    <!-- 级别下拉（多选） -->
-    <div v-if="levels && levels.length > 0" class="relative">
-      <button
-        ref="levelTriggerRef"
-        type="button"
-        class="filter-chip shrink-0 px-3 py-1.5 rounded-full text-[13px] font-medium cursor-pointer whitespace-nowrap"
-        :class="selectedLevels && selectedLevels.length > 0
-          ? 'filter-chip--on'
-          : 'filter-chip--off'"
-        @click="toggleLevelDropdown"
-      >
-        {{ selectedLevels && selectedLevels.length > 0 ? selectedLevels.join(' ') : t('levelSelect') }}
-        <svg class="inline-block ml-1 -mr-0.5" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-    </div>
+    <!-- 级别下拉 -->
+    <button
+      v-if="levels && levels.length > 0"
+      ref="levelTriggerRef"
+      type="button"
+      class="shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-medium cursor-pointer transition-all border-none outline-none whitespace-nowrap"
+      :class="selectedLevels && selectedLevels.length > 0
+        ? 'bg-[var(--primary)]/12 text-[var(--primary)]'
+        : 'bg-transparent theme-muted hover:text-[var(--primary)]'"
+      @click="toggleLevelDropdown"
+    >
+      {{ selectedLevels && selectedLevels.length > 0 ? selectedLevels.join(' ') : t('levelSelect') }}
+      <svg class="inline-block ml-0.5" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
 
-    <!-- 分类下拉（置底，面板宽度收窄） -->
-    <div class="relative">
-      <button
-        ref="topicTriggerRef"
-        type="button"
-        class="filter-chip shrink-0 px-3 py-1.5 rounded-full text-[13px] font-medium cursor-pointer whitespace-nowrap"
-        :class="selected !== ''
-          ? 'filter-chip--on'
-          : 'filter-chip--off'"
-        @click="toggleTopicDropdown"
-      >
-        {{ selected ? (TOPIC_ICONS[selected] || '📝') + ' ' + getTopicLabel(selected) : t('topicSelect') }}
-        <svg class="inline-block ml-1 -mr-0.5" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-    </div>
+    <!-- 分类下拉 -->
+    <button
+      ref="topicTriggerRef"
+      type="button"
+      class="shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-medium cursor-pointer transition-all border-none outline-none whitespace-nowrap"
+      :class="selected !== ''
+        ? 'bg-[var(--primary)]/12 text-[var(--primary)]'
+        : 'bg-transparent theme-muted hover:text-[var(--primary)]'"
+      @click="toggleTopicDropdown"
+    >
+      {{ selected ? getTopicLabel(selected) : t('topicSelect') }}
+      <svg class="inline-block ml-0.5" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
 
     <Teleport to="body">
       <template v-if="dropdownOpen || levelDropdownOpen">

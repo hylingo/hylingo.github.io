@@ -6,16 +6,12 @@ export {
   hasPracticeRecognized,
   hasMasteryQuizPassed,
   getMasteryQuizPassedMap,
-  markMasteryQuizPassed,
   isItemMastered,
 } from './milestones'
 export {
-  quizQueueTick,
-  canJoinQuizQueue,
-  getQuizQueueKeys,
-  getQuizQueueKeySet,
-  getQuizQueueSize,
-  isInQuizQueue,
-  addToQuizQueue,
-  removeFromQuizQueue,
-} from './quizQueue'
+  starredTick,
+  isStarred,
+  toggleStar,
+  getStarredMap,
+  getStarredCount,
+} from './starred'

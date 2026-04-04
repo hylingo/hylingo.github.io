@@ -7,6 +7,7 @@ import { useLang } from '@/i18n'
 import { localMeaning } from '@/utils/helpers'
 import { normalizeJpSpeech } from '@/utils/jpSpeechMatch'
 import { recordFollowComplete } from '@/composables/useStats'
+import { isStarred, toggleStar, starredTick } from '@/learning'
 import RubyText from '@/components/common/RubyText.vue'
 import { enablePlayerDebugLogButtons } from '@/config/features'
 
@@ -186,6 +187,19 @@ function scoreLabel(score: number) {
 
 const miniTitle = computed(() => currentItem.value?.word ?? '—')
 
+const currentStarred = computed(() => {
+  starredTick.value
+  const it = currentItem.value
+  if (!it) return false
+  return isStarred((it as any)._cat, it.id)
+})
+
+function onToggleStar() {
+  const it = currentItem.value
+  if (!it) return
+  toggleStar((it as any)._cat, it.id)
+}
+
 async function copyDebugLogs() {
   try { await navigator.clipboard.writeText(exportLoopDebugLogs()); alert(t('debugCopied')) } catch (e) { alert(exportLoopDebugLogs()) }
 }
@@ -288,6 +302,15 @@ function onCardMainClick() {
           </div>
           <div class="mt-2 text-[15px] text-content-translation">{{ localMeaning(currentItem, currentLang) }}</div>
         </div>
+        <!-- 星标 -->
+        <button
+          type="button"
+          class="mt-2 mx-auto w-8 h-8 flex items-center justify-center cursor-pointer transition-all active:scale-90 bg-transparent border-none outline-none"
+          @click.stop="onToggleStar"
+        >
+          <svg v-if="currentStarred" class="w-5 h-5 text-[#e8a44c]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg v-else class="w-5 h-5 theme-muted opacity-30 hover:opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </button>
 
         <!-- 跟读区域：固定结构，不因状态变化改变高度 -->
         <div v-if="followMode" class="mt-4 flex flex-col items-center" @click.stop>

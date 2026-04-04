@@ -27,6 +27,8 @@ export const SYNCED_CLOUD_KEYS = [
   'practiceRecognized',
   'masteryQuizPassed',
   'quizQueue',
+  'starred',
+  'practiceStreak',
 ] as const
 
 export type SyncedCloudKey = (typeof SYNCED_CLOUD_KEYS)[number]
@@ -39,6 +41,8 @@ const CLOUD_TO_LOCAL_SUFFIX: Record<SyncedCloudKey, string> = {
   practiceRecognized: 'practice_recognized',
   masteryQuizPassed: 'mastery_quiz_passed',
   quizQueue: 'quiz_queue',
+  starred: 'starred',
+  practiceStreak: 'practice_streak',
 }
 
 const LEARN_ARTICLE_SUFFIX = {

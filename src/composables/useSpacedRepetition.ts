@@ -9,7 +9,7 @@ import {
   writeListenedTodayRaw,
 } from '@/learning/learnStorage'
 import { coerceListenCount } from '@/utils/listenCount'
-import { makeItemKey, getMasteryQuizPassedMap, getQuizQueueKeySet } from '@/learning'
+import { makeItemKey, getMasteryQuizPassedMap, getStarredMap } from '@/learning'
 
 const { debouncedSync } = useFirebase()
 
@@ -44,18 +44,27 @@ export function getActiveItems(cat: string): (DataItem & { _cat?: string })[] {
   const delays = getDelays()
   const today = new Date().toISOString().slice(0, 10)
   const mastery = getMasteryQuizPassedMap()
-  const inQuiz = getQuizQueueKeySet()
+
+  if (cat === 'starred') {
+    const starred = getStarredMap()
+    const all: (DataItem & { _cat: string })[] = []
+    for (const k of ['nouns', 'verbs'] as const) {
+      store.data[k].forEach((it: DataItem) => {
+        const key = makeItemKey(k, it.id)
+        if (starred[key] && !(delays[key] > today) && !mastery[key]) {
+          all.push({ ...it, _cat: k })
+        }
+      })
+    }
+    return all
+  }
 
   if (cat === 'mix') {
     const all: (DataItem & { _cat: string })[] = []
     for (const k of ['nouns', 'verbs'] as const) {
       store.data[k].forEach((it: DataItem) => {
         const key = makeItemKey(k, it.id)
-        if (
-          !(delays[key] > today) &&
-          !mastery[key] &&
-          !inQuiz.has(key)
-        ) {
+        if (!(delays[key] > today) && !mastery[key]) {
           all.push({ ...it, _cat: k })
         }
       })
@@ -71,11 +80,7 @@ export function getActiveItems(cat: string): (DataItem & { _cat?: string })[] {
   if (!Array.isArray(items)) return []
   return items.filter((it: DataItem) => {
     const key = makeItemKey(cat, it.id)
-    return (
-      !(delays[key] > today) &&
-      !mastery[key] &&
-      !inQuiz.has(key)
-    )
+    return !(delays[key] > today) && !mastery[key]
   })
 }
 

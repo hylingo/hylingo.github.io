@@ -22,7 +22,7 @@ input, select, textarea {
   --accent-light: #eef5f0;
   --text: #2d2d2d;
   --text-secondary: #777;
-  --border: #e8e2dc;
+  --border: #e8d5c8;
   --shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.10);
   --radius: 16px;
@@ -63,7 +63,7 @@ body {
   --card: #222527;
   --text: #f1f1f1;
   --text-secondary: #a9b0b6;
-  --border: #373b3f;
+  --border: #3e3230;
   --primary: #ef8f79;
   --primary-light: #3b2a25;
   --primary-dark: #cf6b56;
@@ -211,27 +211,20 @@ body::before {
   color: var(--text);
 }
 
-/* 列表页：筛选 + 搜索 + 播放 一体化工具区 */
+/* 列表页：搜索 + 播放工具区 */
 .list-controls-panel {
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--primary) 5%, var(--card)) 0%,
-    var(--card) 40%
-  );
-  border: 1px solid color-mix(in srgb, var(--primary) 14%, var(--border));
-  box-shadow:
-    var(--shadow),
-    inset 0 1px 0 color-mix(in srgb, #ffffff 55%, transparent);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
 }
 
 :root.theme-dark .list-controls-panel {
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--primary) 8%, var(--card)) 0%,
-    var(--card) 45%
-  );
-  border-color: var(--border);
-  box-shadow: var(--shadow);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-bottom: 1px solid var(--border);
 }
 
 /* 3D Card Flip */
@@ -488,47 +481,58 @@ body::before {
 }
 
 .stat-card {
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
-.stat-card--practice {
-  background: linear-gradient(135deg, #d96a53 0%, #e28a61 100%);
-}
-
+/* 听：暖橙 */
 .stat-card--listen {
-  background: linear-gradient(135deg, #bc5642 0%, #d8735c 100%);
+  background: linear-gradient(135deg, #e08860 0%, #d4a070 100%);
 }
 
+/* 读：柔紫 */
+.stat-card--read {
+  background: linear-gradient(135deg, #9b8abf 0%, #8a9cc8 100%);
+}
+
+/* 练：赤陶 */
+.stat-card--practice {
+  background: linear-gradient(135deg, #c96b5a 0%, #d08870 100%);
+}
+
+/* 已掌握：蜜桃 */
+.stat-card--mastered {
+  background: linear-gradient(135deg, #d4917a 0%, #dba88e 100%);
+}
+
+/* 天数：靛蓝 */
 .stat-card--days {
-  background: linear-gradient(135deg, #8b6ed9 0%, #6f87dc 100%);
+  background: linear-gradient(135deg, #7a82c4 0%, #6e8fd0 100%);
 }
 
-:root.theme-dark .stat-card--practice {
-  background: linear-gradient(135deg, #6f372c 0%, #834836 100%);
+/* ---- 暗色模式：保持辨识度，降低饱和、提亮底色 ---- */
+
+:root.theme-dark .stat-card {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
 }
 
 :root.theme-dark .stat-card--listen {
-  background: linear-gradient(135deg, #5e2d24 0%, #733b31 100%);
-}
-
-:root.theme-dark .stat-card--days {
-  background: linear-gradient(135deg, #382f6b 0%, #33457a 100%);
-}
-
-.stat-card--read {
-  background: linear-gradient(135deg, #5a7ab0 0%, #6b8ec4 100%);
-}
-
-.stat-card--mastered {
-  background: linear-gradient(135deg, #4f7a5e 0%, #5b8a6a 100%);
+  background: linear-gradient(135deg, #8a5a3c 0%, #7a6548 100%);
 }
 
 :root.theme-dark .stat-card--read {
-  background: linear-gradient(135deg, #2d3d58 0%, #364a68 100%);
+  background: linear-gradient(135deg, #5c5480 0%, #4f5f82 100%);
+}
+
+:root.theme-dark .stat-card--practice {
+  background: linear-gradient(135deg, #7a4840 0%, #7a5548 100%);
 }
 
 :root.theme-dark .stat-card--mastered {
-  background: linear-gradient(135deg, #2a4032 0%, #304838 100%);
+  background: linear-gradient(135deg, #7a4e42 0%, #865a4c 100%);
+}
+
+:root.theme-dark .stat-card--days {
+  background: linear-gradient(135deg, #444a78 0%, #3e5280 100%);
 }
 
 /* 次要操作：退出登录等，低对比不刺眼 */

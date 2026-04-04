@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useAppStore } from '../../stores/app'
 import type { VocabItemWithCat } from '../../types'
 import {
   hasMasteryQuizPassed,
   milestoneStateTick,
+  starredTick,
+  getStarredMap,
 } from '@/learning'
+import { useQuiz } from '@/composables/useQuiz'
 import ListToolbar from './ListToolbar.vue'
 import ListContainer from './ListContainer.vue'
 import PaginationBar from '../common/PaginationBar.vue'
@@ -13,6 +16,8 @@ import TopicChips from './TopicChips.vue'
 import { list as listThresholds } from '@/config/thresholds'
 
 const store = useAppStore()
+const { setQuizLevels } = useQuiz()
+const isWordsCat = computed(() => store.currentCat === 'nouns' || store.currentCat === 'verbs')
 
 const PAGE_SIZE = listThresholds.pageSize
 const searchQuery = ref('')
@@ -21,17 +26,26 @@ const isSpeaking = ref(false)
 const selectedTopic = ref('')
 const selectedLevels = ref<string[]>([])
 
+// 同步级别筛选到练习模式
+watch(selectedLevels, (v) => setQuizLevels(v))
+
 const emit = defineEmits<{
   speak: [items: VocabItemWithCat[], from: number, to: number]
   stop: []
 }>()
 
 const allItems = computed<VocabItemWithCat[]>(() => {
-  if (store.currentCat === 'mix') {
-    return [
+  if (store.currentCat === 'mix' || store.currentCat === 'starred') {
+    const all = [
       ...store.data.nouns.map(it => ({ ...it, _cat: 'nouns' as const })),
       ...store.data.verbs.map(it => ({ ...it, _cat: 'verbs' as const })),
     ]
+    if (store.currentCat === 'starred') {
+      starredTick.value
+      const map = getStarredMap()
+      return all.filter(it => !!map[it._cat + ':' + it.id])
+    }
+    return all
   }
   const cat = store.currentCat as 'nouns' | 'verbs'
   return (store.data[cat] || []).map(it => ({ ...it, _cat: cat }))
@@ -158,25 +172,22 @@ defineExpose({ stopSpeaking: () => { isSpeaking.value = false } })
 
 <template>
   <div>
+    <!-- 筛选按钮 Teleport 到 CategoryTabs 子 tab 行（仅单词分类有子 tab 行） -->
+    <Teleport v-if="isWordsCat" to="#sub-tab-right-slot">
+      <TopicChips
+        v-if="topics.length > 0 || levels.length > 0"
+        :topics="topics"
+        :selected="selectedTopic"
+        :levels="levels"
+        :selected-levels="selectedLevels"
+        @select="onTopicSelect"
+        @toggle-level="onLevelToggle"
+        @clear-levels="onLevelClear"
+      />
+    </Teleport>
     <div class="mb-2 px-4 md:mb-3 md:px-10">
-      <div class="list-controls-panel p-3 md:p-4">
-        <TopicChips
-          v-if="topics.length > 0 || levels.length > 0"
-          :topics="topics"
-          :selected="selectedTopic"
-          :levels="levels"
-          :selected-levels="selectedLevels"
-          @select="onTopicSelect"
-          @toggle-level="onLevelToggle"
-          @clear-levels="onLevelClear"
-        />
-        <div
-          :class="
-            topics.length > 0 || levels.length > 0
-              ? 'mt-3 border-t border-[var(--border)] pt-3'
-              : ''
-          "
-        >
+      <div class="list-controls-panel pb-3 md:pb-4">
+        <div>
           <ListToolbar
             :total-items="filteredItems.length"
             :is-speaking="isSpeaking"

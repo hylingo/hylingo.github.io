@@ -130,6 +130,8 @@ function mergeLangBundle(local: LangBundle, cloud: LangBundle): LangBundle {
     practiceRecognized: mergeDismissed((local.practiceRecognized || {}) as any, (cloud.practiceRecognized || {}) as any),
     masteryQuizPassed: mergeDismissed((local.masteryQuizPassed || {}) as any, (cloud.masteryQuizPassed || {}) as any),
     quizQueue: mergeMaxNumbers((local.quizQueue || {}) as any, (cloud.quizQueue || {}) as any),
+    starred: mergeDismissed((local.starred || {}) as any, (cloud.starred || {}) as any),
+    practiceStreak: mergeMaxNumbers((local.practiceStreak || {}) as any, (cloud.practiceStreak || {}) as any),
   }
 }
 

@@ -1,16 +1,11 @@
 import { ref, watch } from 'vue'
 import { useAppStore } from '../stores/app'
 import { recordQuiz } from './useStats'
-import { readQuizScopeRaw, writeQuizScopeRaw, studyLangFromLocalStorage } from '@/learning/learnStorage'
-import { makeItemKey } from '@/learning/itemKey'
-import { quizQueueTick, getQuizQueueKeys, addToQuizQueue, removeFromQuizQueue } from '@/learning'
 import {
   markPracticeAnswerKnown,
   markPracticeAnswerUnknown,
   milestoneStateTick,
-  getMasteryQuizPassedMap,
   hasMasteryQuizPassed,
-  markMasteryQuizPassed,
 } from '@/learning/milestones'
 import { markArticlePracticeDone } from '@/learning/articlePracticeDone'
 import { articleToPracticeQuizItems } from '@/utils/articleQuiz'
@@ -27,7 +22,6 @@ import { quiz as quizThresholds } from '@/config/thresholds'
 import { useFirebase } from '@/composables/useFirebase'
 
 export type QuizMode = 'word' | 'audio' | 'meaning'
-export type QuizScope = 'practice' | 'test'
 
 const NEW_BATCH_SIZE = quizThresholds.newBatchSize
 
@@ -43,13 +37,6 @@ function isArticleQuizItem(it: unknown): it is { _quizSource: 'article'; _articl
   return !!it && typeof it === 'object' && (it as { _quizSource?: string })._quizSource === 'article'
 }
 
-function migrateQuizScope(): QuizScope {
-  const s = readQuizScopeRaw(studyLangFromLocalStorage())
-  if (s === 'practice' || s === 'test') return s
-  return 'practice'
-}
-
-const quizScope = ref<QuizScope>(migrateQuizScope())
 
 function filterByLevel(items: any[]): any[] {
   if (quizLevels.value.length === 0) return items
@@ -89,12 +76,7 @@ function startQuiz() {
 
   articleBlockJustCompleted.value = null
 
-  if (store.practiceArticleId && quizScope.value === 'test') {
-    quizScope.value = 'practice'
-    writeQuizScopeRaw(store.studyLang, 'practice')
-  }
-
-  if (quizScope.value === 'practice' && store.practiceArticleId && (cat === 'articles' || cat === 'dialogues')) {
+  if (store.practiceArticleId && (cat === 'articles' || cat === 'dialogues')) {
     const art = store.articles.find((a) => a.id === store.practiceArticleId)
     const formatMatch = art && ((cat === 'articles' && art.format === 'essay') || (cat === 'dialogues' && art.format === 'dialogue'))
     if (!art) {
@@ -109,42 +91,21 @@ function startQuiz() {
     }
   }
 
-  if (quizScope.value === 'practice') {
-    // 练习：听过/练过的（排除已掌握），空了补全新的
-    let items = filterByLevel([...getActiveItems(cat)])
+  // 练习：听过/练过的（排除已掌握），空了补全新的
+  let items = filterByLevel([...getActiveItems(cat)])
 
-    // 先取已接触过的
-    let studied = items.filter((it) => !isBrandNewItem(it, cat, snap))
+  // 先取已接触过的
+  let studied = items.filter((it) => !isBrandNewItem(it, cat, snap))
 
-    // 如果已接触的不够，补充全新的
-    if (studied.length < NEW_BATCH_SIZE) {
-      const brandNew = items.filter((it) => isBrandNewItem(it, cat, snap))
-        .sort(() => Math.random() - 0.5)
-        .slice(0, NEW_BATCH_SIZE - studied.length)
-      studied = [...studied, ...brandNew]
-    }
-
-    quizItems.value = sortPracticePool(studied, cat, snap)
-    quizIndex.value = 0
-    isAnswered.value = false
-    return
+  // 如果已接触的不够，补充全新的
+  if (studied.length < NEW_BATCH_SIZE) {
+    const brandNew = items.filter((it) => isBrandNewItem(it, cat, snap))
+      .sort(() => Math.random() - 0.5)
+      .slice(0, NEW_BATCH_SIZE - studied.length)
+    studied = [...studied, ...brandNew]
   }
 
-  // 测试：从队列取（跨分类）
-  const keys = getQuizQueueKeys()
-  const masteryMap = getMasteryQuizPassedMap()
-  const allPool = new Map<string, any>()
-  for (const c of ['nouns', 'verbs'] as const) {
-    for (const it of (store.data[c] || [])) {
-      allPool.set(makeItemKey(c, it.id), { ...it, _cat: c })
-    }
-  }
-  const testItems = keys
-    .map((k) => allPool.get(k))
-    .filter(Boolean)
-    .filter((it: any) => !masteryMap[makeItemKey(it._cat, it.id)]) as any[]
-
-  quizItems.value = testItems.sort(() => Math.random() - 0.5)
+  quizItems.value = sortPracticePool(studied, cat, snap)
   quizIndex.value = 0
   isAnswered.value = false
 }
@@ -160,18 +121,12 @@ export function schedulePracticeStartQuiz() {
   })
 }
 
-function setQuizScope(scope: QuizScope) {
-  if (quizScope.value === scope) return
-  quizScope.value = scope
-  writeQuizScopeRaw(useAppStore().studyLang, scope)
-  startQuiz()
-}
 
 function showAnswer() {
   isAnswered.value = true
 }
 
-/** 练习模式：认识 → 加入测试队列 */
+/** 练习模式：认识 */
 function submitCorrect() {
   const store = useAppStore()
   const it = quizItems.value[quizIndex.value]
@@ -182,7 +137,6 @@ function submitCorrect() {
   }
   const cat = it._cat || store.currentCat
   markPracticeAnswerKnown(cat, it.id)
-  addToQuizQueue(cat, it.id)
   recordQuiz(it, true, cat)
   advanceIndex()
 }
@@ -203,26 +157,6 @@ function advanceAfterWrong() {
   advanceIndex()
 }
 
-/** 测试模式：掌握通过 */
-function testPass() {
-  const store = useAppStore()
-  const it = quizItems.value[quizIndex.value]
-  if (!it) return
-  const cat = it._cat || store.currentCat
-  markMasteryQuizPassed(cat, it.id)
-  removeFromQuizQueue(cat, it.id)
-  advanceIndex()
-}
-
-/** 测试模式：失败，跳过 */
-function testFail() {
-  // 不再累计失败次数，直接跳过
-}
-
-/** 测试模式：下一个 */
-function testAdvance() {
-  advanceIndex()
-}
 
 function advanceIndex() {
   const store = useAppStore()
@@ -275,12 +209,11 @@ function bindQuizWatchersOnce() {
   watch(
     () => useAppStore().studyLang,
     () => {
-      quizScope.value = migrateQuizScope()
       startQuiz()
     },
   )
 
-  watch([milestoneStateTick, quizQueueTick], () => {
+  watch(milestoneStateTick, () => {
     const store = useAppStore()
     if (quizItems.value.length && isArticleQuizItem(quizItems.value[0])) return
     const cat = store.currentCat
@@ -302,7 +235,6 @@ export function useQuiz() {
     quizItems,
     quizIndex,
     isAnswered,
-    quizScope,
     quizLevels,
     articleBlockJustCompleted,
     schedulePracticeStartQuiz,
@@ -312,10 +244,6 @@ export function useQuiz() {
     submitCorrect,
     submitWrong,
     advanceAfterWrong,
-    testPass,
-    testFail,
-    testAdvance,
-    setQuizScope,
     dismissArticleBlockComplete,
   }
 }
