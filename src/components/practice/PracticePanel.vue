@@ -270,9 +270,9 @@ const progressText = computed(() => {
           <!-- 评分 + 回放 + 录音（固定高度区域，避免布局跳动） -->
           <div class="w-full max-w-[400px] flex flex-col items-center gap-2">
             <!-- 评分结果 -->
-            <div v-if="sttScore !== null" class="flex items-center justify-center gap-2">
-              <span class="text-lg font-bold tabular-nums" :style="{ color: scoreColor(sttScore) }">{{ sttScore }}</span>
-              <span v-if="sttResult" class="text-sm theme-text">{{ sttResult }}</span>
+            <div v-if="sttScore !== null" class="flex items-center justify-center gap-2 w-full min-w-0">
+              <span class="text-lg font-bold tabular-nums shrink-0" :style="{ color: scoreColor(sttScore) }">{{ sttScore }}</span>
+              <span v-if="sttResult" class="text-sm theme-text truncate min-w-0">{{ sttResult }}</span>
             </div>
 
             <!-- 回放条（始终占位） -->
