@@ -4,7 +4,7 @@ import { audioEl, playMainTrack } from './useAudio'
 import { recordListenTime } from './useStats'
 import { recordItemListened } from './useSpacedRepetition'
 import { t } from '@/i18n'
-import { SILENT_KEEPALIVE_WAV, getGapWavUri } from '@/utils/silentWavGap'
+import { getGapWavUri } from '@/utils/silentWavGap'
 
 const LOOP_DEBUG_KEY = 'loop_debug_logs_v1'
 const LOOP_DEBUG_MAX = 200
@@ -134,6 +134,40 @@ function playCurrentAudio(src: string, session: number, onFail: () => void) {
 }
 
 // 主轨 play/pause 事件会与锁屏不同步：句间切轨会短暂 pause，不能把锁屏打成「已暂停」
+// iOS 锁屏/切后台再回来时，音频可能被系统暂停且不触发任何事件。
+// 页面恢复可见时检测并恢复播放。
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) return
+    if (!loopPlaying.value || loopPaused.value) return
+    appendLoopDebug('visibility_resume', `audioEl.paused=${audioEl.paused}`)
+    // 恢复 keepalive
+    if (silentAudio && silentAudio.paused) {
+      silentAudio.play().catch(() => {
+        appendLoopDebug('keepalive_visibility_resume_failed')
+      })
+    }
+    // 主轨如果被系统暂停但还没播完，恢复它
+    if (audioEl.paused && !audioEl.ended && audioEl.src && audioEl.currentTime > 0) {
+      appendLoopDebug('visibility_resume_audio')
+      audioEl.play().catch(() => {
+        appendLoopDebug('visibility_resume_audio_failed')
+      })
+    }
+    // 主轨已 ended 但没有推进到下一条（gap 音也被系统杀了），手动推进
+    if (audioEl.ended) {
+      if (!gapAudio || gapAudio.paused) {
+        appendLoopDebug('visibility_resume_stalled')
+        if (gapAudio) gapAudio.onended = null
+        nextLoopItemInternal()
+      }
+    }
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.playbackState = 'playing'
+    }
+  })
+}
+
 audioEl.addEventListener('play', () => {
   if (loopPlaying.value && !loopPaused.value && 'mediaSession' in navigator) {
     navigator.mediaSession.playbackState = 'playing'
@@ -171,7 +205,9 @@ function clearLoopScheduling() {
 
 function startSilentKeepAlive() {
   if (silentAudio) return
-  silentAudio = new Audio(SILENT_KEEPALIVE_WAV)
+  // Use a longer silent clip (2s) instead of the tiny one — iOS sometimes drops
+  // very short looping data-URI audio after a few minutes in the background.
+  silentAudio = new Audio(getGapWavUri(2000))
   silentAudio.loop = true
   silentAudio.volume = 0.01
   silentAudio.play().catch(() => {

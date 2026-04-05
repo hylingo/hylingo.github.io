@@ -108,7 +108,7 @@ async def main_async(args: argparse.Namespace) -> int:
             continue
         if not seg.get("audio"):
             missing_f_texts.add(text)
-        if not is_n1 and not seg.get("audioMale"):
+        if not args.female_only and not is_n1 and not seg.get("audioMale"):
             missing_m_texts.add(text)
 
     # 1) 补全字段（仅影响缺 audio 的精读句）
@@ -120,7 +120,7 @@ async def main_async(args: argparse.Namespace) -> int:
             if text not in audio_map:
                 audio_map[text] = female_rel(text)
             seg["audio"] = audio_map[text]
-        if not is_n1 and not seg.get("audioMale"):
+        if not args.female_only and not is_n1 and not seg.get("audioMale"):
             if text not in male_map:
                 male_map[text] = male_rel(text)
             seg["audioMale"] = male_map[text]
@@ -186,6 +186,7 @@ async def main_async(args: argparse.Namespace) -> int:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--female-only", action="store_true", help="只生成女声")
     args = ap.parse_args()
     raise SystemExit(asyncio.run(main_async(args)))
 
