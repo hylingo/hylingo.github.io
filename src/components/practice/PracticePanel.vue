@@ -138,7 +138,7 @@ function calcScore(transcript: string, item: { word: string; reading: string }):
 function scoreColor(score: number) {
   if (score >= 80) return '#4f8a6f'
   if (score >= 50) return '#c49a3c'
-  return '#c45a3e'
+  return getComputedStyle(document.documentElement).getPropertyValue('--primary-dark').trim() || '#c45a3e'
 }
 
 function resetRecordState() {
@@ -298,7 +298,7 @@ const progressText = computed(() => {
               <div class="flex items-center gap-[3px] h-8">
                 <span v-for="i in 5" :key="i" class="w-[3px] rounded-full transition-all duration-300" :class="recording ? 'bg-red-400 animate-wave' : 'bg-current opacity-20'" :style="{ height: recording ? undefined : '8px', animationDelay: recording ? (i * 0.12) + 's' : undefined, color: 'var(--text-secondary)' }" />
               </div>
-              <button type="button" class="w-14 h-14 flex items-center justify-center rounded-full text-white cursor-pointer active:scale-[0.96] transition-all" :class="recording ? 'bg-red-500 shadow-[0_6px_20px_rgba(239,68,68,0.35)]' : 'bg-gradient-to-b from-[#f38a73] to-[#e8735a] shadow-[0_6px_20px_rgba(232,115,90,0.3)]'" style="touch-action: none" @pointerdown.prevent="onTestRecordDown" @pointerup.prevent="onTestRecordUp" @pointercancel="onTestRecordUp">
+              <button type="button" class="w-14 h-14 flex items-center justify-center rounded-full text-white cursor-pointer active:scale-[0.96] transition-all" :class="recording ? 'bg-red-500 shadow-[0_6px_20px_rgba(239,68,68,0.35)]' : 'bg-gradient-to-b from-[#f38a73] to-primary shadow-[0_6px_20px_rgba(232,115,90,0.3)]'" style="touch-action: none" @pointerdown.prevent="onTestRecordDown" @pointerup.prevent="onTestRecordUp" @pointercancel="onTestRecordUp">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
               </button>
               <div class="flex items-center gap-[3px] h-8">
@@ -341,7 +341,7 @@ const progressText = computed(() => {
 
           <div class="flex gap-3 w-full max-w-[400px]">
             <button class="flex-1 py-3 rounded-[10px] text-base font-semibold cursor-pointer transition-all btn-grad-primary" @click="onPracticeCorrect">{{ t('correct') }}</button>
-            <button class="flex-1 py-3 rounded-[10px] text-base font-semibold cursor-pointer transition-all border-2 theme-surface theme-muted hover:border-[#c45a3e]" @click="onPracticeWrong">{{ t('wrong') }}</button>
+            <button class="flex-1 py-3 rounded-[10px] text-base font-semibold cursor-pointer transition-all border-2 theme-surface theme-muted hover:border-primary-dark" @click="onPracticeWrong">{{ t('wrong') }}</button>
           </div>
         </template>
       </template>

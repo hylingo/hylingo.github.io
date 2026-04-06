@@ -46,7 +46,7 @@ function onInputConfirm() {
         v-model="pageInput"
         type="text"
         inputmode="numeric"
-        class="w-10 text-center border-2 border-[#e8e2dc] rounded-lg py-1 text-sm font-semibold theme-text theme-surface outline-none focus:border-[#e8735a] transition-colors"
+        class="w-10 text-center border-2 border-[#e8e2dc] rounded-lg py-1 text-sm font-semibold theme-text theme-surface outline-none focus:border-primary transition-colors"
         @keydown.enter="onInputConfirm"
         @blur="onInputConfirm"
       />

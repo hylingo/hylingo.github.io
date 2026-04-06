@@ -62,7 +62,7 @@ function onToggleStar(e: Event) {
   >
     <div class="flex items-center gap-3 px-4 py-3">
       <div
-        class="w-8 h-8 rounded-full theme-soft text-[#e8735a] flex items-center justify-center text-[11px] font-bold tabular-nums shrink-0"
+        class="w-8 h-8 rounded-full theme-soft text-primary flex items-center justify-center text-[11px] font-bold tabular-nums shrink-0"
       >
         {{ rowNumber }}
       </div>
@@ -101,7 +101,7 @@ function onToggleStar(e: Event) {
         </div>
         <button
           type="button"
-          class="w-9 h-9 rounded-full border-2 flex items-center justify-center cursor-pointer transition-all border-[#e8e2dc] theme-surface text-[#e8735a] shadow-[0_2px_8px_rgba(0,0,0,0.06)] hover:border-[#e8735a] hover:shadow-[0_4px_12px_rgba(232,115,90,0.2)] active:scale-[0.96]"
+          class="w-9 h-9 rounded-full border-2 flex items-center justify-center cursor-pointer transition-all border-[#e8e2dc] theme-surface text-primary shadow-[0_2px_8px_rgba(0,0,0,0.06)] hover:border-primary hover:shadow-[0_4px_12px_rgba(232,115,90,0.2)] active:scale-[0.96]"
           :aria-label="t('listPlayFromHere')"
           @pointerdown.stop
           @click.stop="onPlayListFromRow"

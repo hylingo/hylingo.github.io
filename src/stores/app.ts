@@ -232,6 +232,9 @@ export const useAppStore = defineStore('app', () => {
     const art = articles.value.find((a) => a.id === articleId)
     if (!art) return
     const fmt = art.format // 'essay' | 'dialogue'
+    // 确保 currentCat 与文章 format 一致，否则 syncSlotToCat 会读错槽位
+    const targetCat = fmt === 'dialogue' ? 'dialogues' : 'articles'
+    if (currentCat.value !== targetCat) currentCat.value = targetCat
     const slot: PracticeSlot = { id: articleId, title: art.titleWord ?? '', index: 0 }
     writeSlot(fmt, slot)
     practiceArticleId.value = articleId

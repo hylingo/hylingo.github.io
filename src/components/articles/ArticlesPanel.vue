@@ -420,7 +420,7 @@ onUnmounted(() => {
             class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer"
             :class="
               showTranslation
-                ? 'bg-[#e8735a]/15 border-[#e8735a]/40 text-[#c45a3e]'
+                ? 'bg-primary/15 border-primary/40 text-primary-dark'
                 : 'theme-muted border-[var(--border)] bg-transparent opacity-90'
             "
             :aria-pressed="showTranslation"
@@ -433,7 +433,7 @@ onUnmounted(() => {
             class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer"
             :class="
               showReading
-                ? 'bg-[#e8735a]/15 border-[#e8735a]/40 text-[#c45a3e]'
+                ? 'bg-primary/15 border-primary/40 text-primary-dark'
                 : 'theme-muted border-[var(--border)] bg-transparent opacity-90'
             "
             :aria-pressed="showReading"
@@ -448,11 +448,11 @@ onUnmounted(() => {
           >
             <span
               class="px-2 py-0.5 rounded-full transition-colors"
-              :class="!articleVoiceMale ? 'bg-[#e8735a]/15 text-[#c45a3e]' : 'theme-muted'"
+              :class="!articleVoiceMale ? 'bg-primary/15 text-primary-dark' : 'theme-muted'"
             >{{ t('articleVoiceFemale') }}</span>
             <span
               class="px-2 py-0.5 rounded-full transition-colors"
-              :class="articleVoiceMale ? 'bg-[#e8735a]/15 text-[#c45a3e]' : 'theme-muted'"
+              :class="articleVoiceMale ? 'bg-primary/15 text-primary-dark' : 'theme-muted'"
             >{{ t('articleVoiceMale') }}</span>
           </div>
           <template v-if="canPlayAll">
@@ -467,7 +467,7 @@ onUnmounted(() => {
             <button
               v-else
               type="button"
-              class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer bg-[#e8735a]/15 border-[#e8735a]/40 text-[#c45a3e]"
+              class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer bg-primary/15 border-primary/40 text-primary-dark"
               @click="stopLoop"
             >
               {{ t('articleStopPlayback') }}
@@ -488,11 +488,11 @@ onUnmounted(() => {
           >
             <span
               class="px-2 py-0.5 rounded-full transition-colors"
-              :class="!singleMode ? 'bg-[#e8735a]/15 text-[#c45a3e]' : 'theme-muted'"
+              :class="!singleMode ? 'bg-primary/15 text-primary-dark' : 'theme-muted'"
             >{{ t('articleModeFull') }}</span>
             <span
               class="px-2 py-0.5 rounded-full transition-colors"
-              :class="singleMode ? 'bg-[#e8735a]/15 text-[#c45a3e]' : 'theme-muted'"
+              :class="singleMode ? 'bg-primary/15 text-primary-dark' : 'theme-muted'"
             >{{ t('articleModeSingle') }}</span>
           </div>
         </div>
@@ -516,7 +516,7 @@ onUnmounted(() => {
           v-for="(seg, i) in flatSentences"
           :key="i"
           class="relative rounded-2xl theme-surface p-4 md:p-5 shadow-[0_2px_16px_rgba(0,0,0,0.06)] transition"
-          :class="linePlaying(i) ? 'ring-2 ring-[#e8735a]/40' : 'ring-0'"
+          :class="linePlaying(i) ? 'ring-2 ring-primary/40' : 'ring-0'"
         >
           <div class="flex items-start gap-3">
             <div class="flex-1 min-w-0">
@@ -533,7 +533,7 @@ onUnmounted(() => {
               v-if="audioFnForJp(seg)"
               type="button"
               class="shrink-0 w-9 h-9 mt-0.5 rounded-full flex items-center justify-center cursor-pointer border-0 transition-transform active:scale-95"
-              style="background: linear-gradient(135deg, #e8735a 0%, #d4624d 100%); color: #fff;"
+              style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff;"
               @click="playSentenceAt(i)"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -564,7 +564,7 @@ onUnmounted(() => {
                   v-for="(seg, si) in para"
                   :key="`${pi}-${si}`"
                   class="rounded-sm"
-                  :class="linePlaying(seg.word) ? 'bg-[#e8735a]/25 ring-1 ring-[#e8735a]/30' : ''"
+                  :class="linePlaying(seg.word) ? 'bg-primary/25 ring-1 ring-primary/30' : ''"
                 ><RubyText v-if="seg.ruby" :tokens="seg.ruby" /><template v-else>{{ seg.word }}</template></span>
               </p>
               <p v-else class="text-[17px] font-medium text-content-original leading-[1.85] [text-indent:1em]">
@@ -572,7 +572,7 @@ onUnmounted(() => {
                   v-for="(seg, si) in para"
                   :key="`${pi}-${si}-nr`"
                   class="rounded-sm"
-                  :class="linePlaying(seg.word) ? 'bg-[#e8735a]/25 ring-1 ring-[#e8735a]/30' : ''"
+                  :class="linePlaying(seg.word) ? 'bg-primary/25 ring-1 ring-primary/30' : ''"
                 >{{ seg.word }}</span>
               </p>
               <template v-if="showTranslation">
@@ -614,7 +614,7 @@ onUnmounted(() => {
               v-for="(line, li) in sec.lines"
               :key="li"
               class="transition-colors rounded-md -mx-0.5 px-0.5 py-0.5"
-              :class="linePlaying(line.word) ? 'bg-[#e8735a]/10' : ''"
+              :class="linePlaying(line.word) ? 'bg-primary/10' : ''"
             >
               <div class="text-xs font-bold mb-0.5" style="color: var(--primary)">{{ line.speaker }}</div>
               <p v-if="showReading && line.ruby" class="text-[17px] text-content-original leading-relaxed"><RubyText :tokens="line.ruby" /></p>
@@ -636,7 +636,7 @@ onUnmounted(() => {
           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer"
           :class="
             showGrammar
-              ? 'bg-[#e8735a]/15 border-[#e8735a]/40 text-[#c45a3e]'
+              ? 'bg-primary/15 border-primary/40 text-primary-dark'
               : 'theme-muted border-[var(--border)] bg-transparent hover:theme-text'
           "
           @click="showGrammar = !showGrammar"
@@ -650,7 +650,7 @@ onUnmounted(() => {
             <div
               v-for="g in articleGrammar"
               :key="g.id"
-              class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs border border-[var(--border)] hover:border-[#e8735a]/30 transition-colors"
+              class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs border border-[var(--border)] hover:border-primary/30 transition-colors"
             >
               <span class="font-mono text-[10px] leading-none px-1 py-0.5 rounded bg-[var(--bg)] theme-muted">{{ g.level }}</span>
               <span class="font-medium text-content-original">{{ g.pattern }}</span>

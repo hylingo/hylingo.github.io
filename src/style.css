@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
+}
+
 /* 移动端 Chrome 等：地址栏显隐时 100vh 会变化，导致整页与 fixed 底栏「晃」；用 svh 更稳 */
 html {
   overflow-x: clip;

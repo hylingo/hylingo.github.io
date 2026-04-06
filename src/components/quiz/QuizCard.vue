@@ -34,7 +34,7 @@ defineEmits<{
           <span
             v-for="(tk, i) in item.tokens"
             :key="i"
-            class="inline-block border-b border-[#e8735a]/15"
+            class="inline-block border-b border-primary/15"
             :class="i > 0 ? 'ml-[5px]' : ''"
           >{{ tk }}</span>
         </template>

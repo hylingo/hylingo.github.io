@@ -107,7 +107,7 @@ const chartTitleText = computed(() => {
       <button
         type="button"
         class="h-7 px-2.5 rounded-full flex items-center justify-center cursor-pointer transition-colors border-0 text-xs font-bold tabular-nums"
-        :class="showAll ? 'bg-[#e8735a]/15 text-[#c45a3e]' : 'theme-soft theme-muted'"
+        :class="showAll ? 'bg-primary/15 text-primary-dark' : 'theme-soft theme-muted'"
         @click="showAll = !showAll; tappedDay = null"
       >{{ showAll ? '全' : '7' }}</button>
     </div>
@@ -129,7 +129,7 @@ const chartTitleText = computed(() => {
           <div
             class="flex items-end justify-center gap-[2px] flex-1 w-full px-[2px] rounded-t-md transition-colors"
             :class="[
-              tappedDay === day ? 'bg-[#e8735a]/8' : '',
+              tappedDay === day ? 'bg-primary/8' : '',
               idx % 2 === 0 ? 'day-even' : 'day-odd'
             ]"
           >

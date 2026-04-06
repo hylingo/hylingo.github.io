@@ -28,7 +28,7 @@ function handleLogout() {
   <!-- Logged in: account info -->
   <div v-else class="theme-card p-5 text-center mt-4">
     <div class="text-[13px] text-[#777] mb-1">{{ t('loggedInAs') }}</div>
-    <div class="text-2xl font-extrabold tracking-widest text-[#e8735a]">{{ userId }}</div>
+    <div class="text-2xl font-extrabold tracking-widest text-primary">{{ userId }}</div>
     <div class="text-[12px] text-[#aaa] mt-1">{{ t('syncEnabled') }}</div>
     <button
       type="button"

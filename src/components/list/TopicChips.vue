@@ -203,8 +203,8 @@ function onLevelClear() {
         >
           <button
             type="button"
-            class="w-full min-w-0 text-left pl-3 pr-2 py-2 text-[13px] font-medium leading-snug break-words cursor-pointer transition-colors hover:bg-[#e8735a]/10"
-            :class="!selected ? 'text-[#e8735a]' : 'theme-text'"
+            class="w-full min-w-0 text-left pl-3 pr-2 py-2 text-[13px] font-medium leading-snug break-words cursor-pointer transition-colors hover:bg-primary/10"
+            :class="!selected ? 'text-primary' : 'theme-text'"
             @click="onSelect('')"
           >
             {{ t('filterNone') }}
@@ -213,8 +213,8 @@ function onLevelClear() {
             v-for="row in topics"
             :key="row.topic"
             type="button"
-            class="w-full min-w-0 text-left pl-3 pr-2 py-2 text-[13px] font-medium leading-snug break-words cursor-pointer transition-colors hover:bg-[#e8735a]/10 flex items-baseline justify-between gap-2"
-            :class="selected === row.topic ? 'text-[#e8735a]' : 'theme-text'"
+            class="w-full min-w-0 text-left pl-3 pr-2 py-2 text-[13px] font-medium leading-snug break-words cursor-pointer transition-colors hover:bg-primary/10 flex items-baseline justify-between gap-2"
+            :class="selected === row.topic ? 'text-primary' : 'theme-text'"
             @click="onSelect(row.topic)"
           >
             <span class="min-w-0">{{ TOPIC_ICONS[row.topic] || '📝' }} {{ getTopicLabel(row.topic) }}</span>
@@ -229,8 +229,8 @@ function onLevelClear() {
         >
           <button
             type="button"
-            class="w-full text-left px-3 py-2 text-[13px] font-medium cursor-pointer transition-colors hover:bg-[#e8735a]/10"
-            :class="!selectedLevels || selectedLevels.length === 0 ? 'text-[#e8735a]' : 'theme-text'"
+            class="w-full text-left px-3 py-2 text-[13px] font-medium cursor-pointer transition-colors hover:bg-primary/10"
+            :class="!selectedLevels || selectedLevels.length === 0 ? 'text-primary' : 'theme-text'"
             @click="onLevelClear()"
           >
             {{ t('filterNone') }}
@@ -239,12 +239,12 @@ function onLevelClear() {
             v-for="lv in levels"
             :key="lv"
             type="button"
-            class="w-full text-left px-3 py-2 text-[13px] font-medium cursor-pointer transition-colors hover:bg-[#e8735a]/10 flex items-center gap-2"
+            class="w-full text-left px-3 py-2 text-[13px] font-medium cursor-pointer transition-colors hover:bg-primary/10 flex items-center gap-2"
             @click="onLevelToggle(lv)"
           >
-            <svg v-if="selectedLevels?.includes(lv)" class="shrink-0 text-[#e8735a]" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            <svg v-if="selectedLevels?.includes(lv)" class="shrink-0 text-primary" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
             <span v-else class="shrink-0 w-[14px]" />
-            <span :class="selectedLevels?.includes(lv) ? 'text-[#e8735a]' : 'theme-text'">{{ lv }}</span>
+            <span :class="selectedLevels?.includes(lv) ? 'text-primary' : 'theme-text'">{{ lv }}</span>
           </button>
         </div>
       </template>

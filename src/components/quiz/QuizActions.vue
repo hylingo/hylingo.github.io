@@ -37,7 +37,7 @@ defineEmits<{
       </button>
       <button
         class="py-3 px-5 rounded-[10px] border-2 flex items-center justify-center cursor-pointer transition-all"
-        :class="isLooping ? 'btn-grad-primary text-white' : 'border-[#e8e2dc] theme-surface hover:border-[#e8735a]'"
+        :class="isLooping ? 'btn-grad-primary text-white' : 'border-[#e8e2dc] theme-surface hover:border-primary'"
         @click="$emit('loop')"
       >
         <svg v-if="isLooping" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>

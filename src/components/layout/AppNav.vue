@@ -22,7 +22,7 @@ const navItems = [
       v-for="item in navItems"
       :key="item.mode"
       class="flex-1 flex flex-col items-center gap-[2px] pt-2.5 pb-2 border-none bg-transparent text-[11px] font-semibold cursor-pointer transition-all"
-      :class="store.currentMode === item.mode ? 'text-[#e8735a]' : 'text-[#777]'"
+      :class="store.currentMode === item.mode ? 'text-primary' : 'text-[#777]'"
       @click="store.switchMode(item.mode)"
     >
       <span class="text-[22px]">{{ item.icon }}</span>
@@ -35,7 +35,7 @@ const navItems = [
     class="hidden md:flex fixed top-0 left-0 bottom-0 w-[200px] flex-col gap-1 pt-20 px-3 pb-6 theme-nav-desktop z-[300] overflow-hidden"
     style="box-shadow: 2px 0 12px rgba(0,0,0,0.04)"
   >
-    <div class="text-lg font-bold text-[#e8735a] px-3 pb-5">
+    <div class="text-lg font-bold text-primary px-3 pb-5">
     </div>
     <button
       v-for="item in navItems"

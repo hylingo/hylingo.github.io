@@ -176,7 +176,7 @@ onUnmounted(() => { stopPlayback() })
 function scoreColor(score: number) {
   if (score >= 80) return '#4f8a6f'
   if (score >= 50) return '#c49a3c'
-  return '#c45a3e'
+  return getComputedStyle(document.documentElement).getPropertyValue('--primary-dark').trim() || '#c45a3e'
 }
 
 function scoreLabel(score: number) {
@@ -226,7 +226,7 @@ function onCardMainClick() {
   >
     <button
       type="button"
-      class="shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-b from-[#f38a73] to-[#e8735a] text-white shadow-md active:scale-[0.98]"
+      class="shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-b from-[#f38a73] to-primary text-white shadow-md active:scale-[0.98]"
       @click="togglePlay"
     >
       <svg v-if="loopPaused" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="8,6 18,12 8,18" /></svg>
@@ -375,7 +375,7 @@ function onCardMainClick() {
               <button
                 type="button"
                 class="flex h-16 w-16 shrink-0 cursor-pointer items-center justify-center rounded-full text-white transition-transform active:scale-[0.96]"
-                :class="recording ? 'bg-red-500 shadow-[0_6px_20px_rgba(239,68,68,0.35)]' : 'bg-gradient-to-b from-[#f38a73] to-[#e8735a] shadow-[0_6px_20px_rgba(232,115,90,0.3)]'"
+                :class="recording ? 'bg-red-500 shadow-[0_6px_20px_rgba(239,68,68,0.35)]' : 'bg-gradient-to-b from-[#f38a73] to-primary shadow-[0_6px_20px_rgba(232,115,90,0.3)]'"
                 style="touch-action: none"
                 :title="t('followHint')"
                 @pointerdown.prevent="onRecordDown"
@@ -423,7 +423,7 @@ function onCardMainClick() {
           </button>
           <button
             type="button"
-            class="flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-gradient-to-b from-[#f38a73] to-[#e8735a] text-white shadow-[0_8px_22px_rgba(232,115,90,0.35)] transition-transform active:scale-[0.98]"
+            class="flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-gradient-to-b from-[#f38a73] to-primary text-white shadow-[0_8px_22px_rgba(232,115,90,0.35)] transition-transform active:scale-[0.98]"
             :title="t('loopTapToPlay')"
             @click="togglePlay"
           >
