@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import type { ArticleItem, GrammarPoint, StudyLang } from '@/types'
+import { clearMilestoneCache } from '@/learning/milestones'
 
 export interface DataItem {
   id: number
@@ -131,6 +132,7 @@ export const useAppStore = defineStore('app', () => {
     if (studyLang.value === lang && isDataLoaded.value) return
     studyLang.value = lang
     localStorage.setItem('study_lang', lang)
+    clearMilestoneCache()
     if (lang === 'en' && currentCat.value === 'kana') {
       currentCat.value = 'articles'
     }
@@ -250,16 +252,22 @@ export const useAppStore = defineStore('app', () => {
       if (!practiceArticleId.value && (currentCat.value === 'articles' || currentCat.value === 'dialogues')) {
         currentCat.value = 'nouns'
       }
+      // 文章练习需要 articles 数据
+      if (practiceArticleId.value) ensureArticles()
     }
     currentMode.value = mode
   }
 
   function switchCat(cat: string) {
     currentCat.value = cat
+    if (cat === 'articles' || cat === 'dialogues') ensureArticles()
     if (currentMode.value === 'practice') {
       syncSlotToCat()
     }
   }
+
+  const isArticlesLoaded = ref(false)
+  let _articlesLoadPromise: Promise<void> | null = null
 
   async function loadData() {
     try {
@@ -268,35 +276,60 @@ export const useAppStore = defineStore('app', () => {
 
       const nounPath = ja ? 'data/nouns.json' : 'data/en_nouns.json'
       const verbPath = ja ? 'data/verbs.json' : ''
-      const artPath = ja ? 'data/ja_articles.json' : 'data/en_articles.json'
 
-      const [nouns, verbsRes, articlesData, grammarData] = await Promise.all([
+      const [nouns, verbsRes] = await Promise.all([
         fetch(`${base}${nounPath}`).then(r => r.json()),
         verbPath
           ? fetch(`${base}${verbPath}`).then(r => r.json())
           : Promise.resolve([]),
-        fetch(`${base}${artPath}`).then(r => r.json()),
-        fetch(`${base}data/grammar.json`).then(r => r.json()).catch(() => ({ items: [] })),
       ])
       data.value.nouns = nouns
       data.value.verbs = Array.isArray(verbsRes) ? verbsRes : []
+      isDataLoaded.value = true
+
+      // articles + grammar 延迟加载，不阻塞首屏
+      _articlesLoadPromise = null
+      isArticlesLoaded.value = false
+    } catch (e) {
+      console.error('Failed to load data', e)
+      throw e
+    }
+  }
+
+  /** 按需加载 articles + grammar（首次调用触发 fetch，后续复用） */
+  async function ensureArticles(): Promise<void> {
+    if (isArticlesLoaded.value) return
+    if (_articlesLoadPromise) return _articlesLoadPromise
+    _articlesLoadPromise = _loadArticles()
+    return _articlesLoadPromise
+  }
+
+  async function _loadArticles(): Promise<void> {
+    try {
+      const base = import.meta.env.BASE_URL
+      const ja = studyLang.value === 'ja'
+      const artPath = ja ? 'data/ja_articles.json' : 'data/en_articles.json'
+
+      const [articlesData, grammarData] = await Promise.all([
+        fetch(`${base}${artPath}`).then(r => r.json()),
+        fetch(`${base}data/grammar.json`).then(r => r.json()).catch(() => ({ items: [] })),
+      ])
+
       articles.value = Array.isArray(articlesData?.items) ? articlesData.items : []
       const gMap: Record<string, GrammarPoint> = {}
       for (const g of grammarData?.items ?? []) gMap[g.id] = g
       grammarMap.value = gMap
-      isDataLoaded.value = true
+      isArticlesLoaded.value = true
 
-      // 恢复上次未完成的本篇练习（仅恢复数据，不自动切到 practice 模式）
+      // 恢复上次未完成的本篇练习
       syncSlotToCat()
       if (practiceArticleId.value) {
         const art = articles.value.find((a) => a.id === practiceArticleId.value)
-        if (!art) {
-          clearArticlePractice()
-        }
+        if (!art) clearArticlePractice()
       }
     } catch (e) {
-      console.error('Failed to load data', e)
-      throw e
+      console.error('Failed to load articles', e)
+      _articlesLoadPromise = null
     }
   }
 
@@ -309,6 +342,8 @@ export const useAppStore = defineStore('app', () => {
     articles,
     grammarMap,
     isDataLoaded,
+    isArticlesLoaded,
+    ensureArticles,
     practiceArticleId,
     practiceArticleTitle,
     practiceArticleIndex,

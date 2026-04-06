@@ -20,11 +20,22 @@ const MASTERY_STREAK = 3
 
 type SyncedMapKey = 'practiceRecognized' | 'masteryQuizPassed' | 'practiceStreak'
 
+// 内存缓存：避免每次调用都 JSON.parse localStorage
+const _cache = new Map<string, { data: unknown }>()
+
+function _cacheKey(ck: SyncedMapKey): string {
+  return `${useAppStore().studyLang}:${ck}`
+}
+
 function readJsonMap<T = Record<string, unknown>>(ck: SyncedMapKey): T {
+  const key = _cacheKey(ck)
+  const cached = _cache.get(key)
+  if (cached) return cached.data as T
   try {
     const lang = useAppStore().studyLang
     const p = readSyncedJson(lang, ck)
     if (!p || typeof p !== 'object' || Array.isArray(p)) return {} as T
+    _cache.set(key, { data: p })
     return p as T
   } catch {
     return {} as T
@@ -32,9 +43,15 @@ function readJsonMap<T = Record<string, unknown>>(ck: SyncedMapKey): T {
 }
 
 function writeJsonMap(ck: SyncedMapKey, r: unknown) {
+  _cache.set(_cacheKey(ck), { data: r })
   writeSyncedJson(useAppStore().studyLang, ck, r)
   debouncedSync()
   milestoneStateTick.value++
+}
+
+/** 清除缓存（语言切换时调用） */
+export function clearMilestoneCache() {
+  _cache.clear()
 }
 
 // --- 连续答对计数 ---

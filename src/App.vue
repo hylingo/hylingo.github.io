@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { useFirebase } from '@/composables/useFirebase'
 import { useQuiz } from '@/composables/useQuiz'
@@ -7,8 +7,9 @@ import AppHeader from '@/components/layout/AppHeader.vue'
 import AppNav from '@/components/layout/AppNav.vue'
 import CategoryTabs from '@/components/common/CategoryTabs.vue'
 import ListPanel from '@/components/list/ListPanel.vue'
-import PracticePanel from '@/components/practice/PracticePanel.vue'
-import StatsPanel from '@/components/stats/StatsPanel.vue'
+import { defineAsyncComponent } from 'vue'
+const PracticePanel = defineAsyncComponent(() => import('@/components/practice/PracticePanel.vue'))
+const StatsPanel = defineAsyncComponent(() => import('@/components/stats/StatsPanel.vue'))
 import LoopBar from '@/components/loop/LoopBar.vue'
 import KanaGrid from '@/components/kana/KanaGrid.vue'
 import ArticlesPanel from '@/components/articles/ArticlesPanel.vue'
@@ -49,14 +50,15 @@ watch(
   },
 )
 
-function onGlobalKeydown(_e: KeyboardEvent) {
-  // keyboard shortcuts handled in individual panels
-}
-
 onMounted(async () => {
   initTheme()
   initFirebase()
   await store.loadData()
+
+  // 如果初始就在 articles/dialogues 页，立即开始加载
+  if (store.currentCat === 'articles' || store.currentCat === 'dialogues') {
+    store.ensureArticles()
+  }
 
   if (userId.value) {
     pullAndMerge().then((merged) => {
@@ -64,11 +66,6 @@ onMounted(async () => {
     })
   }
 
-  document.addEventListener('keydown', onGlobalKeydown)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('keydown', onGlobalKeydown)
 })
 </script>
 
@@ -97,10 +94,10 @@ onUnmounted(() => {
           @stop="() => { stopListPlayback(); listPanelRef?.stopSpeaking() }"
         />
       </div>
-      <div v-show="store.currentMode === 'practice'" class="px-4 pb-5 md:px-10 md:max-w-[800px] md:mx-auto">
+      <div v-if="store.currentMode === 'practice'" class="px-4 pb-5 md:px-10 md:max-w-[800px] md:mx-auto">
         <PracticePanel />
       </div>
-      <div v-show="store.currentMode === 'stats'" class="px-4 pb-5 md:px-10 md:max-w-[800px] md:mx-auto">
+      <div v-if="store.currentMode === 'stats'" class="px-4 pb-5 md:px-10 md:max-w-[800px] md:mx-auto">
         <StatsPanel />
       </div>
     </div>

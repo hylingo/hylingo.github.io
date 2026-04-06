@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { useLang } from '@/i18n'
 import { audioEl } from '@/composables/useAudio'
@@ -18,6 +18,9 @@ const props = withDefaults(
 const store = useAppStore()
 const { t, currentLang } = useLang()
 const { startLoop, stop: stopLoop, loopPlaying, loopIndex } = useLoopPlayer()
+
+// 按需加载 articles 数据
+onMounted(() => { store.ensureArticles() })
 
 const selectedId = ref<string | null>(null)
 
@@ -448,7 +451,7 @@ onUnmounted(() => {
           <div class="flex items-start gap-3">
             <div class="flex-1 min-w-0">
               <div v-if="seg.speaker" class="text-xs font-bold mb-1" style="color: var(--primary)">{{ seg.speaker }}</div>
-              <p v-if="showReading && seg.ruby" class="text-[15px] font-medium text-content-original"><RubyText :tokens="seg.ruby" /></p>
+              <p v-if="showReading && seg.ruby" class="text-[17px] font-medium text-content-original leading-relaxed"><RubyText :tokens="seg.ruby" /></p>
               <p v-else class="text-[15px] font-medium text-content-original leading-relaxed">{{ seg.word }}</p>
               <template v-if="showTranslation">
                 <p v-if="currentLang === 'zh'" class="mt-2 text-sm leading-relaxed text-content-translation">{{ seg.zh }}</p>
@@ -486,7 +489,7 @@ onUnmounted(() => {
               :key="pi"
               class="rounded-md -mx-0.5 px-0.5 py-0.5"
             >
-              <p v-if="showReading" class="text-[15px] font-medium text-content-original leading-[1.85] [text-indent:1em]">
+              <p v-if="showReading" class="text-[17px] font-medium text-content-original leading-[1.85] [text-indent:1em]">
                 <span
                   v-for="(seg, si) in para"
                   :key="`${pi}-${si}`"
@@ -494,7 +497,7 @@ onUnmounted(() => {
                   :class="linePlaying(seg.word) ? 'bg-[#e8735a]/25 ring-1 ring-[#e8735a]/30' : ''"
                 ><RubyText v-if="seg.ruby" :tokens="seg.ruby" /><template v-else>{{ seg.word }}</template></span>
               </p>
-              <p v-else class="text-[15px] font-medium text-content-original leading-[1.85] [text-indent:1em]">
+              <p v-else class="text-[17px] font-medium text-content-original leading-[1.85] [text-indent:1em]">
                 <span
                   v-for="(seg, si) in para"
                   :key="`${pi}-${si}-nr`"
@@ -544,8 +547,8 @@ onUnmounted(() => {
               :class="linePlaying(line.word) ? 'bg-[#e8735a]/10' : ''"
             >
               <div class="text-xs font-bold mb-0.5" style="color: var(--primary)">{{ line.speaker }}</div>
-              <p v-if="showReading && line.ruby" class="text-[15px] text-content-original"><RubyText :tokens="line.ruby" /></p>
-              <p v-else class="text-[15px] text-content-original leading-relaxed">{{ line.word }}</p>
+              <p v-if="showReading && line.ruby" class="text-[17px] text-content-original leading-relaxed"><RubyText :tokens="line.ruby" /></p>
+              <p v-else class="text-[17px] text-content-original leading-relaxed">{{ line.word }}</p>
               <template v-if="showTranslation">
                 <p v-if="currentLang === 'zh'" class="mt-2 text-sm text-content-translation">{{ line.zh }}</p>
                 <p v-else-if="currentLang === 'ja'" class="mt-2 text-sm text-content-translation opacity-90">{{ line.jp ?? line.zh }}</p>

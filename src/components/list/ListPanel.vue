@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue'
 import { useAppStore } from '../../stores/app'
 import type { VocabItemWithCat } from '../../types'
 import {
-  hasMasteryQuizPassed,
+  getMasteryQuizPassedMap,
   milestoneStateTick,
   starredTick,
   getStarredMap,
@@ -99,10 +99,8 @@ const filteredItems = computed<VocabItemWithCat[]>(() => {
   }
 
   milestoneStateTick.value
-  return items.filter(it => {
-    if (hasMasteryQuizPassed(it._cat, it.id)) return false
-    return true
-  })
+  const masteryMap = getMasteryQuizPassedMap()
+  return items.filter(it => !masteryMap[`${it._cat}:${it.id}`])
 })
 
 const canUseRange = computed(() => selectedTopic.value === '' && selectedLevels.value.length === 0)
