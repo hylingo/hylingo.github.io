@@ -298,15 +298,8 @@ function playSentenceAt(index: number) {
 }
 
 function openItem(id: string) {
-  // 搜索结果可能跨 essay/dialogue，自动切换 tab
-  const art = store.articles.find(a => a.id === id)
-  if (art) {
-    const targetCat = art.format === 'dialogue' ? 'dialogues' : 'articles'
-    if (store.currentCat !== targetCat) {
-      store.switchCat(targetCat)
-    }
-  }
   selectedId.value = id
+  articleSearch.value = ''
 }
 
 function back() {
