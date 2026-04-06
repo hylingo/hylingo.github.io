@@ -1,0 +1,376 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - heading "日本語学習 にほんご がくしゅう" [level=1] [ref=e4]:
+      - generic [ref=e5]:
+        - text: 日本語学習
+        - generic [ref=e6]: にほんご がくしゅう
+  - generic [ref=e7]:
+    - navigation [ref=e8]:
+      - button "听" [ref=e10] [cursor=pointer]:
+        - generic [ref=e11]: 👂
+        - generic [ref=e12]: 听
+      - button "练" [ref=e13] [cursor=pointer]:
+        - generic [ref=e14]: ✏️
+        - generic [ref=e15]: 练
+      - button "我" [ref=e16] [cursor=pointer]:
+        - generic [ref=e17]: 🤪
+        - generic [ref=e18]: 我
+      - generic:
+        - img
+    - generic [ref=e19]:
+      - tablist [ref=e21]:
+        - tab "文章 84" [selected] [ref=e22] [cursor=pointer]:
+          - generic [ref=e23]:
+            - generic [ref=e24]: 文章
+            - generic [ref=e25]: "84"
+        - tab "对话 78" [ref=e26] [cursor=pointer]:
+          - generic [ref=e27]:
+            - generic [ref=e28]: 对话
+            - generic [ref=e29]: "78"
+        - tab "单词 5247" [ref=e30] [cursor=pointer]:
+          - generic [ref=e31]:
+            - generic [ref=e32]: 单词
+            - generic [ref=e33]: "5247"
+        - tab "50音" [ref=e34] [cursor=pointer]:
+          - generic [ref=e36]: 50音
+      - generic [ref=e39]:
+        - generic [ref=e40]:
+          - textbox "搜索日语、读音、中文..." [ref=e41]
+          - img
+        - paragraph [ref=e42]: 精读短文：注音、中文；详情页顶部可切换译文、假名与朗读。
+        - button "N5 · 短文 好きな食べ物 喜欢的食物" [ref=e43] [cursor=pointer]:
+          - generic [ref=e44]: N5 · 短文
+          - generic [ref=e45]: 好きな食べ物
+          - generic [ref=e46]: 喜欢的食物
+        - button "N5 · 短文 わたしの一日 我的一天" [ref=e47] [cursor=pointer]:
+          - generic [ref=e48]: N5 · 短文
+          - generic [ref=e49]: わたしの一日
+          - generic [ref=e50]: 我的一天
+        - button "N5 · 短文 わたしの家族 我的家人" [ref=e51] [cursor=pointer]:
+          - generic [ref=e52]: N5 · 短文
+          - generic [ref=e53]: わたしの家族
+          - generic [ref=e54]: 我的家人
+        - button "N5 · 短文 わたしの部屋 我的房间" [ref=e55] [cursor=pointer]:
+          - generic [ref=e56]: N5 · 短文
+          - generic [ref=e57]: わたしの部屋
+          - generic [ref=e58]: 我的房间
+        - button "N5 · 短文 わたしのこと 关于我" [ref=e59] [cursor=pointer]:
+          - generic [ref=e60]: N5 · 短文
+          - generic [ref=e61]: わたしのこと
+          - generic [ref=e62]: 关于我
+        - button "N5–N4 · 短文 うちの家族はこんな人たち 我家人是这样的" [ref=e63] [cursor=pointer]:
+          - generic [ref=e64]: N5–N4 · 短文
+          - generic [ref=e65]: うちの家族はこんな人たち
+          - generic [ref=e66]: 我家人是这样的
+        - button "N5–N3 · 短文 東京での一日 在东京的一天" [ref=e67] [cursor=pointer]:
+          - generic [ref=e68]: N5–N3 · 短文
+          - generic [ref=e69]: 東京での一日
+          - generic [ref=e70]: 在东京的一天
+        - button "N5–N3 · 短文 お正月に親戚が集まる 新年亲戚聚会" [ref=e71] [cursor=pointer]:
+          - generic [ref=e72]: N5–N3 · 短文
+          - generic [ref=e73]: お正月に親戚が集まる
+          - generic [ref=e74]: 新年亲戚聚会
+        - button "N5–N3 · 短文 おじいちゃんの家での夏休み 在爷爷家过暑假" [ref=e75] [cursor=pointer]:
+          - generic [ref=e76]: N5–N3 · 短文
+          - generic [ref=e77]: おじいちゃんの家での夏休み
+          - generic [ref=e78]: 在爷爷家过暑假
+        - button "N4–N3 · 短文 道に迷った午後 迷路的下午" [ref=e79] [cursor=pointer]:
+          - generic [ref=e80]: N4–N3 · 短文
+          - generic [ref=e81]: 道に迷った午後
+          - generic [ref=e82]: 迷路的下午
+        - button "N4–N3 · 短文 お弁当を作る朝 做便当的早晨" [ref=e83] [cursor=pointer]:
+          - generic [ref=e84]: N4–N3 · 短文
+          - generic [ref=e85]: お弁当を作る朝
+          - generic [ref=e86]: 做便当的早晨
+        - button "N4–N3 · 短文 カフェでリモートワークする 在咖啡店远程办公" [ref=e87] [cursor=pointer]:
+          - generic [ref=e88]: N4–N3 · 短文
+          - generic [ref=e89]: カフェでリモートワークする
+          - generic [ref=e90]: 在咖啡店远程办公
+        - button "N4–N3 · 短文 子どもが夜中に熱を出した 孩子半夜发烧了" [ref=e91] [cursor=pointer]:
+          - generic [ref=e92]: N4–N3 · 短文
+          - generic [ref=e93]: 子どもが夜中に熱を出した
+          - generic [ref=e94]: 孩子半夜发烧了
+        - button "N4–N3 · 短文 久しぶりに映画館で映画を見る 久违地在电影院看电影" [ref=e95] [cursor=pointer]:
+          - generic [ref=e96]: N4–N3 · 短文
+          - generic [ref=e97]: 久しぶりに映画館で映画を見る
+          - generic [ref=e98]: 久违地在电影院看电影
+        - button "N4–N3 · 短文 かかりつけの内科で診てもらう 在常去的内科看病" [ref=e99] [cursor=pointer]:
+          - generic [ref=e100]: N4–N3 · 短文
+          - generic [ref=e101]: かかりつけの内科で診てもらう
+          - generic [ref=e102]: 在常去的内科看病
+        - button "N4–N3 · 短文 友達のお見舞い 探望生病的朋友" [ref=e103] [cursor=pointer]:
+          - generic [ref=e104]: N4–N3 · 短文
+          - generic [ref=e105]: 友達のお見舞い
+          - generic [ref=e106]: 探望生病的朋友
+        - button "N4–N3 · 短文 衣替えの日 换季整理衣服的一天" [ref=e107] [cursor=pointer]:
+          - generic [ref=e108]: N4–N3 · 短文
+          - generic [ref=e109]: 衣替えの日
+          - generic [ref=e110]: 换季整理衣服的一天
+        - button "N4–N3 · 短文 子どもの成長を見守る日々 陪伴孩子成长的日子" [ref=e111] [cursor=pointer]:
+          - generic [ref=e112]: N4–N3 · 短文
+          - generic [ref=e113]: 子どもの成長を見守る日々
+          - generic [ref=e114]: 陪伴孩子成长的日子
+        - button "N4–N3 · 短文 半年ぶりの歯医者 时隔半年去牙医" [ref=e115] [cursor=pointer]:
+          - generic [ref=e116]: N4–N3 · 短文
+          - generic [ref=e117]: 半年ぶりの歯医者
+          - generic [ref=e118]: 时隔半年去牙医
+        - button "N4–N3 · 短文 知らない街で道に迷う 在陌生的街道迷路" [ref=e119] [cursor=pointer]:
+          - generic [ref=e120]: N4–N3 · 短文
+          - generic [ref=e121]: 知らない街で道に迷う
+          - generic [ref=e122]: 在陌生的街道迷路
+        - button "N4–N3 · 短文 目がかすんで眼科に行く 眼睛模糊去了眼科" [ref=e123] [cursor=pointer]:
+          - generic [ref=e124]: N4–N3 · 短文
+          - generic [ref=e125]: 目がかすんで眼科に行く
+          - generic [ref=e126]: 眼睛模糊去了眼科
+        - button "N4–N3 · 短文 初めての土地でバスに乗る 在陌生的地方坐公交" [ref=e127] [cursor=pointer]:
+          - generic [ref=e128]: N4–N3 · 短文
+          - generic [ref=e129]: 初めての土地でバスに乗る
+          - generic [ref=e130]: 在陌生的地方坐公交
+        - button "N4–N3 · 短文 初めての自炊 第一次自己做饭" [ref=e131] [cursor=pointer]:
+          - generic [ref=e132]: N4–N3 · 短文
+          - generic [ref=e133]: 初めての自炊
+          - generic [ref=e134]: 第一次自己做饭
+        - button "N4–N3 · 短文 三か月ぶりに美容院に行く 时隔三个月去美容院" [ref=e135] [cursor=pointer]:
+          - generic [ref=e136]: N4–N3 · 短文
+          - generic [ref=e137]: 三か月ぶりに美容院に行く
+          - generic [ref=e138]: 时隔三个月去美容院
+        - button "N4–N3 · 短文 ホームセンターで買い物 在家居店购物" [ref=e139] [cursor=pointer]:
+          - generic [ref=e140]: N4–N3 · 短文
+          - generic [ref=e141]: ホームセンターで買い物
+          - generic [ref=e142]: 在家居店购物
+        - button "N4–N3 · 短文 コインランドリーで布団を洗う 在自助洗衣店洗被子" [ref=e143] [cursor=pointer]:
+          - generic [ref=e144]: N4–N3 · 短文
+          - generic [ref=e145]: コインランドリーで布団を洗う
+          - generic [ref=e146]: 在自助洗衣店洗被子
+        - button "N4–N3 · 短文 恋人を親に紹介した日 把恋人介绍给父母的那天" [ref=e147] [cursor=pointer]:
+          - generic [ref=e148]: N4–N3 · 短文
+          - generic [ref=e149]: 恋人を親に紹介した日
+          - generic [ref=e150]: 把恋人介绍给父母的那天
+        - button "N4–N3 · 短文 ドラッグストアで薬を選ぶ 在药妆店选药" [ref=e151] [cursor=pointer]:
+          - generic [ref=e152]: N4–N3 · 短文
+          - generic [ref=e153]: ドラッグストアで薬を選ぶ
+          - generic [ref=e154]: 在药妆店选药
+        - button "N4–N3 · 短文 郵便局で荷物を送る 在邮局寄包裹" [ref=e155] [cursor=pointer]:
+          - generic [ref=e156]: N4–N3 · 短文
+          - generic [ref=e157]: 郵便局で荷物を送る
+          - generic [ref=e158]: 在邮局寄包裹
+        - button "N4–N3 · 短文 壊れたエアコンを修理してもらう 请人修坏了的空调" [ref=e159] [cursor=pointer]:
+          - generic [ref=e160]: N4–N3 · 短文
+          - generic [ref=e161]: 壊れたエアコンを修理してもらう
+          - generic [ref=e162]: 请人修坏了的空调
+        - button "N4–N3 · 短文 初めての居酒屋で注文する 第一次在居酒屋点餐" [ref=e163] [cursor=pointer]:
+          - generic [ref=e164]: N4–N3 · 短文
+          - generic [ref=e165]: 初めての居酒屋で注文する
+          - generic [ref=e166]: 第一次在居酒屋点餐
+        - button "N4–N3 · 短文 体調を崩した一日 身体不舒服的一天" [ref=e167] [cursor=pointer]:
+          - generic [ref=e168]: N4–N3 · 短文
+          - generic [ref=e169]: 体調を崩した一日
+          - generic [ref=e170]: 身体不舒服的一天
+        - button "N4–N3 · 短文 区民プールで泳ぐ 在社区游泳池游泳" [ref=e171] [cursor=pointer]:
+          - generic [ref=e172]: N4–N3 · 短文
+          - generic [ref=e173]: 区民プールで泳ぐ
+          - generic [ref=e174]: 在社区游泳池游泳
+        - button "N4–N3 · 短文 閉店間際のスーパーで買い物する 快打烊时在超市购物" [ref=e175] [cursor=pointer]:
+          - generic [ref=e176]: N4–N3 · 短文
+          - generic [ref=e177]: 閉店間際のスーパーで買い物する
+          - generic [ref=e178]: 快打烊时在超市购物
+        - button "N4–N3 · 短文 段ボールを開ける夜 拆快递箱的夜晚" [ref=e179] [cursor=pointer]:
+          - generic [ref=e180]: N4–N3 · 短文
+          - generic [ref=e181]: 段ボールを開ける夜
+          - generic [ref=e182]: 拆快递箱的夜晚
+        - button "N4–N3 · 短文 区役所で住民票を取る 在区役所办住民票" [ref=e183] [cursor=pointer]:
+          - generic [ref=e184]: N4–N3 · 短文
+          - generic [ref=e185]: 区役所で住民票を取る
+          - generic [ref=e186]: 在区役所办住民票
+        - button "N4–N3 · 短文 友達と新宿に行った日 和朋友去新宿的那天" [ref=e187] [cursor=pointer]:
+          - generic [ref=e188]: N4–N3 · 短文
+          - generic [ref=e189]: 友達と新宿に行った日
+          - generic [ref=e190]: 和朋友去新宿的那天
+        - button "N3 · 短文 自転車の事故に遭った日 遭遇自行车事故的那天" [ref=e191] [cursor=pointer]:
+          - generic [ref=e192]: N3 · 短文
+          - generic [ref=e193]: 自転車の事故に遭った日
+          - generic [ref=e194]: 遭遇自行车事故的那天
+        - button "N3 · 短文 国内線で福岡へ行く朝 乘国内线去福冈的早晨" [ref=e195] [cursor=pointer]:
+          - generic [ref=e196]: N3 · 短文
+          - generic [ref=e197]: 国内線で福岡へ行く朝
+          - generic [ref=e198]: 乘国内线去福冈的早晨
+        - button "N3 · 短文 初めての部屋探し 第一次找房子" [ref=e199] [cursor=pointer]:
+          - generic [ref=e200]: N3 · 短文
+          - generic [ref=e201]: 初めての部屋探し
+          - generic [ref=e202]: 第一次找房子
+        - button "N3 · 短文 銀行で口座を開設した日 在银行开户的那天" [ref=e203] [cursor=pointer]:
+          - generic [ref=e204]: N3 · 短文
+          - generic [ref=e205]: 銀行で口座を開設した日
+          - generic [ref=e206]: 在银行开户的那天
+        - button "N3 · 短文 無理な依頼には、理由と代案を添えて 对做不到的请求，附上理由和替代方案" [ref=e207] [cursor=pointer]:
+          - generic [ref=e208]: N3 · 短文
+          - generic [ref=e209]: 無理な依頼には、理由と代案を添えて
+          - generic [ref=e210]: 对做不到的请求，附上理由和替代方案
+        - button "N3 · 短文 自動車教習所で免許を取るまで 在驾校考驾照的全过程" [ref=e211] [cursor=pointer]:
+          - generic [ref=e212]: N3 · 短文
+          - generic [ref=e213]: 自動車教習所で免許を取るまで
+          - generic [ref=e214]: 在驾校考驾照的全过程
+        - button "N3 · 短文 母に電話して、近況を話した夜 晚上给妈妈打电话聊近况" [ref=e215] [cursor=pointer]:
+          - generic [ref=e216]: N3 · 短文
+          - generic [ref=e217]: 母に電話して、近況を話した夜
+          - generic [ref=e218]: 晚上给妈妈打电话聊近况
+        - button "N3 · 短文 日本の四季と暮らし 日本的四季与生活" [ref=e219] [cursor=pointer]:
+          - generic [ref=e220]: N3 · 短文
+          - generic [ref=e221]: 日本の四季と暮らし
+          - generic [ref=e222]: 日本的四季与生活
+        - button "N3 · 短文 花見の場所取りを任された日 被安排去占赏花位的那天" [ref=e223] [cursor=pointer]:
+          - generic [ref=e224]: N3 · 短文
+          - generic [ref=e225]: 花見の場所取りを任された日
+          - generic [ref=e226]: 被安排去占赏花位的那天
+        - button "N3 · 短文 健康診断を受ける 做健康体检" [ref=e227] [cursor=pointer]:
+          - generic [ref=e228]: N3 · 短文
+          - generic [ref=e229]: 健康診断を受ける
+          - generic [ref=e230]: 做健康体检
+        - button "N3 · 短文 友達が入院した 朋友住院了" [ref=e231] [cursor=pointer]:
+          - generic [ref=e232]: N3 · 短文
+          - generic [ref=e233]: 友達が入院した
+          - generic [ref=e234]: 朋友住院了
+        - button "N3 · 短文 出張でビジネスホテルにチェックインして 出差入住商务酒店" [ref=e235] [cursor=pointer]:
+          - generic [ref=e236]: N3 · 短文
+          - generic [ref=e237]: 出張でビジネスホテルにチェックインして
+          - generic [ref=e238]: 出差入住商务酒店
+        - button "N3 · 短文 カフェの面接 咖啡店面试" [ref=e239] [cursor=pointer]:
+          - generic [ref=e240]: N3 · 短文
+          - generic [ref=e241]: カフェの面接
+          - generic [ref=e242]: 咖啡店面试
+        - button "N3 · 短文 居酒屋で送別会をした夜 在居酒屋办送别会的那晚" [ref=e243] [cursor=pointer]:
+          - generic [ref=e244]: N3 · 短文
+          - generic [ref=e245]: 居酒屋で送別会をした夜
+          - generic [ref=e246]: 在居酒屋办送别会的那晚
+        - button "N3 · 短文 居酒屋での忘年会 在居酒屋的忘年会" [ref=e247] [cursor=pointer]:
+          - generic [ref=e248]: N3 · 短文
+          - generic [ref=e249]: 居酒屋での忘年会
+          - generic [ref=e250]: 在居酒屋的忘年会
+        - button "N3 · 短文 市立図書館で予約本を受け取って 在市立图书馆取预约的书" [ref=e251] [cursor=pointer]:
+          - generic [ref=e252]: N3 · 短文
+          - generic [ref=e253]: 市立図書館で予約本を受け取って
+          - generic [ref=e254]: 在市立图书馆取预约的书
+        - button "N3 · 短文 温泉旅館で過ごす週末 在温泉旅馆度过的周末" [ref=e255] [cursor=pointer]:
+          - generic [ref=e256]: N3 · 短文
+          - generic [ref=e257]: 温泉旅館で過ごす週末
+          - generic [ref=e258]: 在温泉旅馆度过的周末
+        - button "N3 · 短文 レンタカーで初めて高速を走った日 第一次开租来的车上高速的那天" [ref=e259] [cursor=pointer]:
+          - generic [ref=e260]: N3 · 短文
+          - generic [ref=e261]: レンタカーで初めて高速を走った日
+          - generic [ref=e262]: 第一次开租来的车上高速的那天
+        - button "N3 · 短文 日程は、短い会話から決まることもある 有时，日程是在简短对话里定下来的" [ref=e263] [cursor=pointer]:
+          - generic [ref=e264]: N3 · 短文
+          - generic [ref=e265]: 日程は、短い会話から決まることもある
+          - generic [ref=e266]: 有时，日程是在简短对话里定下来的
+        - button "N3 · 短文 初めて御朱印をいただいた日 第一次领到御朱印的那天" [ref=e267] [cursor=pointer]:
+          - generic [ref=e268]: N3 · 短文
+          - generic [ref=e269]: 初めて御朱印をいただいた日
+          - generic [ref=e270]: 第一次领到御朱印的那天
+        - button "N3 · 短文 遅延が続く朝の通勤電車で 在延误不断的早高峰电车里" [ref=e271] [cursor=pointer]:
+          - generic [ref=e272]: N3 · 短文
+          - generic [ref=e273]: 遅延が続く朝の通勤電車で
+          - generic [ref=e274]: 在延误不断的早高峰电车里
+        - button "N3 · 短文 週報は長ければよいわけではない 周报并不是越长越好" [ref=e275] [cursor=pointer]:
+          - generic [ref=e276]: N3 · 短文
+          - generic [ref=e277]: 週報は長ければよいわけではない
+          - generic [ref=e278]: 周报并不是越长越好
+        - button "N3 · 短文 年末の大掃除と年越しそば 年末大扫除和跨年荞麦面" [ref=e279] [cursor=pointer]:
+          - generic [ref=e280]: N3 · 短文
+          - generic [ref=e281]: 年末の大掃除と年越しそば
+          - generic [ref=e282]: 年末大扫除和跨年荞麦面
+        - button "N3–N2 · 短文 親友と喧嘩した日 和好朋友吵架的那天" [ref=e283] [cursor=pointer]:
+          - generic [ref=e284]: N3–N2 · 短文
+          - generic [ref=e285]: 親友と喧嘩した日
+          - generic [ref=e286]: 和好朋友吵架的那天
+        - button "N3–N2 · 短文 日本語能力試験を受けた日 参加日语能力考试的那天" [ref=e287] [cursor=pointer]:
+          - generic [ref=e288]: N3–N2 · 短文
+          - generic [ref=e289]: 日本語能力試験を受けた日
+          - generic [ref=e290]: 参加日语能力考试的那天
+        - button "N3–N2 · 短文 新入社員の最初の一週間 新员工的第一周" [ref=e291] [cursor=pointer]:
+          - generic [ref=e292]: N3–N2 · 短文
+          - generic [ref=e293]: 新入社員の最初の一週間
+          - generic [ref=e294]: 新员工的第一周
+        - button "N3–N2 · 短文 先輩に助けられた話 被前辈帮助的故事" [ref=e295] [cursor=pointer]:
+          - generic [ref=e296]: N3–N2 · 短文
+          - generic [ref=e297]: 先輩に助けられた話
+          - generic [ref=e298]: 被前辈帮助的故事
+        - button "N3–N2 · 短文 スマホの契約を変更しに行った日 去换手机套餐的那天" [ref=e299] [cursor=pointer]:
+          - generic [ref=e300]: N3–N2 · 短文
+          - generic [ref=e301]: スマホの契約を変更しに行った日
+          - generic [ref=e302]: 去换手机套餐的那天
+        - button "N3–N2 · 短文 サッカーの試合で怪我をした 足球比赛受伤了" [ref=e303] [cursor=pointer]:
+          - generic [ref=e304]: N3–N2 · 短文
+          - generic [ref=e305]: サッカーの試合で怪我をした
+          - generic [ref=e306]: 足球比赛受伤了
+        - button "N2 · 短文 家電が一気に壊れる法則 家电一起坏的定律" [ref=e307] [cursor=pointer]:
+          - generic [ref=e308]: N2 · 短文
+          - generic [ref=e309]: 家電が一気に壊れる法則
+          - generic [ref=e310]: 家电一起坏的定律
+        - button "N2 · 短文 年末の大掃除で見つかるもの 年末大扫除翻出来的东西" [ref=e311] [cursor=pointer]:
+          - generic [ref=e312]: N2 · 短文
+          - generic [ref=e313]: 年末の大掃除で見つかるもの
+          - generic [ref=e314]: 年末大扫除翻出来的东西
+        - button "N2 · 短文 キャッシュレス社会の光と影 无现金社会的利与弊" [ref=e315] [cursor=pointer]:
+          - generic [ref=e316]: N2 · 短文
+          - generic [ref=e317]: キャッシュレス社会の光と影
+          - generic [ref=e318]: 无现金社会的利与弊
+        - button "N2 · 短文 届かなかった荷物の配送を問い合わせた日 打电话询问未送达包裹的那天" [ref=e319] [cursor=pointer]:
+          - generic [ref=e320]: N2 · 短文
+          - generic [ref=e321]: 届かなかった荷物の配送を問い合わせた日
+          - generic [ref=e322]: 打电话询问未送达包裹的那天
+        - button "N2 · 短文 日本のコンビニ文化について 关于日本的便利店文化" [ref=e323] [cursor=pointer]:
+          - generic [ref=e324]: N2 · 短文
+          - generic [ref=e325]: 日本のコンビニ文化について
+          - generic [ref=e326]: 关于日本的便利店文化
+        - button "N2 · 短文 少子化と町の変化 少子化与街区的变化" [ref=e327] [cursor=pointer]:
+          - generic [ref=e328]: N2 · 短文
+          - generic [ref=e329]: 少子化と町の変化
+          - generic [ref=e330]: 少子化与街区的变化
+        - button "N2 · 短文 制服のない会社で何を着るか 没有制服的公司穿什么" [ref=e331] [cursor=pointer]:
+          - generic [ref=e332]: N2 · 短文
+          - generic [ref=e333]: 制服のない会社で何を着るか
+          - generic [ref=e334]: 没有制服的公司穿什么
+        - button "N2 · 短文 外国人として日本で働くということ 作为外国人在日本工作这件事" [ref=e335] [cursor=pointer]:
+          - generic [ref=e336]: N2 · 短文
+          - generic [ref=e337]: 外国人として日本で働くということ
+          - generic [ref=e338]: 作为外国人在日本工作这件事
+        - button "N2 · 短文 趣味が仕事になった日 兴趣变成工作的那天" [ref=e339] [cursor=pointer]:
+          - generic [ref=e340]: N2 · 短文
+          - generic [ref=e341]: 趣味が仕事になった日
+          - generic [ref=e342]: 兴趣变成工作的那天
+        - button "N2 · 短文 「空気を読む」ということ 所谓「读空气」这件事" [ref=e343] [cursor=pointer]:
+          - generic [ref=e344]: N2 · 短文
+          - generic [ref=e345]: 「空気を読む」ということ
+          - generic [ref=e346]: 所谓「读空气」这件事
+        - button "N2 · 短文 一人暮らしを始めて気づいたこと 开始独居后发现的事" [ref=e347] [cursor=pointer]:
+          - generic [ref=e348]: N2 · 短文
+          - generic [ref=e349]: 一人暮らしを始めて気づいたこと
+          - generic [ref=e350]: 开始独居后发现的事
+        - button "N2 · 短文 引っ越しで変わったこと 搬家后变化的事" [ref=e351] [cursor=pointer]:
+          - generic [ref=e352]: N2 · 短文
+          - generic [ref=e353]: 引っ越しで変わったこと
+          - generic [ref=e354]: 搬家后变化的事
+        - button "N2 · 短文 日本の「おもてなし」精神とその裏側 日本「待客之道」的精神与其背后" [ref=e355] [cursor=pointer]:
+          - generic [ref=e356]: N2 · 短文
+          - generic [ref=e357]: 日本の「おもてなし」精神とその裏側
+          - generic [ref=e358]: 日本「待客之道」的精神与其背后
+        - button "N2 · 短文 テレワークが変えた働き方 远程办公改变的工作方式" [ref=e359] [cursor=pointer]:
+          - generic [ref=e360]: N2 · 短文
+          - generic [ref=e361]: テレワークが変えた働き方
+          - generic [ref=e362]: 远程办公改变的工作方式
+        - button "N2 · 短文 都会と地方、どちらに住むか 城市还是乡下，住哪里好" [ref=e363] [cursor=pointer]:
+          - generic [ref=e364]: N2 · 短文
+          - generic [ref=e365]: 都会と地方、どちらに住むか
+          - generic [ref=e366]: 城市还是乡下，住哪里好
+        - button "N2 · 短文 予定どおりにいかない日の過ごし方 计划不顺的日子该怎么过" [ref=e367] [cursor=pointer]:
+          - generic [ref=e368]: N2 · 短文
+          - generic [ref=e369]: 予定どおりにいかない日の過ごし方
+          - generic [ref=e370]: 计划不顺的日子该怎么过
+        - button "N1 · 短文 人口減少社会における地方再生の模索 人口减少社会中地方振兴的探索" [ref=e371] [cursor=pointer]:
+          - generic [ref=e372]: N1 · 短文
+          - generic [ref=e373]: 人口減少社会における地方再生の模索
+          - generic [ref=e374]: 人口减少社会中地方振兴的探索
+        - button "N1 · 短文 選択が多すぎる時代における「決める」ということ 选择过多的时代里，所谓「做决定」是什么" [ref=e375] [cursor=pointer]:
+          - generic [ref=e376]: N1 · 短文
+          - generic [ref=e377]: 選択が多すぎる時代における「決める」ということ
+          - generic [ref=e378]: 选择过多的时代里，所谓「做决定」是什么

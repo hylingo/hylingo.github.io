@@ -226,7 +226,8 @@ function onCardMainClick() {
   >
     <button
       type="button"
-      class="shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-b from-[#f38a73] to-primary text-white shadow-md active:scale-[0.98]"
+      class="shrink-0 w-10 h-10 flex items-center justify-center rounded-full text-white shadow-md active:scale-[0.93] transition-transform"
+      style="background: var(--grad-primary)"
       @click="togglePlay"
     >
       <svg v-if="loopPaused" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="8,6 18,12 8,18" /></svg>
@@ -244,7 +245,7 @@ function onCardMainClick() {
 
   <!-- 展开 -->
   <div v-if="visible && !collapsed" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/30">
-    <div class="w-[95%] max-w-lg md:w-[90%] md:max-w-sm theme-loop-panel rounded-2xl overflow-hidden max-h-[min(92svh,900px)] flex flex-col">
+    <div class="w-[95%] max-w-lg md:w-[90%] md:max-w-sm theme-loop-panel rounded-3xl overflow-hidden max-h-[min(92svh,900px)] flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.15)]">
       <!-- Info bar -->
       <div class="flex items-center justify-between px-4 pt-3 pb-2 md:px-5 shrink-0">
         <span class="text-[13px]" style="color: var(--text-secondary)">
@@ -265,7 +266,7 @@ function onCardMainClick() {
       <!-- Word card：点击原文区播放（普通模式 暂停/继续；跟读未录音时 播原音） -->
       <div v-if="currentItem" class="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-5 text-center md:px-5 md:py-6">
         <div
-          class="-mx-1 cursor-pointer rounded-xl px-2 py-2 text-center outline-none transition-colors hover:bg-black/[0.04] focus-visible:ring-2 focus-visible:ring-[var(--primary)]/30 dark:hover:bg-white/[0.06]"
+          class="-mx-1 cursor-pointer rounded-2xl px-4 py-4 text-center outline-none transition-all hover:bg-black/[0.03] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[var(--primary)]/30 dark:hover:bg-white/[0.05]"
           role="button"
           tabindex="0"
           :title="t('loopTapToPlay')"
@@ -363,7 +364,8 @@ function onCardMainClick() {
               <button
                 type="button"
                 class="flex h-16 w-16 shrink-0 cursor-pointer items-center justify-center rounded-full text-white transition-transform active:scale-[0.96]"
-                :class="recording ? 'bg-red-500 shadow-[0_6px_20px_rgba(239,68,68,0.35)]' : 'bg-gradient-to-b from-[#f38a73] to-primary shadow-[0_6px_20px_rgba(232,115,90,0.3)]'"
+                :class="recording ? 'bg-red-500 shadow-[0_6px_20px_rgba(239,68,68,0.35)]' : 'shadow-[0_6px_20px_rgba(232,115,90,0.3)]'"
+                :style="!recording ? { background: 'var(--grad-primary)' } : {}"
                 style="touch-action: none"
                 :title="t('followHint')"
                 @pointerdown.prevent="onRecordDown"
@@ -407,19 +409,20 @@ function onCardMainClick() {
               <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
             </svg>
           </button>
-          <button class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border" style="border-color: var(--border); background: var(--card); color: var(--text-secondary)" @click="prevTrack">
+          <button class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border transition-all hover:scale-105 active:scale-95" style="border-color: var(--border); background: var(--card); color: var(--text-secondary)" @click="prevTrack">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="5" x2="5" y2="19" /><polygon points="7 12 17 19 17 5 7 12" /></svg>
           </button>
           <button
             type="button"
-            class="flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-gradient-to-b from-[#f38a73] to-primary text-white shadow-[0_8px_22px_rgba(232,115,90,0.35)] transition-transform active:scale-[0.98]"
+            class="flex h-14 w-14 cursor-pointer items-center justify-center rounded-full text-white shadow-[0_6px_18px_rgba(232,115,90,0.3)] transition-all active:scale-[0.93] hover:shadow-[0_8px_24px_rgba(232,115,90,0.4)]"
+            style="background: var(--grad-primary)"
             :title="t('loopTapToPlay')"
             @click="togglePlay"
           >
             <svg v-if="loopPaused" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="8,6 18,12 8,18" /></svg>
             <svg v-else width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="9" y1="6" x2="9" y2="18" /><line x1="15" y1="6" x2="15" y2="18" /></svg>
           </button>
-          <button class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border" style="border-color: var(--border); background: var(--card); color: var(--text-secondary)" @click="nextTrack">
+          <button class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border transition-all hover:scale-105 active:scale-95" style="border-color: var(--border); background: var(--card); color: var(--text-secondary)" @click="nextTrack">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="19" y2="19" /><polygon points="17 12 7 19 7 5 17 12" /></svg>
           </button>
           <button

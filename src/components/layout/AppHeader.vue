@@ -9,7 +9,7 @@ const store = useAppStore()
 <template>
   <header
     class="theme-header sticky top-0 z-[400] flex items-center justify-between gap-4 px-6 md:px-10"
-    style="box-shadow: 0 4px 20px rgba(0,0,0,0.22)"
+    style="box-shadow: 0 1px 6px rgba(0,0,0,0.04); border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent)"
   >
     <h1 class="text-[22px] font-bold tracking-wider leading-none flex items-center shrink-0 min-w-0">
       <template v-if="store.studyLang === 'ja'">
@@ -24,7 +24,8 @@ const store = useAppStore()
     </h1>
     <span
       v-if="userId"
-      class="bg-white/25 px-3 py-1 rounded-xl text-xs tracking-wide shrink-0"
+      class="px-3 py-1 rounded-xl text-xs tracking-wide shrink-0"
+      style="background: color-mix(in srgb, var(--text) 8%, transparent); color: var(--text-secondary)"
     >
       {{ userId }}
     </span>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import ProfileSection from './ProfileSection.vue'
 import StatsGrid from './StatsGrid.vue'
 import WeeklyChart from './WeeklyChart.vue'
 import MasteredList from './MasteredList.vue'
@@ -25,7 +24,12 @@ const uiLangs = [
   { key: 'ja' as const, label: 'JP' },
 ]
 const showMasteredList = ref(false)
-const { flushDataToCloud } = useFirebase()
+const { userId, logout, flushDataToCloud } = useFirebase()
+
+function handleLogout() {
+  logout()
+  window.location.reload()
+}
 const { themeMode, toggleTheme } = useTheme()
 const showLogin = ref(false)
 const confirmStep = ref<0 | 1 | 2>(0)
@@ -59,6 +63,34 @@ function resetStats() {
   <div class="pb-8">
     <MasteredList v-if="showMasteredList" @back="showMasteredList = false" />
     <template v-else>
+    <!-- 账户信息（合并到设置区） -->
+    <div v-if="!userId" class="theme-card mt-4 p-4 flex items-center justify-between">
+      <div>
+        <div class="text-sm font-semibold">{{ t('syncBanner') }}</div>
+      </div>
+      <button
+        class="px-4 py-1.5 rounded-full text-white text-xs font-semibold cursor-pointer btn-grad-primary btn-grad-primary--borderless"
+        @click="showLogin = true"
+      >{{ t('registerOrLogin') }}</button>
+    </div>
+    <div v-else class="theme-card mt-4 p-4 flex items-center justify-between">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style="background: var(--grad-primary)">
+          {{ userId.slice(0, 1).toUpperCase() }}
+        </div>
+        <div class="min-w-0">
+          <div class="text-sm font-semibold truncate">{{ userId }}</div>
+          <div class="text-[11px]" style="color: var(--text-secondary)">{{ t('syncEnabled') }}</div>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="px-3 py-1.5 rounded-lg border text-xs cursor-pointer"
+        style="border-color: var(--border); color: var(--text-secondary)"
+        @click="handleLogout"
+      >{{ t('logoutBtn') }}</button>
+    </div>
+
     <div class="theme-card mt-4 p-4 flex items-center justify-between">
       <div>
         <div class="text-sm font-semibold">学习语言</div>
@@ -111,7 +143,7 @@ function resetStats() {
         <span class="theme-switch__thumb" />
       </button>
     </div>
-    <ProfileSection @login="showLogin = true" />
+
     <StatsGrid @mastered="showMasteredList = true" />
     <WeeklyChart />
 
