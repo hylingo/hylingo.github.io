@@ -19,6 +19,7 @@ export interface DataItem {
   ruby?: { t: string; r?: string }[]
   _cat?: string
   _audioFn?: string
+  _articleId?: string
 }
 
 export interface AppData {

@@ -16,10 +16,14 @@ export function useJaSpeechRecognition() {
   const interimText = ref('')
   const lastFinalText = ref('')
   const lastError = ref<string | null>(null)
+  /** 所有候选识别结果（含同音异字），用于模糊匹配 */
+  const alternatives = ref<string[]>([])
 
   let recInst: SpeechRec | null = null
   let token = 0
   let alive = true
+  let silenceTimer: ReturnType<typeof setTimeout> | null = null
+  const SILENCE_TIMEOUT = 15_000
 
   const supported = computed(() => getSpeechRecognitionCtor() !== null)
 
@@ -27,6 +31,7 @@ export function useJaSpeechRecognition() {
     interimText.value = ''
     lastFinalText.value = ''
     lastError.value = null
+    alternatives.value = []
   }
 
   /** 用户主动取消当前聆听（会触发结束回调，可与正常结束同样处理） */
@@ -39,7 +44,17 @@ export function useJaSpeechRecognition() {
     }
   }
 
+  function clearSilenceTimer() {
+    if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null }
+  }
+
+  function resetSilenceTimer() {
+    clearSilenceTimer()
+    silenceTimer = setTimeout(() => { stopListening() }, SILENCE_TIMEOUT)
+  }
+
   function destroyRecognition() {
+    clearSilenceTimer()
     if (recInst) {
       try {
         recInst.abort()
@@ -73,15 +88,26 @@ export function useJaSpeechRecognition() {
 
     rec.onresult = (event: SpeechRecognitionEvent) => {
       if (myToken !== token) return
+      resetSilenceTimer()
       let interim = ''
       let finals = lastFinalText.value
+      const alts: string[] = []
       for (let i = event.resultIndex; i < event.results.length; i++) {
-        const piece = event.results[i][0]?.transcript ?? ''
-        if (event.results[i].isFinal) finals += piece
-        else interim += piece
+        const result = event.results[i]
+        const piece = result[0]?.transcript ?? ''
+        if (result.isFinal) {
+          finals += piece
+          for (let j = 0; j < result.length; j++) {
+            const alt = result[j]?.transcript
+            if (alt) alts.push(alt)
+          }
+        } else {
+          interim += piece
+        }
       }
       lastFinalText.value = finals
       interimText.value = interim
+      if (alts.length) alternatives.value = alts
     }
 
     let settled = false
@@ -108,6 +134,7 @@ export function useJaSpeechRecognition() {
     try {
       recInst = rec
       rec.start()
+      resetSilenceTimer()
       listening.value = true
     } catch {
       lastError.value = 'start_failed'
@@ -139,6 +166,7 @@ export function useJaSpeechRecognition() {
     interimText,
     lastFinalText,
     lastError,
+    alternatives,
     start,
     stopListening,
     abortListening,

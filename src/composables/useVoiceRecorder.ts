@@ -17,20 +17,30 @@ export function useVoiceRecorder() {
     }
   }
 
+  function pickMimeType(): string {
+    for (const mime of ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4']) {
+      if (MediaRecorder.isTypeSupported(mime)) return mime
+    }
+    return ''
+  }
+
   async function startRecording() {
     revokeOldUrl()
     chunks = []
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      mediaRecorder = new MediaRecorder(stream)
+      if (!stream || !stream.active) {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      }
+      const mimeType = pickMimeType()
+      mediaRecorder = mimeType
+        ? new MediaRecorder(stream, { mimeType })
+        : new MediaRecorder(stream)
       mediaRecorder.ondataavailable = (e) => {
         if (e.data.size > 0) chunks.push(e.data)
       }
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'audio/webm' })
+        const blob = new Blob(chunks, { type: mediaRecorder?.mimeType || 'audio/webm' })
         audioUrl.value = URL.createObjectURL(blob)
-        stream?.getTracks().forEach((t) => t.stop())
-        stream = null
       }
       mediaRecorder.start()
       recordStartTime = Date.now()
@@ -53,12 +63,17 @@ export function useVoiceRecorder() {
     revokeOldUrl()
   }
 
+  function releaseStream() {
+    stream?.getTracks().forEach((t) => t.stop())
+    stream = null
+  }
+
   onUnmounted(() => {
     revokeOldUrl()
     if (mediaRecorder && mediaRecorder.state === 'recording') {
       mediaRecorder.stop()
     }
-    stream?.getTracks().forEach((t) => t.stop())
+    releaseStream()
   })
 
   return {

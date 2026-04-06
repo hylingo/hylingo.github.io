@@ -8,8 +8,18 @@ import AppNav from '@/components/layout/AppNav.vue'
 import CategoryTabs from '@/components/common/CategoryTabs.vue'
 import ListPanel from '@/components/list/ListPanel.vue'
 import { defineAsyncComponent } from 'vue'
-const PracticePanel = defineAsyncComponent(() => import('@/components/practice/PracticePanel.vue'))
-const StatsPanel = defineAsyncComponent(() => import('@/components/stats/StatsPanel.vue'))
+import SkeletonPanel from '@/components/common/SkeletonPanel.vue'
+import SkeletonVocabList from '@/components/common/SkeletonVocabList.vue'
+const PracticePanel = defineAsyncComponent({
+  loader: () => import('@/components/practice/PracticePanel.vue'),
+  loadingComponent: SkeletonPanel,
+  delay: 120,
+})
+const StatsPanel = defineAsyncComponent({
+  loader: () => import('@/components/stats/StatsPanel.vue'),
+  loadingComponent: SkeletonPanel,
+  delay: 120,
+})
 import LoopBar from '@/components/loop/LoopBar.vue'
 import KanaGrid from '@/components/kana/KanaGrid.vue'
 import ArticlesPanel from '@/components/articles/ArticlesPanel.vue'
@@ -87,12 +97,15 @@ onMounted(async () => {
           :key="store.currentCat"
           :filter-format="store.currentCat === 'dialogues' ? 'dialogue' : 'essay'"
         />
-        <ListPanel
-          v-else
-          ref="listPanelRef"
-          @speak="(items, from, to) => startListPlayback(items, from, to)"
-          @stop="() => { stopListPlayback(); listPanelRef?.stopSpeaking() }"
-        />
+        <template v-else>
+          <SkeletonVocabList v-if="!store.isDataLoaded" />
+          <ListPanel
+            v-else
+            ref="listPanelRef"
+            @speak="(items, from, to) => startListPlayback(items, from, to)"
+            @stop="() => { stopListPlayback(); listPanelRef?.stopSpeaking() }"
+          />
+        </template>
       </div>
       <div v-if="store.currentMode === 'practice'" class="px-4 pb-5 md:px-10 md:max-w-[800px] md:mx-auto">
         <PracticePanel />

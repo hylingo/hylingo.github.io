@@ -95,6 +95,10 @@ export const messages: Record<LangKey, Record<string, string>> = {
     articlePracticeEmptyShort: '暂无练习篇目',
     articlePracticeHowToHint:
       '本篇为整篇逐句练习：点上方「练习本篇」进入；需练完全部句子才算本篇完成。',
+    articleListenCount: '完整听过次数',
+    articleShadowCount: '完整跟读次数',
+    articleListenShort: '听',
+    articleShadowShort: '读',
     search: '搜索日语、读音、中文...',
     select: '选择',
     selectAll: '全选',
@@ -343,6 +347,10 @@ export const messages: Record<LangKey, Record<string, string>> = {
     articlePracticeEmptyShort: 'No piece to practice yet',
     articlePracticeHowToHint:
       'This piece is practiced sentence by sentence. Tap “Practice this piece” above to start. Finish every sentence to complete the piece.',
+    articleListenCount: 'Times listened completely',
+    articleShadowCount: 'Times shadowed completely',
+    articleListenShort: 'L',
+    articleShadowShort: 'S',
     search: 'Search Japanese, reading, meaning...',
     select: 'Select',
     selectAll: 'Select All',
@@ -591,6 +599,10 @@ export const messages: Record<LangKey, Record<string, string>> = {
     articlePracticeEmptyShort: '練習できる篇がありません',
     articlePracticeHowToHint:
       'この教材は一文ずつ練習します。上の「この教材を練習」で開始し、最後の文まで終えると完了です。',
+    articleListenCount: '通して聴いた回数',
+    articleShadowCount: 'シャドーイング完了回数',
+    articleListenShort: '聴',
+    articleShadowShort: '読',
     search: '日本語、読み、意味で検索...',
     select: '選択',
     selectAll: '全選択',

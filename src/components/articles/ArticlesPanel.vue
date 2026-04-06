@@ -6,9 +6,11 @@ import { audioEl } from '@/composables/useAudio'
 import { useLoopPlayer } from '@/composables/useLoopPlayer'
 import type { ArticleItem, ArticleEssay, ArticleDialogue, ArticleSegment, GrammarPoint } from '@/types'
 import RubyText from '@/components/common/RubyText.vue'
+import SkeletonArticleList from '@/components/common/SkeletonArticleList.vue'
 import type { DataItem } from '@/stores/app'
 import { readArticlePrefRaw, writeArticlePrefRaw } from '@/learning/learnStorage'
 import { useFirebase } from '@/composables/useFirebase'
+import { getAllArticleProgress, type ArticleProgressEntry } from '@/learning/articleProgress'
 
 const props = withDefaults(
   defineProps<{ filterFormat: 'essay' | 'dialogue' }>(),
@@ -24,6 +26,14 @@ onMounted(() => { store.ensureArticles() })
 
 const selectedId = ref<string | null>(null)
 const articleSearch = ref('')
+
+/** 文章级进度：完整听/跟读次数 */
+const progressMap = ref<Record<string, ArticleProgressEntry>>({})
+function refreshProgressMap() {
+  progressMap.value = getAllArticleProgress(store.studyLang)
+}
+onMounted(() => { refreshProgressMap() })
+watch(() => store.studyLang, () => { refreshProgressMap() })
 
 /** 连播会话：+1 可丢弃未结束的 onended */
 let articlePlaySession = 0
@@ -60,6 +70,7 @@ const singleMode = ref(readArticleBool('mode', false))
 function buildLoopItems(fromIndex: number) {
   const sentences = flatSentences.value
   const items: (DataItem & { _cat: string })[] = []
+  const artId = selected.value?.id ?? ''
   const addItem = (s: ArticleSegment & { speaker?: 'A' | 'B' }, i: number) => {
     const fn = audioFnForJp(s)
     if (fn) {
@@ -71,6 +82,7 @@ function buildLoopItems(fromIndex: number) {
         ruby: s.ruby,
         _cat: 'articles',
         _audioFn: fn,
+        _articleId: artId,
       })
     }
   }
@@ -306,6 +318,7 @@ function back() {
   invalidateArticlePlayback()
   stopLoop()
   selectedId.value = null
+  refreshProgressMap()
 }
 
 watch(selectedId, () => {
@@ -338,7 +351,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="px-4 pb-24 md:px-10 md:max-w-[720px] md:mx-auto">
+  <SkeletonArticleList v-if="!store.isArticlesLoaded" />
+  <div v-else class="px-4 pb-24 md:px-10 md:max-w-[720px] md:mx-auto">
     <!-- 列表 -->
     <div v-if="!selected" class="space-y-3 pt-1">
       <!-- 搜索框 -->
@@ -382,9 +396,16 @@ onUnmounted(() => {
           v-for="it in list"
           :key="it.id"
           type="button"
-          class="w-full text-left rounded-2xl theme-surface shadow-[0_2px_16px_rgba(0,0,0,0.06)] p-4 pl-5 transition hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:scale-[0.99] cursor-pointer border-0 border-l-[3px] border-l-[var(--primary)]/40"
+          class="relative w-full text-left rounded-2xl theme-surface shadow-[0_2px_16px_rgba(0,0,0,0.06)] p-4 pl-5 transition hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:scale-[0.99] cursor-pointer border-0 border-l-[3px] border-l-[var(--primary)]/40"
           @click="openItem(it.id)"
         >
+          <span
+            class="absolute top-2.5 right-3 flex items-center gap-1.5 text-[10px] tabular-nums theme-muted"
+            :class="progressMap[it.id]?.listen || progressMap[it.id]?.shadow ? 'opacity-70' : 'opacity-35'"
+          >
+            <span :title="t('articleListenCount')">{{ t('articleListenShort') }}{{ progressMap[it.id]?.listen ?? 0 }}</span>
+            <span :title="t('articleShadowCount')">{{ t('articleShadowShort') }}{{ progressMap[it.id]?.shadow ?? 0 }}</span>
+          </span>
           <div class="text-[11px] font-medium theme-muted mb-1.5 tracking-wide">{{ formatLabel(it) }}</div>
           <div class="text-base font-bold text-content-original leading-snug">{{ it.titleWord }}</div>
           <div v-if="currentLang === 'zh'" class="text-sm mt-1 text-content-translation">{{ it.titleZh }}</div>

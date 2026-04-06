@@ -5,6 +5,8 @@ import { recordListenTime } from './useStats'
 import { recordItemListened } from './useSpacedRepetition'
 import { t } from '@/i18n'
 import { getGapWavUri } from '@/utils/silentWavGap'
+import { recordArticleListenComplete } from '@/learning/articleProgress'
+import { useAppStore } from '@/stores/app'
 
 const LOOP_DEBUG_KEY = 'loop_debug_logs_v1'
 const LOOP_DEBUG_MAX = 200
@@ -358,6 +360,11 @@ function nextLoopItemInternal() {
     if (loopIndex.value >= loopPlaylist.value.length) {
       loopIndex.value = 0
       loopRound.value++
+      // 文章连播完整一轮 → 记录完整听一次
+      const first = loopPlaylist.value[0]
+      if (first?._cat === 'articles' && first._articleId) {
+        recordArticleListenComplete(useAppStore().studyLang, first._articleId as string)
+      }
     }
   }
   playLoopItem()

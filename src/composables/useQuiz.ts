@@ -8,6 +8,7 @@ import {
   hasMasteryQuizPassed,
 } from '@/learning/milestones'
 import { markArticlePracticeDone } from '@/learning/articlePracticeDone'
+import { recordArticleShadowComplete } from '@/learning/articleProgress'
 import { articleToPracticeQuizItems } from '@/utils/articleQuiz'
 import { currentLang } from '@/i18n'
 import {
@@ -178,6 +179,7 @@ function advanceIndex() {
       const n = quizItems.value.length
       const title = store.practiceArticleTitle || store.articles.find((a) => a.id === cur._articleId)?.titleWord || ''
       markArticlePracticeDone(store.studyLang, cur._articleId)
+      recordArticleShadowComplete(store.studyLang, cur._articleId)
       articleBlockJustCompleted.value = { title, sentenceCount: n }
       store.clearArticlePractice()
       useFirebase().debouncedSync()
