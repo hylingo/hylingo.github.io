@@ -255,31 +255,8 @@ function onCardMainClick() {
           </template>
         </span>
         <div class="flex items-center gap-0.5">
-          <button
-            type="button"
-            class="w-9 h-9 flex items-center justify-center rounded-full cursor-pointer transition-colors"
-            :style="
-              followMode
-                ? { background: 'var(--primary-light)', color: 'var(--primary)', border: '1px solid color-mix(in srgb, var(--primary) 35%, transparent)' }
-                : { color: 'var(--text-secondary)' }
-            "
-            :aria-pressed="followMode"
-            :title="t('loopFollowToggle')"
-            @click="onFollowToggle"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
-            </svg>
-          </button>
-          <!-- 普通播放模式：底栏已有收起，顶栏不再重复 -->
-          <button
-            v-if="followMode"
-            type="button"
-            class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full"
-            style="color: var(--text-secondary)"
-            @click="minimize"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          <button type="button" class="w-9 h-9 flex items-center justify-center rounded-full cursor-pointer" style="color: var(--text-secondary)" @click="minimize">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
           </button>
           <button type="button" class="w-9 h-9 flex items-center justify-center rounded-full cursor-pointer text-sm" style="color: var(--text-secondary)" @click="stop">✕</button>
         </div>
@@ -361,7 +338,18 @@ function onCardMainClick() {
       <div class="flex shrink-0 items-center justify-center gap-3 px-4 pt-1 pb-4 md:gap-4 md:px-5 md:pb-5">
         <template v-if="followMode">
           <div class="flex w-full max-w-md items-center gap-2">
-            <div class="w-10 shrink-0" aria-hidden="true" />
+            <button
+              type="button"
+              class="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border transition-colors"
+              :style="{ background: 'var(--primary-light)', color: 'var(--primary)', borderColor: 'var(--primary)' }"
+              :aria-pressed="followMode"
+              :title="t('loopFollowToggle')"
+              @click="onFollowToggle"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            </button>
             <div class="flex min-w-0 flex-1 items-center justify-center gap-3">
               <div class="flex h-8 items-center gap-[3px]">
                 <span
@@ -409,13 +397,14 @@ function onCardMainClick() {
 
         <template v-else>
           <button
+            type="button"
             class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border transition-colors"
-            :style="loopRepeat ? { background: 'var(--primary-light)', color: 'var(--primary)', borderColor: 'var(--primary)' } : { background: 'var(--card)', color: 'var(--text-secondary)', borderColor: 'var(--border)' }"
-            @click="toggleRepeat"
+            style="border-color: var(--border); background: var(--card); color: var(--text-secondary)"
+            :title="t('loopFollowToggle')"
+            @click="onFollowToggle"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="17 1 21 5 17 9" /><path d="M3 11V9a4 4 0 0 1 4-4h14" /><polyline points="7 23 3 19 7 15" /><path d="M21 13v2a4 4 0 0 1-4 4H3" />
-              <text x="10" y="14" font-size="7" font-weight="bold" stroke="none" fill="currentColor" text-anchor="middle">1</text>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
             </svg>
           </button>
           <button class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border" style="border-color: var(--border); background: var(--card); color: var(--text-secondary)" @click="prevTrack">
@@ -433,8 +422,15 @@ function onCardMainClick() {
           <button class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border" style="border-color: var(--border); background: var(--card); color: var(--text-secondary)" @click="nextTrack">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="19" y2="19" /><polygon points="17 12 7 19 7 5 17 12" /></svg>
           </button>
-          <button type="button" class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border" style="border-color: var(--border); background: var(--card); color: var(--text-secondary)" @click="minimize">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          <button
+            class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border transition-colors"
+            :style="loopRepeat ? { background: 'var(--primary-light)', color: 'var(--primary)', borderColor: 'var(--primary)' } : { background: 'var(--card)', color: 'var(--text-secondary)', borderColor: 'var(--border)' }"
+            @click="toggleRepeat"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="17 1 21 5 17 9" /><path d="M3 11V9a4 4 0 0 1 4-4h14" /><polyline points="7 23 3 19 7 15" /><path d="M21 13v2a4 4 0 0 1-4 4H3" />
+              <text x="10" y="14" font-size="7" font-weight="bold" stroke="none" fill="currentColor" text-anchor="middle">1</text>
+            </svg>
           </button>
         </template>
       </div>
