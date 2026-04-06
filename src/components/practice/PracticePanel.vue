@@ -11,6 +11,7 @@ import { useLang, currentLang } from '@/i18n'
 import { localMeaning } from '@/utils/helpers'
 import type { QuizMode } from '@/composables/useQuiz'
 import RubyText from '@/components/common/RubyText.vue'
+import AppIcon from '@/components/common/AppIcon.vue'
 
 const { t } = useLang()
 const lang = computed(() => currentLang.value)
@@ -335,7 +336,7 @@ const progressText = computed(() => {
                 class="w-20 h-20 rounded-full border-2 text-3xl cursor-pointer transition-all active:scale-95"
                 style="border-color: var(--primary); background: var(--primary-light)"
                 @click.stop="playCurrentAudio"
-              >🔊</button>
+              ><AppIcon name="volume" :size="20" /></button>
             </div>
           </div>
 

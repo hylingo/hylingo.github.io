@@ -6,6 +6,7 @@ import { speakWithExample } from '../../composables/useAudio'
 import { useLang } from '@/i18n'
 import { localMeaning, localExampleCn } from '@/utils/helpers'
 import RubyText from '@/components/common/RubyText.vue'
+import AppIcon from '@/components/common/AppIcon.vue'
 
 const { t, currentLang } = useLang()
 const store = useAppStore()
@@ -81,7 +82,7 @@ function onSpeak(item: MasteredItem) {
           class="text-xl ml-2 shrink-0 bg-transparent border-none cursor-pointer"
           @click.stop="onSpeak(item)"
         >
-          🔊
+          <AppIcon name="volume" :size="16" />
         </button>
       </div>
     </div>

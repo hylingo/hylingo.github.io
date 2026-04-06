@@ -6,6 +6,7 @@ import { audioEl, audioPath } from '@/composables/useAudio'
 import { useLoopPlayer } from '@/composables/useLoopPlayer'
 import type { ArticleItem, ArticleEssay, ArticleDialogue, ArticleSegment, GrammarPoint } from '@/types'
 import RubyText from '@/components/common/RubyText.vue'
+import AppIcon from '@/components/common/AppIcon.vue'
 import SkeletonArticleList from '@/components/common/SkeletonArticleList.vue'
 import type { DataItem } from '@/stores/app'
 import { readArticlePrefRaw, writeArticlePrefRaw } from '@/learning/learnStorage'
@@ -386,7 +387,7 @@ onUnmounted(() => {
           class="w-full text-left rounded-2xl theme-surface shadow-[0_2px_16px_rgba(0,0,0,0.06)] p-4 pl-5 transition hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:scale-[0.99] cursor-pointer border-0 border-l-[3px] border-l-[var(--primary)]/40"
           @click="openItem(r.article.id)"
         >
-          <div class="text-[11px] font-medium theme-muted mb-1.5 tracking-wide">{{ r.article.format === 'dialogue' ? '💬' : '📖' }} {{ formatLabel(r.article) }}</div>
+          <div class="text-[11px] font-medium theme-muted mb-1.5 tracking-wide"><AppIcon :name="r.article.format === 'dialogue' ? 'chat' : 'book'" :size="14" /> {{ formatLabel(r.article) }}</div>
           <div class="text-base font-bold text-content-original leading-snug">{{ r.article.titleWord }}</div>
           <div class="mt-1.5 space-y-0.5">
             <p v-for="(m, i) in r.matches" :key="i" class="text-xs theme-muted truncate">…{{ m }}…</p>

@@ -14,8 +14,8 @@ const { t, currentLang, switchLang } = useLang()
 const store = useAppStore()
 
 const studyLangs = [
-  { key: 'ja' as const, icon: '🇯🇵', label: '日本語' },
-  { key: 'en' as const, icon: '🇬🇧', label: 'English' },
+  { key: 'ja' as const, icon: 'JP', label: '日本語' },
+  { key: 'en' as const, icon: 'EN', label: 'English' },
 ]
 
 const uiLangs = [
@@ -30,7 +30,7 @@ function handleLogout() {
   logout()
   window.location.reload()
 }
-const { themeMode, toggleTheme } = useTheme()
+const { themeMode, setTheme, ALL_THEMES } = useTheme()
 const showLogin = ref(false)
 const confirmStep = ref<0 | 1 | 2>(0)
 
@@ -94,7 +94,7 @@ function resetStats() {
     <div class="theme-card mt-4 p-4 flex items-center justify-between">
       <div>
         <div class="text-sm font-semibold">学习语言</div>
-        <div class="text-xs opacity-75">{{ store.studyLang === 'ja' ? '🇯🇵 日本語' : '🇬🇧 English' }}</div>
+        <div class="text-xs opacity-75">{{ store.studyLang === 'ja' ? 'JP 日本語' : 'EN English' }}</div>
       </div>
       <div class="study-lang-toggle">
         <button
@@ -132,16 +132,22 @@ function resetStats() {
     <div class="theme-card mt-4 p-4 flex items-center justify-between">
       <div>
         <div class="text-sm font-semibold">{{ t('darkMode') }}</div>
-        <div class="text-xs opacity-75">{{ themeMode === 'dark' ? t('darkModeOn') : t('darkModeOff') }}</div>
       </div>
-      <button
-        class="theme-switch"
-        :class="{ 'theme-switch--on': themeMode === 'dark' }"
-        @click="toggleTheme"
-        :aria-label="t('darkMode')"
-      >
-        <span class="theme-switch__thumb" />
-      </button>
+      <div class="flex gap-[6px]">
+        <button
+          v-for="tm in ALL_THEMES"
+          :key="tm"
+          type="button"
+          class="w-[22px] h-[22px] rounded-full border-2 cursor-pointer transition-all"
+          :class="themeMode === tm ? 'ring-1 ring-offset-1' : ''"
+          :style="`
+            background: ${tm === 'dusk' ? 'linear-gradient(135deg,#2a1f3d,#1c2a30)' : tm === 'warm' ? 'linear-gradient(135deg,#e8ddd0,#d8ccbc)' : 'linear-gradient(135deg,#141518,#18191e)'};
+            border-color: ${themeMode === tm ? 'var(--primary)' : 'var(--border)'};
+          `"
+          @click="setTheme(tm)"
+          :aria-label="tm"
+        />
+      </div>
     </div>
 
     <StatsGrid @mastered="showMasteredList = true" />

@@ -5,7 +5,7 @@ import AppNav from './AppNav.vue'
 <template>
   <div class="flex min-h-screen">
     <AppNav />
-    <div class="flex-1 min-w-0 pb-20 md:ml-[200px] md:pb-10">
+    <div class="flex-1 min-w-0 pb-[6.5rem] md:ml-[200px] md:pb-10">
       <slot />
     </div>
   </div>

@@ -88,36 +88,6 @@ const TOPIC_I18N_KEYS: Record<string, string> = {
   '学校教育': 'topicSchoolEducation',
 }
 
-const TOPIC_ICONS: Record<string, string> = {
-  '问候寒暄': '👋',
-  '饮食餐厅': '🍜',
-  '购物': '🛍️',
-  '交通出行': '🚃',
-  '住宿旅行': '🏨',
-  '工作职场': '💼',
-  '健康医疗': '🏥',
-  '情绪心理': '💭',
-  '日语学习': '📖',
-  '日本文化': '⛩️',
-  '科技网络': '📱',
-  '天气自然': '🌸',
-  '兴趣娱乐': '🎬',
-  '人际关系': '🤝',
-  '家庭亲子': '👨‍👩‍👧',
-  '励志感悟': '💪',
-  '思考议论': '🧠',
-  '日常生活': '🏠',
-  '日常场景': '💬',
-  '地名观光': '🗾',
-  '社会新闻': '📰',
-  '食物料理': '🍱',
-  '行政手续': '📋',
-  '生活用品': '🧴',
-  '住房租房': '🏠',
-  '购物消费': '🛒',
-  '通信数码': '📱',
-  '学校教育': '🎓',
-}
 
 function getTopicLabel(topic: string): string {
   const key = TOPIC_I18N_KEYS[topic]
@@ -217,7 +187,7 @@ function onLevelClear() {
             :class="selected === row.topic ? 'text-primary' : 'theme-text'"
             @click="onSelect(row.topic)"
           >
-            <span class="min-w-0">{{ TOPIC_ICONS[row.topic] || '📝' }} {{ getTopicLabel(row.topic) }}</span>
+            <span class="min-w-0">{{ getTopicLabel(row.topic) }}</span>
             <span class="shrink-0 text-[11px] font-medium tabular-nums opacity-70">{{ row.count }}</span>
           </button>
         </div>
