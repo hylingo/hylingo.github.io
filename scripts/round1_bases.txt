@@ -1,0 +1,20 @@
+# 第1轮重写: N4日常场景 (19组38篇)
+n4-cafe-work
+n4-child-fever
+n4-cinema
+n4-clinic
+n4-dental
+n4-directions
+n4-eye-clinic
+n4-garbage-sorting
+n4-hair-salon
+n4-laundromat
+n4-neighbor
+n4-pharmacy
+n4-postoffice
+n4-repair
+n4-restaurant
+n4-return
+n4-sports-pool
+n4-supermarket
+n4-ward-office
