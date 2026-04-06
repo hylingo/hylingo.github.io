@@ -23,6 +23,7 @@ const { startLoop, stop: stopLoop, loopPlaying, loopIndex } = useLoopPlayer()
 onMounted(() => { store.ensureArticles() })
 
 const selectedId = ref<string | null>(null)
+const articleSearch = ref('')
 
 /** 连播会话：+1 可丢弃未结束的 onended */
 let articlePlaySession = 0
@@ -152,9 +153,42 @@ const list = computed(() =>
     .sort((a, b) => levelSortKey(a.level) - levelSortKey(b.level)),
 )
 
+/** 搜索结果：跨 essay+dialogue 全文搜索 */
+const searchResults = computed(() => {
+  const q = articleSearch.value.trim().toLowerCase()
+  if (!q) return null
+  const results: { article: ArticleItem; matches: string[] }[] = []
+  for (const a of store.articles) {
+    const hits: string[] = []
+    if (a.format === 'essay') {
+      for (const s of (a as ArticleEssay).segments ?? []) {
+        if (s.word.toLowerCase().includes(q) || s.zh?.toLowerCase().includes(q) || s.en?.toLowerCase().includes(q)) {
+          hits.push(s.word)
+        }
+      }
+    } else {
+      for (const sec of (a as ArticleDialogue).sections ?? []) {
+        for (const l of sec.lines ?? []) {
+          if (l.word.toLowerCase().includes(q) || l.zh?.toLowerCase().includes(q) || l.en?.toLowerCase().includes(q)) {
+            hits.push(`${l.speaker}: ${l.word}`)
+          }
+        }
+      }
+    }
+    // 也搜标题
+    if (a.titleWord?.toLowerCase().includes(q) || a.titleZh?.toLowerCase().includes(q) || a.titleEn?.toLowerCase().includes(q)) {
+      if (!hits.length) hits.push(a.titleWord)
+    }
+    if (hits.length) results.push({ article: a, matches: hits.slice(0, 3) })
+  }
+  return results
+})
+
 const selected = computed(() => {
   if (!selectedId.value) return null
-  return list.value.find((a) => a.id === selectedId.value) ?? null
+  return list.value.find((a) => a.id === selectedId.value)
+    ?? store.articles.find((a) => a.id === selectedId.value)
+    ?? null
 })
 
 /** 当前文章的语法点列表 */
@@ -264,6 +298,14 @@ function playSentenceAt(index: number) {
 }
 
 function openItem(id: string) {
+  // 搜索结果可能跨 essay/dialogue，自动切换 tab
+  const art = store.articles.find(a => a.id === id)
+  if (art) {
+    const targetCat = art.format === 'dialogue' ? 'dialogues' : 'articles'
+    if (store.currentCat !== targetCat) {
+      store.switchCat(targetCat)
+    }
+  }
   selectedId.value = id
 }
 
@@ -306,23 +348,58 @@ onUnmounted(() => {
   <div class="px-4 pb-24 md:px-10 md:max-w-[720px] md:mx-auto">
     <!-- 列表 -->
     <div v-if="!selected" class="space-y-3 pt-1">
-      <p class="text-sm theme-muted mb-3">
-        {{ props.filterFormat === 'dialogue' ? t('dialogueIntro') : t('articleIntro') }}
-      </p>
-      <button
-        v-for="it in list"
-        :key="it.id"
-        type="button"
-        class="w-full text-left rounded-2xl theme-surface shadow-[0_2px_16px_rgba(0,0,0,0.06)] p-4 pl-5 transition hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:scale-[0.99] cursor-pointer border-0 border-l-[3px] border-l-[var(--primary)]/40"
-        @click="openItem(it.id)"
-      >
-        <div class="text-[11px] font-medium theme-muted mb-1.5 tracking-wide">{{ formatLabel(it) }}</div>
-        <div class="text-base font-bold text-content-original leading-snug">{{ it.titleWord }}</div>
-        <div v-if="currentLang === 'zh'" class="text-sm mt-1 text-content-translation">{{ it.titleZh }}</div>
-        <div v-else-if="currentLang === 'en'" class="text-sm mt-1 text-content-translation opacity-90">{{ it.titleEn }}</div>
-        <div v-else class="text-sm mt-1 text-content-translation opacity-90">{{ it.titleJp ?? it.titleZh }}</div>
-      </button>
-      <p v-if="!list.length" class="text-sm theme-muted py-8 text-center">{{ t('articleEmpty') }}</p>
+      <!-- 搜索框 -->
+      <div class="relative">
+        <input
+          v-model="articleSearch"
+          type="text"
+          :placeholder="t('search')"
+          class="w-full rounded-xl border border-[var(--border)] bg-transparent py-2 pr-3 pl-9 text-sm theme-text outline-none transition-[border-color,box-shadow] focus:border-[var(--primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--primary)_18%,transparent)]"
+        />
+        <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 theme-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+        </svg>
+      </div>
+
+      <!-- 搜索结果 -->
+      <template v-if="searchResults">
+        <p class="text-xs theme-muted">{{ searchResults.length }} 篇文章匹配</p>
+        <button
+          v-for="r in searchResults"
+          :key="r.article.id"
+          type="button"
+          class="w-full text-left rounded-2xl theme-surface shadow-[0_2px_16px_rgba(0,0,0,0.06)] p-4 pl-5 transition hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:scale-[0.99] cursor-pointer border-0 border-l-[3px] border-l-[var(--primary)]/40"
+          @click="openItem(r.article.id)"
+        >
+          <div class="text-[11px] font-medium theme-muted mb-1.5 tracking-wide">{{ r.article.format === 'dialogue' ? '💬' : '📖' }} {{ formatLabel(r.article) }}</div>
+          <div class="text-base font-bold text-content-original leading-snug">{{ r.article.titleWord }}</div>
+          <div class="mt-1.5 space-y-0.5">
+            <p v-for="(m, i) in r.matches" :key="i" class="text-xs theme-muted truncate">…{{ m }}…</p>
+          </div>
+        </button>
+        <p v-if="!searchResults.length" class="text-sm theme-muted py-8 text-center">未找到匹配内容</p>
+      </template>
+
+      <!-- 正常列表 -->
+      <template v-else>
+        <p class="text-sm theme-muted mb-3">
+          {{ props.filterFormat === 'dialogue' ? t('dialogueIntro') : t('articleIntro') }}
+        </p>
+        <button
+          v-for="it in list"
+          :key="it.id"
+          type="button"
+          class="w-full text-left rounded-2xl theme-surface shadow-[0_2px_16px_rgba(0,0,0,0.06)] p-4 pl-5 transition hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:scale-[0.99] cursor-pointer border-0 border-l-[3px] border-l-[var(--primary)]/40"
+          @click="openItem(it.id)"
+        >
+          <div class="text-[11px] font-medium theme-muted mb-1.5 tracking-wide">{{ formatLabel(it) }}</div>
+          <div class="text-base font-bold text-content-original leading-snug">{{ it.titleWord }}</div>
+          <div v-if="currentLang === 'zh'" class="text-sm mt-1 text-content-translation">{{ it.titleZh }}</div>
+          <div v-else-if="currentLang === 'en'" class="text-sm mt-1 text-content-translation opacity-90">{{ it.titleEn }}</div>
+          <div v-else class="text-sm mt-1 text-content-translation opacity-90">{{ it.titleJp ?? it.titleZh }}</div>
+        </button>
+        <p v-if="!list.length" class="text-sm theme-muted py-8 text-center">{{ t('articleEmpty') }}</p>
+      </template>
     </div>
 
     <!-- 详情 -->
