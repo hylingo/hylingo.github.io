@@ -1,0 +1,238 @@
+{
+  "n5-food-i-like-essay": {
+    "title": "Food I like",
+    "format": "essay",
+    "scenes": [
+      {
+        "range": [
+          0,
+          2
+        ],
+        "summary": "早餐桌上摆着面包、黄油、鸡蛋和茶，学校食堂里一碗淋了酱油的米饭",
+        "prompt": "cozy breakfast table with sliced bread, butter dish, sunny-side-up eggs, and a steaming cup of green tea, warm morning light through a window, then a bright school cafeteria tray with a bowl of white rice drizzled with soy sauce, cheerful midday atmosphere, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      },
+      {
+        "range": [
+          3,
+          4
+        ],
+        "summary": "餐盘上摆着鲜嫩的牛肉、猪肉和鸡肉，旁边放着一堆橘子",
+        "prompt": "rustic wooden table with grilled beef, pork, and chicken pieces on ceramic plates, warm golden light, beside a pile of bright orange tangerines with green leaves, inviting and appetizing still-life setting, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      },
+      {
+        "range": [
+          5,
+          6
+        ],
+        "summary": "桌上摆着各式甜点和一杯泡面，热气腾腾",
+        "prompt": "small round table with colorful sweets, cakes, and candies arranged playfully, next to a steaming instant ramen cup with hot water being poured in, soft kitchen background, gentle steam wisps rising, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      },
+      {
+        "range": [
+          7,
+          8
+        ],
+        "summary": "自己下厨做晚餐，餐桌上摆着米饭、各式配菜和一小杯酒",
+        "prompt": "warm home kitchen in the evening with a dinner table set with a bowl of fluffy white rice, colorful side dishes in small plates, chopsticks, spoon and fork, a small glass of sake or beer glowing amber, cozy lamplight, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      }
+    ],
+    "cover": {
+      "summary": "丰盛的日式餐桌，汇聚各种美食——米饭、肉类、水果、甜点，洋溢着饮食之乐",
+      "prompt": "overhead view of a beautifully arranged Japanese meal spread on a low wooden table, bowl of white rice with soy sauce, grilled meats, tangerines, colorful sweets, a cup of green tea, chopsticks resting on a ceramic holder, warm inviting light, abundant and joyful food celebration, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+    }
+  },
+  "n5-my-day-essay": {
+    "title": "My day",
+    "format": "essay",
+    "scenes": [
+      {
+        "range": [
+          0,
+          3
+        ],
+        "summary": "清晨起床、洗漱、吃早餐，然后乘地铁上学，经过路口和桥梁",
+        "prompt": "cozy morning kitchen with bread eggs and steaming tea on table, soft dawn light through window, then a subway station platform with warm lighting, a bridge over a calm river in morning mist, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      },
+      {
+        "range": [
+          4,
+          6
+        ],
+        "summary": "在学校上课考试、在食堂午餐，傍晚在图书馆自习",
+        "prompt": "bright school classroom with open notebooks and pencils on desks, warm cafeteria scene with colorful food trays holding beef and fruit, then a quiet library interior with bookshelves and soft lamp light in late afternoon, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      },
+      {
+        "range": [
+          7,
+          9
+        ],
+        "summary": "傍晚在超市购物，回家做晚饭、看电视，结束充实的一天",
+        "prompt": "cheerful supermarket aisle with colorful shelves of meat and produce, then a cozy home kitchen with steaming pots and warm overhead light, a small living room with glowing TV screen casting soft light, peaceful bedroom at night, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      }
+    ],
+    "cover": {
+      "summary": "充实而愉快的日本留学日常生活全景",
+      "prompt": "a bright and busy Japanese daily life scene collage, morning sunlight over a city bridge with cherry blossom trees, a school building surrounded by greenery, a cozy kitchen table with tea and eggs, warm golden evening light over a neighborhood supermarket street, cheerful and lively atmosphere, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+    }
+  },
+  "n5-my-family-essay": {
+    "title": "My family",
+    "format": "essay",
+    "scenes": [
+      {
+        "range": [
+          0,
+          3
+        ],
+        "summary": "家庭日常：父亲穿西装出门，母亲在厨房烹饪美食",
+        "prompt": "cozy Japanese home interior split view, one side showing a hallway with a man's suit jacket and tie hanging by the door, morning sunlight streaming in, the other side showing a warm kitchen with steaming pots and delicious dinner dishes on the table, soft golden light, homely atmosphere, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      },
+      {
+        "range": [
+          4,
+          5
+        ],
+        "summary": "调皮的小弟弟在家里玩耍，远处乡间住着祖父母",
+        "prompt": "cheerful Japanese living room with small toys scattered on the floor, a tiny child running playfully among cushions, through the window a distant peaceful countryside village is visible with a quaint traditional house nestled among green hills, warm afternoon light, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      },
+      {
+        "range": [
+          6,
+          8
+        ],
+        "summary": "暑假全家齐聚乡下祖父母家，围桌共享热闹晚餐",
+        "prompt": "large festive dinner table outdoors in a Japanese countryside garden under a summer evening sky, filled with colorful home-cooked dishes, lantern light glowing warmly overhead, fireflies in the background, lush green fields and traditional farmhouse visible, joyful summer gathering atmosphere, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      }
+    ],
+    "cover": {
+      "summary": "全家夏日团聚，围坐在乡间庭院共享晚餐的温馨时光",
+      "prompt": "warm summer evening in a Japanese countryside garden, a long wooden dinner table laden with colorful home-cooked food, paper lanterns hanging above casting golden light, fireflies drifting in the dusky purple-blue sky, traditional farmhouse in the background surrounded by tall green trees and rice fields, intimate and joyful family gathering atmosphere, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+    }
+  },
+  "n5-my-room-essay": {
+    "title": "My room",
+    "format": "essay",
+    "scenes": [
+      {
+        "range": [
+          0,
+          2
+        ],
+        "summary": "温馨小卧室一角，床靠窗边，书桌椅子整齐排列，书架上摆满书籍",
+        "prompt": "cozy small bedroom corner, single bed beside a sunny window with soft curtains, wooden desk and chair neatly arranged, bookshelf filled with colorful books and dictionaries, warm morning light, tidy and peaceful room, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      },
+      {
+        "range": [
+          3,
+          4
+        ],
+        "summary": "小厨房与洗手间一角，冰箱里放着鸡蛋和水果，洗手台旁摆着香皂和手帕",
+        "prompt": "tiny cozy kitchen with a small refrigerator door open revealing eggs and fresh colorful fruits inside, nearby restroom corner with a bar of soap and a folded handkerchief on a shelf, soft indoor light, clean and simple, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      },
+      {
+        "range": [
+          5,
+          6
+        ],
+        "summary": "傍晚开灯的温暖房间，暖炉散发热气，室内灯光明亮温馨",
+        "prompt": "small cozy room at dusk with a warm glowing lamp casting gentle light, electric heater on the floor radiating warmth shown as soft orange waves, contrast between bright warm interior and dark winter outside the window, steam rising softly, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      },
+      {
+        "range": [
+          7,
+          8
+        ],
+        "summary": "窗外盛开的花朵随风摇曳，温暖春日里窗户大开，微风轻轻吹入房间",
+        "prompt": "open window with white curtains billowing gently in a warm breeze, colorful flowers blooming just outside on a sunny day, soft dappled light streaming into a small cozy room, petals floating in the air, peaceful and cheerful spring atmosphere, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      }
+    ],
+    "cover": {
+      "summary": "阳光照进小窗，窗外鲜花盛开，温馨整洁的小房间充满生活气息",
+      "prompt": "charming small cozy room seen from a gentle angle, sunlight pouring through an open window with flowing curtains, colorful flowers visible outside, bed neatly made, bookshelf with books, a warm lamp glowing softly, peaceful and lived-in feeling, cheerful and intimate atmosphere, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+    }
+  },
+  "n5-self-intro-essay": {
+    "title": "About me",
+    "format": "essay",
+    "scenes": [
+      {
+        "range": [
+          0,
+          1
+        ],
+        "summary": "一位年轻女留学生从中国来到东京，开始新生活",
+        "prompt": "a young woman with a suitcase standing on a Tokyo street, cherry blossom petals drifting, city skyline with traditional and modern buildings in background, warm golden afternoon light, sense of arrival and new beginnings, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      },
+      {
+        "range": [
+          2,
+          3
+        ],
+        "summary": "新年通话与节日庆祝，温馨的节日时光",
+        "prompt": "a cozy room glowing with warm light, a phone on a table surrounded by New Year decorations and a small Christmas tree with twinkling ornaments, snowflakes drifting past the window, festive and heartwarming atmosphere, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      },
+      {
+        "range": [
+          4,
+          6
+        ],
+        "summary": "享受电影、歌唱和吉他等兴趣爱好的轻松时光",
+        "prompt": "a sunny bedroom with a guitar leaning against the wall, scattered music notes floating in the air, movie posters on the wall, a joyful and creative atmosphere, afternoon sunlight streaming through curtains, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      },
+      {
+        "range": [
+          7,
+          8
+        ],
+        "summary": "每天努力学习日语，怀抱在日本公司工作的梦想",
+        "prompt": "a small study desk covered with Japanese textbooks and an open dictionary, a city office building visible through the window at dusk, a determined and hopeful mood, soft lamp light illuminating the desk, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      }
+    ],
+    "cover": {
+      "summary": "留学生在东京的日常：学习、音乐与对未来的憧憬",
+      "prompt": "a young international student sitting at a desk near a window overlooking Tokyo's cityscape, a guitar beside her, an open dictionary and textbooks on the desk, cherry blossoms blooming outside, soft morning light, a sense of dreams and daily effort, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+    }
+  },
+  "n5-family-intro-essay": {
+    "title": "What my family is like",
+    "format": "essay",
+    "scenes": [
+      {
+        "range": [
+          0,
+          2
+        ],
+        "summary": "温馨的家庭日常：父亲系领带出门上班，母亲在厨房烹饪美味晚餐",
+        "prompt": "cozy family home interior split between entrance hallway and warm kitchen, a tall man in a suit and tie standing by the front door with a briefcase, sunlight streaming through morning windows, nearby a cheerful kitchen scene with pots simmering on the stove, vegetables on the counter, soft afternoon light, homey and warm atmosphere, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      },
+      {
+        "range": [
+          3,
+          5
+        ],
+        "summary": "兄弟姐妹各有生活：哥哥已成家，姐姐与朋友嬉笑，弟弟在家吵闹捣蛋",
+        "prompt": "lively suburban home living room scene, a young couple sitting together on a sofa, a cheerful group of young women laughing near a window with books scattered around, a middle school boy bouncing around playfully with toys and laughter energy, warm indoor lighting, cozy cluttered family space, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      },
+      {
+        "range": [
+          6,
+          7
+        ],
+        "summary": "乡下祖父母家：祖父在田间劳作，节日时亲戚们热闹团聚",
+        "prompt": "rolling countryside farmland with an elderly figure tending to vegetable fields under a bright sky, rustic farmhouse in the background, then a festive gathering scene with a large dining table full of food and many family members of all ages crowding around, paper lanterns hanging overhead, warm golden evening light, joyful celebration atmosphere, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      },
+      {
+        "range": [
+          8,
+          8
+        ],
+        "summary": "一大家子围桌共餐，热闹温暖，珍惜彼此相聚的时光",
+        "prompt": "wide round dining table overflowing with colorful dishes and bowls of steaming food, many empty chairs just pulled back as if people just sat down, chopsticks and cups arranged festively, soft lantern light glowing overhead, a window showing twilight outside, warm amber and rose tones filling the room, sense of togetherness and abundance, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+      }
+    ],
+    "cover": {
+      "summary": "一家人围坐在丰盛的餐桌旁，共享温馨热闹的团圆时光",
+      "prompt": "a large joyful family gathered around a long wooden dining table filled with traditional Japanese home-cooked dishes, warm kitchen light spilling over the scene, steam rising from bowls of rice and soup, autumn leaves visible through a sliding glass door, a sense of generational togetherness with figures of different heights suggesting grandparents to children, cozy tatami room atmosphere, watercolor children's book illustration, soft pastel colors, dreamy atmosphere, no text, no logos, no clearly visible human faces"
+    }
+  }
+}

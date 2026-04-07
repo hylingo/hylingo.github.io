@@ -7,6 +7,7 @@ import { useLoopPlayer } from '@/composables/useLoopPlayer'
 import type { ArticleItem, ArticleEssay, ArticleDialogue, ArticleSegment, GrammarPoint } from '@/types'
 import RubyText from '@/components/common/RubyText.vue'
 import AppIcon from '@/components/common/AppIcon.vue'
+import ArticleCover from '@/components/common/ArticleCover.vue'
 import SkeletonArticleList from '@/components/common/SkeletonArticleList.vue'
 import type { DataItem } from '@/stores/app'
 import { readArticlePrefRaw, writeArticlePrefRaw } from '@/learning/learnStorage'
@@ -387,10 +388,20 @@ onUnmounted(() => {
           class="w-full text-left rounded-2xl theme-surface shadow-[0_2px_16px_rgba(0,0,0,0.06)] p-4 pl-5 transition hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:scale-[0.99] cursor-pointer border-0 border-l-[3px] border-l-[var(--primary)]/40"
           @click="openItem(r.article.id)"
         >
-          <div class="text-[11px] font-medium theme-muted mb-1.5 tracking-wide"><AppIcon :name="r.article.format === 'dialogue' ? 'chat' : 'book'" :size="14" /> {{ formatLabel(r.article) }}</div>
-          <div class="text-base font-bold text-content-original leading-snug">{{ r.article.titleWord }}</div>
-          <div class="mt-1.5 space-y-0.5">
-            <p v-for="(m, i) in r.matches" :key="i" class="text-xs theme-muted truncate">…{{ m }}…</p>
+          <div class="flex items-start gap-3">
+            <ArticleCover
+              :article-id="r.article.id"
+              variant="thumb"
+              :icon="r.article.format === 'dialogue' ? 'chat' : 'book'"
+              :alt="r.article.titleWord"
+            />
+            <div class="min-w-0 flex-1">
+              <div class="text-[11px] font-medium theme-muted mb-1.5 tracking-wide"><AppIcon :name="r.article.format === 'dialogue' ? 'chat' : 'book'" :size="14" /> {{ formatLabel(r.article) }}</div>
+              <div class="text-base font-bold text-content-original leading-snug">{{ r.article.titleWord }}</div>
+              <div class="mt-1.5 space-y-0.5">
+                <p v-for="(m, i) in r.matches" :key="i" class="text-xs theme-muted truncate">…{{ m }}…</p>
+              </div>
+            </div>
           </div>
         </button>
         <p v-if="!searchResults.length" class="text-sm theme-muted py-8 text-center">未找到匹配内容</p>
@@ -415,11 +426,21 @@ onUnmounted(() => {
             <span :title="t('articleListenCount')">{{ t('articleListenShort') }}{{ progressMap[it.id]?.listen ?? 0 }}</span>
             <span :title="t('articleShadowCount')">{{ t('articleShadowShort') }}{{ progressMap[it.id]?.shadow ?? 0 }}</span>
           </span>
-          <div class="text-[11px] font-medium theme-muted mb-1.5 tracking-wide">{{ formatLabel(it) }}</div>
-          <div class="text-base font-bold text-content-original leading-snug">{{ it.titleWord }}</div>
-          <div v-if="currentLang === 'zh'" class="text-sm mt-1 text-content-translation">{{ it.titleZh }}</div>
-          <div v-else-if="currentLang === 'en'" class="text-sm mt-1 text-content-translation opacity-90">{{ it.titleEn }}</div>
-          <div v-else class="text-sm mt-1 text-content-translation opacity-90">{{ it.titleJp ?? it.titleZh }}</div>
+          <div class="flex items-start gap-3">
+            <ArticleCover
+              :article-id="it.id"
+              variant="thumb"
+              :icon="it.format === 'dialogue' ? 'chat' : 'book'"
+              :alt="it.titleWord"
+            />
+            <div class="min-w-0 flex-1">
+              <div class="text-[11px] font-medium theme-muted mb-1.5 tracking-wide">{{ formatLabel(it) }}</div>
+              <div class="text-base font-bold text-content-original leading-snug">{{ it.titleWord }}</div>
+              <div v-if="currentLang === 'zh'" class="text-sm mt-1 text-content-translation">{{ it.titleZh }}</div>
+              <div v-else-if="currentLang === 'en'" class="text-sm mt-1 text-content-translation opacity-90">{{ it.titleEn }}</div>
+              <div v-else class="text-sm mt-1 text-content-translation opacity-90">{{ it.titleJp ?? it.titleZh }}</div>
+            </div>
+          </div>
         </button>
         <p v-if="!list.length" class="text-sm theme-muted py-8 text-center">{{ t('articleEmpty') }}</p>
       </template>
@@ -436,6 +457,13 @@ onUnmounted(() => {
       </button>
 
       <header class="mb-6">
+        <ArticleCover
+          :article-id="selected!.id"
+          variant="banner"
+          :icon="selected!.format === 'dialogue' ? 'chat' : 'book'"
+          :alt="selected!.titleWord"
+          class="mb-4"
+        />
         <h1 v-if="showReading && selected!.titleRuby" class="text-xl font-bold text-content-original"><RubyText :tokens="selected!.titleRuby" /></h1>
         <h1 v-else class="text-xl font-bold text-content-original leading-snug">{{ selected!.titleWord }}</h1>
         <template v-if="showTranslation">

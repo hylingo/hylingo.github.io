@@ -9,6 +9,7 @@ import { normalizeJpSpeech } from '@/utils/jpSpeechMatch'
 import { recordFollowComplete } from '@/composables/useStats'
 import { isStarred, toggleStar, starredTick } from '@/learning'
 import RubyText from '@/components/common/RubyText.vue'
+import ArticleCover from '@/components/common/ArticleCover.vue'
 import { enablePlayerDebugLogButtons } from '@/config/features'
 
 const { t, currentLang } = useLang()
@@ -187,6 +188,13 @@ function scoreLabel(score: number) {
 
 const miniTitle = computed(() => currentItem.value?.word ?? '—')
 
+/** 当前播放项是否来自文章（含 _articleId） */
+const currentArticleId = computed<string | null>(() => {
+  const it = currentItem.value as any
+  return it?._articleId ?? null
+})
+const isArticleItem = computed(() => !!currentArticleId.value)
+
 const currentStarred = computed(() => {
   starredTick.value
   const it = currentItem.value
@@ -245,7 +253,12 @@ function onCardMainClick() {
 
   <!-- 展开 -->
   <div v-if="visible && !collapsed" class="fixed inset-0 z-[200] flex items-center justify-center backdrop-blur-sm" :style="{ background: 'var(--overlay-scrim)' }">
-    <div class="w-[95%] max-w-lg md:w-[90%] md:max-w-sm theme-loop-panel rounded-3xl overflow-hidden max-h-[min(92svh,900px)] flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.15)]">
+    <div
+      class="theme-loop-panel rounded-3xl overflow-hidden max-h-[min(92svh,900px)] flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.15)]"
+      :class="isArticleItem
+        ? 'w-[95%] max-w-xl md:w-[92%] md:max-w-lg'
+        : 'w-[95%] max-w-lg md:w-[90%] md:max-w-sm'"
+    >
       <!-- Info bar -->
       <div class="flex items-center justify-between px-4 pt-3 pb-2 md:px-5 shrink-0">
         <span class="text-[13px]" style="color: var(--text-secondary)">
@@ -261,6 +274,16 @@ function onCardMainClick() {
           </button>
           <button type="button" class="w-9 h-9 flex items-center justify-center rounded-full cursor-pointer text-sm" style="color: var(--text-secondary)" @click="stop">✕</button>
         </div>
+      </div>
+
+      <!-- 文章模式：顶部场景图（占位，未生成时显示渐变图标） -->
+      <div v-if="isArticleItem" class="px-4 md:px-5 shrink-0">
+        <ArticleCover
+          :article-id="currentArticleId"
+          variant="hero"
+          icon="book"
+          class="rounded-2xl"
+        />
       </div>
 
       <!-- Word card：点击原文区播放（普通模式 暂停/继续；跟读未录音时 播原音） -->
