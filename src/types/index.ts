@@ -66,6 +66,8 @@ export interface ArticleEssay {
   titleRuby?: RubyToken[]
   segments: ArticleSegment[]
   grammar?: string[]
+  /** 整篇音频文件路径（multi-speaker 等特殊情形）。存在时按"整段播放"模式渲染 */
+  articleAudio?: string
 }
 
 export interface GrammarPoint {
@@ -87,6 +89,8 @@ export interface ArticleDialogue {
   titleRuby?: RubyToken[]
   sections: ArticleDialogueSection[]
   grammar?: string[]
+  /** 整篇音频文件路径（multi-speaker 等特殊情形）。存在时按"整段播放"模式渲染 */
+  articleAudio?: string
 }
 
 export type ArticleItem = ArticleEssay | ArticleDialogue

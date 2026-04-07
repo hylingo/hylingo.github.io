@@ -10,7 +10,7 @@ function audioPath(fn: string): string {
   return `https://pub-b85a5fcff7574f24b2a311a6506ec730.r2.dev/${fn}`
 }
 
-export { audioEl }
+export { audioEl, audioPath }
 
 /**
  * 主轨播放：测页用过麦克风后，部分移动浏览器需 load + 重试 play 才能恢复。

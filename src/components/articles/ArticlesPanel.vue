@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { useLang } from '@/i18n'
-import { audioEl } from '@/composables/useAudio'
+import { audioEl, audioPath } from '@/composables/useAudio'
 import { useLoopPlayer } from '@/composables/useLoopPlayer'
 import type { ArticleItem, ArticleEssay, ArticleDialogue, ArticleSegment, GrammarPoint } from '@/types'
 import RubyText from '@/components/common/RubyText.vue'
@@ -246,6 +246,8 @@ const essayParagraphGroups = computed(() => {
 const flatSentences = computed((): (ArticleSegment & { speaker?: 'A' | 'B' })[] => {
   const it = selected.value
   if (!it) return []
+  // 整段音频模式：禁用单句/连播相关 UI
+  if (it.articleAudio) return []
   if (it.format === 'essay') {
     return it.segments.map((s) => ({ ...s }))
   }
@@ -256,6 +258,12 @@ const flatSentences = computed((): (ArticleSegment & { speaker?: 'A' | 'B' })[] 
     }
   }
   return out
+})
+
+/** 整段音频 URL（仅当文章有 articleAudio 字段） */
+const wholeArticleAudioUrl = computed<string | null>(() => {
+  const fn = selected.value?.articleAudio
+  return fn ? audioPath(fn) : null
 })
 
 /** 当前篇按顺序的朗读单元（用于连播） */
@@ -574,6 +582,14 @@ onUnmounted(() => {
             class="pointer-events-none absolute top-3 right-4 z-[1] text-[9px] font-medium tabular-nums leading-none theme-muted opacity-[0.38] md:top-4 md:right-5 md:text-[10px]"
             aria-hidden="true"
             >{{ selected!.level }}</span>
+          <!-- 整段音频播放器（特殊整段播放模式） -->
+          <audio
+            v-if="wholeArticleAudioUrl"
+            :src="wholeArticleAudioUrl"
+            controls
+            preload="metadata"
+            class="w-full mb-4"
+          ></audio>
           <div class="space-y-5">
             <div
               v-for="(para, pi) in essayParagraphGroups"
@@ -623,6 +639,14 @@ onUnmounted(() => {
             class="pointer-events-none absolute top-3 right-4 z-[1] text-[9px] font-medium tabular-nums leading-none theme-muted opacity-[0.38] md:top-4 md:right-5 md:text-[10px]"
             aria-hidden="true"
             >{{ selected!.level }}</span>
+          <!-- 整段音频播放器（multi-speaker 等特殊对话） -->
+          <audio
+            v-if="wholeArticleAudioUrl"
+            :src="wholeArticleAudioUrl"
+            controls
+            preload="metadata"
+            class="w-full"
+          ></audio>
           <section v-for="(sec, si) in (selected as ArticleDialogue).sections" :key="si" class="space-y-4">
             <div class="flex items-center gap-2 flex-wrap">
               <span v-if="sec.badge" class="text-lg" aria-hidden="true">{{ sec.badge }}</span>
