@@ -132,7 +132,7 @@ function resetStats() {
     <div class="theme-card mt-4 p-4 flex items-center justify-between">
       <div>
         <div class="text-sm font-semibold">皮肤</div>
-        <div class="text-xs opacity-75">{{ themeMode === 'dusk' ? '暮色' : themeMode === 'warm' ? '暖云' : '墨金' }}</div>
+        <div class="text-xs opacity-75">{{ themeMode === 'dusk' ? '暮色' : themeMode === 'watercolor' ? '水彩' : '墨金' }}</div>
       </div>
       <div class="flex gap-3">
         <button
@@ -144,8 +144,8 @@ function resetStats() {
             border-radius: 50%;
             background: ${tm === 'dusk'
               ? 'linear-gradient(135deg,#2a1f3d 0%,#1a2235 35%,#1c2a30 70%,#c8a8e8 100%)'
-              : tm === 'warm'
-                ? 'linear-gradient(135deg,#e8ddd0 0%,#d8ccbc 50%,#7a9a78 100%)'
+              : tm === 'watercolor'
+                ? 'linear-gradient(135deg,#f5c0c8 0%,#ffe4b8 35%,#c5e4f0 70%,#d8c5e8 100%)'
                 : 'linear-gradient(135deg,#141518 0%,#18191e 55%,#dcb478 100%)'};
             outline: 2px solid ${themeMode === tm ? 'var(--primary)' : 'transparent'};
             outline-offset: 2px;

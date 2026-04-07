@@ -190,8 +190,8 @@ const chartTitleText = computed(() => {
 .day-even { background: transparent; }
 .day-odd { background: color-mix(in srgb, var(--text) 3%, transparent); }
 
-:global(:root:not(.theme-warm)) .chart-bar-listen { background: #c4705c; }
-:global(:root:not(.theme-warm)) .chart-bar-read { background: #7aa0d2; }
-:global(:root:not(.theme-warm)) .chart-bar-practice { background: #6da585; }
-:global(:root:not(.theme-warm)) .day-odd { background: color-mix(in srgb, #ffffff 4%, transparent); }
+:global(:root:not(.theme-watercolor)) .chart-bar-listen { background: #c4705c; }
+:global(:root:not(.theme-watercolor)) .chart-bar-read { background: #7aa0d2; }
+:global(:root:not(.theme-watercolor)) .chart-bar-practice { background: #6da585; }
+:global(:root:not(.theme-watercolor)) .day-odd { background: color-mix(in srgb, #ffffff 4%, transparent); }
 </style>

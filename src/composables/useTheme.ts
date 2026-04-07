@@ -1,10 +1,11 @@
 import { ref, watch } from 'vue'
+import { safeGet, safeSet } from '@/storage/safeLS'
+import { LS } from '@/storage/keys'
 
-export type ThemeMode = 'dusk' | 'warm' | 'ink'
+export type ThemeMode = 'dusk' | 'watercolor' | 'ink'
 
-const THEME_KEY = 'app_theme_mode_v1'
-const ALL_THEMES: ThemeMode[] = ['dusk', 'warm', 'ink']
-const themeMode = ref<ThemeMode>('warm')
+const ALL_THEMES: ThemeMode[] = ['dusk', 'watercolor', 'ink']
+const themeMode = ref<ThemeMode>('watercolor')
 let inited = false
 
 function applyTheme(mode: ThemeMode) {
@@ -14,23 +15,26 @@ function applyTheme(mode: ThemeMode) {
   root.classList.add(`theme-${mode}`)
   root.setAttribute('data-theme', mode)
   // Backwards compat: components checking theme-dark
-  root.classList.toggle('theme-dark', mode !== 'warm')
+  root.classList.toggle('theme-dark', mode !== 'watercolor')
 }
 
 function initTheme() {
   if (inited) return
-  const stored = localStorage.getItem(THEME_KEY) as ThemeMode | null
-  if (stored && ALL_THEMES.includes(stored)) {
-    themeMode.value = stored
+  const raw = safeGet(LS.THEME)
+  if (raw && (ALL_THEMES as string[]).includes(raw)) {
+    themeMode.value = raw as ThemeMode
+  } else if (raw === 'warm') {
+    // legacy 值迁移：老的暖云主题映射到水彩
+    themeMode.value = 'watercolor'
+  } else if (raw === 'dark') {
+    // legacy 值迁移
+    themeMode.value = 'ink'
   } else {
-    // Migrate old values
-    const legacy = localStorage.getItem(THEME_KEY)
-    if (legacy === 'dark') themeMode.value = 'ink'
-    else themeMode.value = 'warm'
+    themeMode.value = 'watercolor'
   }
   applyTheme(themeMode.value)
   watch(themeMode, (mode) => {
-    localStorage.setItem(THEME_KEY, mode)
+    safeSet(LS.THEME, mode)
     applyTheme(mode)
   })
   inited = true

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAppStore } from '@/stores/app'
 import { useFirebase } from '@/composables/useFirebase'
 import { useQuiz } from '@/composables/useQuiz'
@@ -23,11 +24,32 @@ const StatsPanel = defineAsyncComponent({
 import LoopBar from '@/components/loop/LoopBar.vue'
 import KanaGrid from '@/components/kana/KanaGrid.vue'
 import ArticlesPanel from '@/components/articles/ArticlesPanel.vue'
+import ToastStack from '@/components/common/ToastStack.vue'
+import { showError } from '@/composables/useToasts'
+import { t as i18nT } from '@/i18n'
 import { useLoopPlayer } from '@/composables/useLoopPlayer'
 import { stopLoop as stopPracticeAudioLoop } from '@/composables/useAudio'
 import { useTheme } from '@/composables/useTheme'
 
 const store = useAppStore()
+const route = useRoute()
+
+// 根据当前路由，给 <html> 打上 mode-* class，供 CSS 切换水彩背景位置
+const MODE_CLASSES = ['mode-list', 'mode-practice', 'mode-stats'] as const
+function routeToMode(name: unknown): typeof MODE_CLASSES[number] {
+  if (name === 'practice' || name === 'practice-article') return 'mode-practice'
+  if (name === 'stats') return 'mode-stats'
+  return 'mode-list'
+}
+watch(
+  () => route.name,
+  (name) => {
+    const root = document.documentElement
+    MODE_CLASSES.forEach(c => root.classList.remove(c))
+    root.classList.add(routeToMode(name))
+  },
+  { immediate: true },
+)
 const { loopPlaying, startListPlayback, stop: stopListPlayback } = useLoopPlayer()
 const listPanelRef = ref<InstanceType<typeof ListPanel> | null>(null)
 
@@ -60,22 +82,40 @@ watch(
   },
 )
 
+async function loadInitialDataWithRetry() {
+  try {
+    await store.loadData()
+  } catch {
+    showError(i18nT('toastDataLoadFailed') || '数据加载失败', {
+      actionLabel: i18nT('retry') || '重试',
+      onAction: () => { void loadInitialDataWithRetry() },
+    })
+    return
+  }
+  // 如果初始就在 articles/dialogues 页，或冷启动直接落到本篇练习 URL，立即加载 articles
+  const needsArticles =
+    store.currentCat === 'articles' ||
+    store.currentCat === 'dialogues' ||
+    !!store.practiceArticleId
+  if (needsArticles) {
+    await store.ensureArticles()
+  }
+  // 冷启动落在 practice 路由时，watch 不会触发（mode 没"变化"），手动抽一次题
+  if (store.currentMode === 'practice') {
+    schedulePracticeStartQuiz()
+  }
+}
+
 onMounted(async () => {
   initTheme()
   initFirebase()
-  await store.loadData()
-
-  // 如果初始就在 articles/dialogues 页，立即开始加载
-  if (store.currentCat === 'articles' || store.currentCat === 'dialogues') {
-    store.ensureArticles()
-  }
+  await loadInitialDataWithRetry()
 
   if (userId.value) {
     pullAndMerge().then((merged) => {
       if (merged) store.restorePracticeArticleFromLS()
     })
   }
-
 })
 </script>
 
@@ -116,4 +156,5 @@ onMounted(async () => {
     </div>
   </div>
   <LoopBar />
+  <ToastStack />
 </template>
