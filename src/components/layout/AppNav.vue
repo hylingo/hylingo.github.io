@@ -20,11 +20,11 @@ const navItems = [
     class="md:hidden fixed z-[200] left-1/2 -translate-x-1/2 theme-nav-mobile rounded-full"
     :style="`bottom: calc(env(safe-area-inset-bottom, 0px) + 10px); box-shadow: 0 8px 28px rgba(120,90,70,0.14), 0 2px 8px rgba(120,90,70,0.08);`"
   >
-    <div class="flex items-center gap-1.5 px-2 py-1.5">
+    <div class="flex items-center gap-2 px-3 py-2">
       <button
         v-for="item in navItems"
         :key="item.mode"
-        class="flex items-center justify-center border-none bg-transparent cursor-pointer transition-all rounded-full h-11 w-11"
+        class="flex items-center justify-center border-none bg-transparent cursor-pointer transition-all rounded-full h-14 w-16"
         :class="store.currentMode === item.mode
           ? 'nav-island-active'
           : ''"
