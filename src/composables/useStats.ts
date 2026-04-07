@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { readSyncedJson, writeSyncedJson } from '@/learning/learnStorage'
 import { useFirebase } from './useFirebase'
+import type { StatsMap } from '@/types'
 
 const { debouncedSync } = useFirebase()
 
@@ -12,12 +13,12 @@ export function todayKey(): string {
   return new Date().toISOString().slice(0, 10)
 }
 
-export function getStats(): Record<string, any> {
+export function getStats(): StatsMap {
   const lang = useAppStore().studyLang
-  return readSyncedJson(lang, 'stats') as Record<string, any>
+  return (readSyncedJson(lang, 'stats') as StatsMap) || {}
 }
 
-export function saveStats(s: Record<string, any>) {
+export function saveStats(s: StatsMap) {
   const lang = useAppStore().studyLang
   writeSyncedJson(lang, 'stats', s)
   statsVersion.value++

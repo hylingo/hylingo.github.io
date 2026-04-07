@@ -3,6 +3,8 @@
  */
 import { useAppStore } from '@/stores/app'
 import type { StudyLang } from '@/types'
+import { safeGet, safeSet, safeRemove } from '@/storage/safeLS'
+import { LS } from '@/storage/keys'
 
 export const STUDY_LANGS: StudyLang[] = ['ja', 'en']
 
@@ -10,12 +12,8 @@ export const STUDY_LANGS: StudyLang[] = ['ja', 'en']
  * 与 app store 中 study_lang 同源（localStorage），可在 Pinia 尚未 app.use 时安全调用。
  */
 export function studyLangFromLocalStorage(): StudyLang {
-  try {
-    const s = localStorage.getItem('study_lang')
-    if (s === 'en' || s === 'ja') return s
-  } catch {
-    /* ignore */
-  }
+  const s = safeGet(LS.STUDY_LANG)
+  if (s === 'en' || s === 'ja') return s
   return 'ja'
 }
 
@@ -73,7 +71,7 @@ export function articlePrefKey(lang: StudyLang, id: keyof typeof LEARN_ARTICLE_S
 }
 
 export function readSyncedRaw(lang: StudyLang, cloudKey: SyncedCloudKey): string | null {
-  return localStorage.getItem(learnLocalStorageKey(lang, cloudKey))
+  return safeGet(learnLocalStorageKey(lang, cloudKey))
 }
 
 export function readSyncedJson(lang: StudyLang, cloudKey: SyncedCloudKey): unknown {
@@ -88,7 +86,7 @@ export function readSyncedJson(lang: StudyLang, cloudKey: SyncedCloudKey): unkno
 }
 
 export function writeSyncedJson(lang: StudyLang, cloudKey: SyncedCloudKey, value: unknown) {
-  localStorage.setItem(learnLocalStorageKey(lang, cloudKey), JSON.stringify(value ?? {}))
+  safeSet(learnLocalStorageKey(lang, cloudKey), JSON.stringify(value ?? {}))
 }
 
 export type LangBundle = Record<SyncedCloudKey, unknown>
@@ -117,39 +115,39 @@ export function writeLangBundleFull(lang: StudyLang, bundle: LangBundle) {
 }
 
 export function readListenedTodayRaw(lang: StudyLang): string | null {
-  return localStorage.getItem(listenedTodayKey(lang))
+  return safeGet(listenedTodayKey(lang))
 }
 
 export function writeListenedTodayRaw(lang: StudyLang, raw: string) {
-  localStorage.setItem(listenedTodayKey(lang), raw)
+  safeSet(listenedTodayKey(lang), raw)
 }
 
 export function readQuizScopeRaw(lang: StudyLang): string | null {
-  return localStorage.getItem(quizScopeKey(lang))
+  return safeGet(quizScopeKey(lang))
 }
 
 export function writeQuizScopeRaw(lang: StudyLang, scope: string) {
-  localStorage.setItem(quizScopeKey(lang), scope)
+  safeSet(quizScopeKey(lang), scope)
 }
 
 export function readArticlePrefRaw(lang: StudyLang, id: keyof typeof LEARN_ARTICLE_SUFFIX): string | null {
-  return localStorage.getItem(articlePrefKey(lang, id))
+  return safeGet(articlePrefKey(lang, id))
 }
 
 export function writeArticlePrefRaw(lang: StudyLang, id: keyof typeof LEARN_ARTICLE_SUFFIX, value: string) {
-  localStorage.setItem(articlePrefKey(lang, id), value)
+  safeSet(articlePrefKey(lang, id), value)
 }
 
 /** 清除 learn_* 学习数据（不含 jp_user_id / jp_lang / 主题等） */
 export function clearAllLearnProgressLocal() {
   for (const lang of STUDY_LANGS) {
     for (const ck of SYNCED_CLOUD_KEYS) {
-      localStorage.removeItem(learnLocalStorageKey(lang, ck))
+      safeRemove(learnLocalStorageKey(lang, ck))
     }
-    localStorage.removeItem(listenedTodayKey(lang))
-    localStorage.removeItem(quizScopeKey(lang))
+    safeRemove(listenedTodayKey(lang))
+    safeRemove(quizScopeKey(lang))
     for (const id of Object.keys(LEARN_ARTICLE_SUFFIX) as (keyof typeof LEARN_ARTICLE_SUFFIX)[]) {
-      localStorage.removeItem(articlePrefKey(lang, id))
+      safeRemove(articlePrefKey(lang, id))
     }
   }
 }

@@ -27,8 +27,6 @@ const visible = computed(() => loopPlaying.value || loopPaused.value)
 const currentItem = computed(() => loopPlaylist.value[loopIndex.value])
 const collapsed = ref(false)
 
-watch(visible, (v) => { if (v) collapsed.value = false })
-
 // === 跟读 ===
 const followMode = ref(false)
 const sttResult = ref('')
@@ -52,16 +50,19 @@ watch(loopIndex, () => {
   clearRecording()
 })
 
+// 显隐切换：展开时取消折叠；隐藏时清掉跟读相关瞬时状态
 watch(visible, (v) => {
-  if (!v) {
-    followMode.value = false
-    readPassedSet.value = new Set()
-    allPassed.value = false
-    sttResult.value = ''
-    sttScore.value = null
-    stopPlayback()
-    clearRecording()
+  if (v) {
+    collapsed.value = false
+    return
   }
+  followMode.value = false
+  readPassedSet.value = new Set()
+  allPassed.value = false
+  sttResult.value = ''
+  sttScore.value = null
+  stopPlayback()
+  clearRecording()
 })
 
 function lcsLen(a: string, b: string): number {
@@ -190,8 +191,7 @@ const miniTitle = computed(() => currentItem.value?.word ?? '—')
 
 /** 当前播放项是否来自文章（含 _articleId） */
 const currentArticleId = computed<string | null>(() => {
-  const it = currentItem.value as any
-  return it?._articleId ?? null
+  return currentItem.value?._articleId ?? null
 })
 const isArticleItem = computed(() => !!currentArticleId.value)
 
@@ -199,13 +199,13 @@ const currentStarred = computed(() => {
   starredTick.value
   const it = currentItem.value
   if (!it) return false
-  return isStarred((it as any)._cat, it.id)
+  return isStarred(it._cat ?? '', it.id)
 })
 
 function onToggleStar() {
   const it = currentItem.value
   if (!it) return
-  toggleStar((it as any)._cat, it.id)
+  toggleStar(it._cat ?? '', it.id)
 }
 
 async function copyDebugLogs() {
@@ -277,7 +277,7 @@ function onCardMainClick() {
       </div>
 
       <!-- 文章模式：顶部场景图（占位，未生成时显示渐变图标） -->
-      <div v-if="isArticleItem" class="px-4 md:px-5 shrink-0">
+      <div v-if="false && isArticleItem" class="px-4 md:px-5 shrink-0">
         <ArticleCover
           :article-id="currentArticleId"
           variant="hero"

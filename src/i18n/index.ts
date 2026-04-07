@@ -1,8 +1,10 @@
 import { ref, computed } from 'vue'
 import type { LangKey } from '@/types'
 import { messages } from './messages'
+import { safeGet, safeSet } from '@/storage/safeLS'
+import { LS } from '@/storage/keys'
 
-export const currentLang = ref<LangKey>((localStorage.getItem('jp_lang') as LangKey) || 'zh')
+export const currentLang = ref<LangKey>((safeGet(LS.UI_LANG) as LangKey) || 'zh')
 
 export type TParams = Record<string, string | number>
 
@@ -23,7 +25,7 @@ export function t(key: string, params?: TParams): string {
 
 export function switchLang(lang: LangKey) {
   currentLang.value = lang
-  localStorage.setItem('jp_lang', lang)
+  safeSet(LS.UI_LANG, lang)
 }
 
 export function useLang() {

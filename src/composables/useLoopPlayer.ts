@@ -7,8 +7,9 @@ import { t } from '@/i18n'
 import { getGapWavUri } from '@/utils/silentWavGap'
 import { recordArticleListenComplete } from '@/learning/articleProgress'
 import { useAppStore } from '@/stores/app'
+import { safeGetJSON, safeSetJSON, safeRemove } from '@/storage/safeLS'
+import { LS } from '@/storage/keys'
 
-const LOOP_DEBUG_KEY = 'loop_debug_logs_v1'
 const LOOP_DEBUG_MAX = 200
 
 const loopPlaylist = ref<(DataItem & { _cat: string })[]>([])
@@ -47,14 +48,8 @@ function safeAudioSrc(src: string): string {
 }
 
 function readLoopDebugLogs(): LoopDebugEntry[] {
-  try {
-    const raw = localStorage.getItem(LOOP_DEBUG_KEY)
-    if (!raw) return []
-    const arr = JSON.parse(raw)
-    return Array.isArray(arr) ? arr as LoopDebugEntry[] : []
-  } catch {
-    return []
-  }
+  const arr = safeGetJSON<LoopDebugEntry[]>(LS.LOOP_DEBUG, [])
+  return Array.isArray(arr) ? arr : []
 }
 
 function appendLoopDebug(event: string, detail?: string) {
@@ -70,15 +65,11 @@ function appendLoopDebug(event: string, detail?: string) {
   const logs = readLoopDebugLogs()
   logs.push(entry)
   while (logs.length > LOOP_DEBUG_MAX) logs.shift()
-  try {
-    localStorage.setItem(LOOP_DEBUG_KEY, JSON.stringify(logs))
-  } catch {
-    // Ignore quota/serialization failures
-  }
+  safeSetJSON(LS.LOOP_DEBUG, logs)
 }
 
 function clearLoopDebugLogs() {
-  localStorage.removeItem(LOOP_DEBUG_KEY)
+  safeRemove(LS.LOOP_DEBUG)
 }
 
 function exportLoopDebugLogs(): string {

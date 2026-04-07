@@ -98,13 +98,16 @@ export type ModeKey = 'list' | 'practice' | 'stats'
 export type LangKey = 'zh' | 'en' | 'ja'
 export type StudyLang = 'ja' | 'en'
 
+/** 单日学习统计：useStats 写入、useFirebase 合并、StatsPanel 读取共用此结构。 */
 export interface DayStats {
   studied: number
   quizzed: number
   correct: number
+  wrong: Record<string, number>
   listened?: number
   recorded?: number
-  wrong: Record<string, number>
+  followCompleted?: number
+  followSentences?: number
 }
 
 export type StatsMap = Record<string, DayStats>

@@ -11,7 +11,10 @@ import {
   SYNCED_CLOUD_KEYS,
   type LangBundle,
 } from '@/learning/learnStorage'
-import type { StudyLang } from '@/types'
+import type { StudyLang, StatsMap, DayStats } from '@/types'
+import { safeGet, safeSet, safeRemove, safeGetNumber } from '@/storage/safeLS'
+import { LS } from '@/storage/keys'
+import { readPracticeSlot, writePracticeSlot } from '@/storage/practiceSlot'
 
 const firebaseConfig = {
   apiKey: "AIzaSyBCZa2CyskF8bM_CU0l2UaT7Wwq25cz30Q",
@@ -23,7 +26,7 @@ const firebaseConfig = {
   appId: "1:1055060519096:web:ed0421d0a6938186c6ec4d",
 }
 
-const userId = ref(localStorage.getItem('jp_user_id') || '')
+const userId = ref(safeGet(LS.FB_USER_ID) || '')
 let db: firebase.database.Database | null = null
 let syncTimer: ReturnType<typeof setTimeout> | null = null
 
@@ -104,12 +107,12 @@ function mergeDismissed(a: Record<string, true>, b: Record<string, true>): Recor
   return { ...a, ...b }
 }
 
-function mergeStats(a: Record<string, any>, b: Record<string, any>): Record<string, any> {
-  const merged: Record<string, any> = {}
+function mergeStats(a: StatsMap, b: StatsMap): StatsMap {
+  const merged: StatsMap = {}
   const allDays = new Set([...Object.keys(a), ...Object.keys(b)])
   for (const day of allDays) {
-    const da = a[day] || {}
-    const db = b[day] || {}
+    const da: Partial<DayStats> = a[day] || {}
+    const db: Partial<DayStats> = b[day] || {}
     merged[day] = {
       studied: Math.max(da.studied || 0, db.studied || 0),
       quizzed: Math.max(da.quizzed || 0, db.quizzed || 0),
@@ -121,17 +124,31 @@ function mergeStats(a: Record<string, any>, b: Record<string, any>): Record<stri
   return merged
 }
 
+// LangBundle 字段类型为 unknown（来自 LS / 云端 JSON），合并前在边界处断言。
+type NumMap = Record<string, number>
+type DismissedMap = Record<string, true>
+type DateMap = Record<string, string>
+
 function mergeLangBundle(local: LangBundle, cloud: LangBundle): LangBundle {
   return {
-    stats: mergeStats((local.stats || {}) as any, (cloud.stats || {}) as any),
-    counts: mergeMaxNumbers((local.counts || {}) as any, (cloud.counts || {}) as any),
-    delays: mergeLaterReviewDates((local.delays || {}) as any, (cloud.delays || {}) as any),
-    listened: mergeListenCountMaps((local.listened || {}) as any, (cloud.listened || {}) as any),
-    practiceRecognized: mergeDismissed((local.practiceRecognized || {}) as any, (cloud.practiceRecognized || {}) as any),
-    masteryQuizPassed: mergeDismissed((local.masteryQuizPassed || {}) as any, (cloud.masteryQuizPassed || {}) as any),
-    quizQueue: mergeMaxNumbers((local.quizQueue || {}) as any, (cloud.quizQueue || {}) as any),
-    starred: mergeDismissed((local.starred || {}) as any, (cloud.starred || {}) as any),
-    practiceStreak: mergeMaxNumbers((local.practiceStreak || {}) as any, (cloud.practiceStreak || {}) as any),
+    stats: mergeStats((local.stats || {}) as StatsMap, (cloud.stats || {}) as StatsMap),
+    counts: mergeMaxNumbers((local.counts || {}) as NumMap, (cloud.counts || {}) as NumMap),
+    delays: mergeLaterReviewDates((local.delays || {}) as DateMap, (cloud.delays || {}) as DateMap),
+    listened: mergeListenCountMaps((local.listened || {}) as NumMap, (cloud.listened || {}) as NumMap),
+    practiceRecognized: mergeDismissed(
+      (local.practiceRecognized || {}) as DismissedMap,
+      (cloud.practiceRecognized || {}) as DismissedMap,
+    ),
+    masteryQuizPassed: mergeDismissed(
+      (local.masteryQuizPassed || {}) as DismissedMap,
+      (cloud.masteryQuizPassed || {}) as DismissedMap,
+    ),
+    quizQueue: mergeMaxNumbers((local.quizQueue || {}) as NumMap, (cloud.quizQueue || {}) as NumMap),
+    starred: mergeDismissed((local.starred || {}) as DismissedMap, (cloud.starred || {}) as DismissedMap),
+    practiceStreak: mergeMaxNumbers(
+      (local.practiceStreak || {}) as NumMap,
+      (cloud.practiceStreak || {}) as NumMap,
+    ),
   }
 }
 
@@ -162,30 +179,15 @@ type PracticeSlotsCloud = { essay?: PracticeSlotCloud | null; dialogue?: Practic
 function readPracticeSlots(): PracticeSlotsCloud {
   const result: PracticeSlotsCloud = {}
   for (const fmt of ['essay', 'dialogue'] as const) {
-    const id = localStorage.getItem(`practice_${fmt}_id`)
-    if (id) {
-      result[fmt] = {
-        id,
-        title: localStorage.getItem(`practice_${fmt}_title`) || '',
-        index: Number(localStorage.getItem(`practice_${fmt}_index`) || '0'),
-      }
-    }
+    const slot = readPracticeSlot(fmt)
+    if (slot) result[fmt] = slot
   }
   return result
 }
 
 function writePracticeSlots(slots: PracticeSlotsCloud) {
   for (const fmt of ['essay', 'dialogue'] as const) {
-    const s = slots[fmt]
-    if (s && s.id) {
-      localStorage.setItem(`practice_${fmt}_id`, s.id)
-      localStorage.setItem(`practice_${fmt}_title`, s.title)
-      localStorage.setItem(`practice_${fmt}_index`, String(s.index || 0))
-    } else {
-      localStorage.removeItem(`practice_${fmt}_id`)
-      localStorage.removeItem(`practice_${fmt}_title`)
-      localStorage.removeItem(`practice_${fmt}_index`)
-    }
+    writePracticeSlot(fmt, slots[fmt] ?? null)
   }
 }
 
@@ -217,7 +219,7 @@ async function performCloudUpload(): Promise<void> {
   if (!userId.value || !db) return
   const { ja, en } = readBothBundlesFromLS()
   if (!langBundleHasAny(ja) && !langBundleHasAny(en)) return
-  const resetAt = Number(localStorage.getItem('jp_reset_at') || '0')
+  const resetAt = safeGetNumber(LS.FB_RESET_AT, 0)
   await db.ref('users/' + userId.value + '/data').set(
     buildV2Payload(ja, en, resetAt > 0 ? resetAt : undefined),
   )
@@ -231,7 +233,7 @@ function syncToCloud() {
 async function flushDataToCloud(): Promise<void> {
   if (!userId.value || !db) return
   const resetAt = Date.now()
-  localStorage.setItem('jp_reset_at', String(resetAt))
+  safeSet(LS.FB_RESET_AT, String(resetAt))
   await runSerialized(async () => {
     const { ja, en } = readBothBundlesFromLS()
     await db!.ref('users/' + userId.value + '/data').set(buildV2Payload(ja, en, resetAt))
@@ -272,7 +274,7 @@ function parseCloudPracticeSlots(cloud: unknown): PracticeSlotsCloud {
 
 /** 将云端 v2 数据合并进本地并写回 LS；上传 payload 须由调用方在合并后再次 readBothBundlesFromLS 构建，以免 await 间隙内的新写入丢失 */
 function mergeCloudIntoLocal(cloudRaw: unknown): void {
-  const localResetAt = Number(localStorage.getItem('jp_reset_at') || '0')
+  const localResetAt = safeGetNumber(LS.FB_RESET_AT, 0)
   const cloudResetAt = rawResetAtMs(cloudRaw)
   const cloudLangs = parseCloudLangs(cloudRaw)
 
@@ -294,7 +296,7 @@ function mergeCloudIntoLocal(cloudRaw: unknown): void {
   // 仅当本机已有 reset 游标且云端更新时整桶以云端为准。
   if (cloudResetAt > localResetAt && localResetAt > 0) {
     writeBothBundlesToLS(cloudLangs.ja, cloudLangs.en)
-    localStorage.setItem('jp_reset_at', String(cloudResetAt))
+    safeSet(LS.FB_RESET_AT, String(cloudResetAt))
     writePracticeSlots(cloudSlots)
     return
   }
@@ -307,7 +309,7 @@ function mergeCloudIntoLocal(cloudRaw: unknown): void {
 
   const nextResetMarker = Math.max(localResetAt, cloudResetAt)
   if (nextResetMarker > 0) {
-    localStorage.setItem('jp_reset_at', String(nextResetMarker))
+    safeSet(LS.FB_RESET_AT, String(nextResetMarker))
   }
 }
 
@@ -319,7 +321,7 @@ async function pullAndMerge(): Promise<boolean> {
       if (!snap.exists()) return false
       mergeCloudIntoLocal(snap.val())
       const { ja, en } = readBothBundlesFromLS()
-      const resetAt = Number(localStorage.getItem('jp_reset_at') || '0')
+      const resetAt = safeGetNumber(LS.FB_RESET_AT, 0)
       await db!.ref('users/' + userId.value + '/data').set(
         buildV2Payload(ja, en, resetAt > 0 ? resetAt : undefined),
       )
@@ -356,7 +358,7 @@ async function register(username: string, password: string): Promise<{ success: 
 
     const { ja, en } = readBothBundlesFromLS()
     if (langBundleHasAny(ja) || langBundleHasAny(en)) {
-      const resetAt = Number(localStorage.getItem('jp_reset_at') || '0')
+      const resetAt = safeGetNumber(LS.FB_RESET_AT, 0)
       await runSerialized(async () => {
         await db!
           .ref('users/' + name + '/data')
@@ -365,7 +367,7 @@ async function register(username: string, password: string): Promise<{ success: 
     }
 
     userId.value = name
-    localStorage.setItem('jp_user_id', name)
+    safeSet(LS.FB_USER_ID, name)
     return { success: true, message: t('registerSuccess') }
   } catch {
     return { success: false, message: t('loginFail') }
@@ -397,7 +399,7 @@ async function login(username: string, password: string): Promise<{ success: boo
     }
 
     userId.value = name
-    localStorage.setItem('jp_user_id', name)
+    safeSet(LS.FB_USER_ID, name)
 
     const cloudSnap = await db.ref('users/' + name + '/data').once('value')
     if (cloudSnap.exists()) {
@@ -405,7 +407,7 @@ async function login(username: string, password: string): Promise<{ success: boo
       await runSerialized(async () => {
         mergeCloudIntoLocal(cloud)
         const { ja, en } = readBothBundlesFromLS()
-        const resetAt = Number(localStorage.getItem('jp_reset_at') || '0')
+        const resetAt = safeGetNumber(LS.FB_RESET_AT, 0)
         await db!.ref('users/' + name + '/data').set(
           buildV2Payload(ja, en, resetAt > 0 ? resetAt : undefined),
         )
@@ -420,7 +422,7 @@ async function login(username: string, password: string): Promise<{ success: boo
 
 function logout() {
   userId.value = ''
-  localStorage.removeItem('jp_user_id')
+  safeRemove(LS.FB_USER_ID)
 }
 
 export function useFirebase() {

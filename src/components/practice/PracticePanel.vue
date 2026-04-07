@@ -257,13 +257,9 @@ function playCurrentAudio() {
   if (item) speakWithExample(item.word, item.audio)
 }
 
-// 切题时重置
-watch(quizIndex, () => resetInteractionState())
-// 切换 Tab 时也重置（避免上一种交互的残留状态）
-watch(quizMode, () => resetInteractionState())
-
-// 音频模式自动播放
+// 切题或切 Tab：先重置上一种交互的残留状态，再在音频模式下自动播放
 watch([quizMode, quizIndex], () => {
+  resetInteractionState()
   if (quizMode.value === 'audio' && !isAnswered.value && currentItem.value) {
     playCurrentAudio()
   }

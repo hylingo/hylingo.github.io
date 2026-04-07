@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useAppStore } from '../../stores/app'
+import { useAppStore, type DataItem, type AppData } from '../../stores/app'
 import { getStats, statsVersion } from '../../composables/useStats'
 import { useLang } from '@/i18n'
 import { localMeaning } from '@/utils/helpers'
@@ -16,7 +16,7 @@ const wrongWords = computed(() => {
   const stats = getStats()
   const wrongMap: Record<string, number> = {}
   for (const d of Object.values(stats)) {
-    for (const [k, v] of Object.entries((d as any).wrong || {})) {
+    for (const [k, v] of Object.entries(d.wrong || {})) {
       wrongMap[k] = (wrongMap[k] || 0) + (v as number)
     }
   }
@@ -26,14 +26,16 @@ const wrongWords = computed(() => {
     .slice(0, wrongWordsThresholds.topN)
     .map(([key, count]) => {
       const [cat, id] = key.split(':')
-      const items = (store.data as any)[cat] as any[] | undefined
-      const item = items?.find((it: any) => it.id === parseInt(id))
+      const items = (store.data as AppData)[cat as keyof AppData] as DataItem[] | undefined
+      const item = items?.find((it) => it.id === parseInt(id))
       return item
         ? {
             word: item.word,
             meaning: item.meaning,
             meaningEn: item.meaningEn,
-            meaningEs: item.meaningEs,
+            // meaningEs 在 DataItem 上未声明（仅 VocabItem 有），原代码经 any 取到，
+            // 这里改为受控访问，缺字段时直接为 undefined
+            meaningEs: (item as DataItem & { meaningEs?: string }).meaningEs,
             meaningJp: item.meaningJp,
             count,
           }

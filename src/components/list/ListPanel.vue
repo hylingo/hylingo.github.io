@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useAppStore } from '../../stores/app'
 import type { VocabItemWithCat } from '../../types'
 import {
@@ -16,18 +17,52 @@ import TopicChips from './TopicChips.vue'
 import { list as listThresholds } from '@/config/thresholds'
 
 const store = useAppStore()
+const router = useRouter()
+const route = useRoute()
 const { setQuizLevels } = useQuiz()
 const isWordsCat = computed(() => store.currentCat === 'nouns' || store.currentCat === 'verbs')
 
 const PAGE_SIZE = listThresholds.pageSize
-const searchQuery = ref('')
-const currentPage = ref(1)
+
+// ---- URL query 派生状态：可分享、可后退、刷新不丢 ----
+function qStr(key: string): string {
+  const v = route.query[key]
+  return typeof v === 'string' ? v : ''
+}
+function qNum(key: string, def: number): number {
+  const n = parseInt(qStr(key) || '', 10)
+  return Number.isFinite(n) && n > 0 ? n : def
+}
+function qList(key: string): string[] {
+  const v = qStr(key)
+  return v ? v.split(',').filter(Boolean) : []
+}
+
+const searchQuery = computed(() => qStr('q'))
+const currentPage = computed(() => qNum('page', 1))
+const selectedTopic = computed(() => qStr('topic'))
+const selectedLevels = computed(() => qList('lv'))
+
+/** 写入 query；undefined 表示从 URL 删掉这个 key。用 replace 避免每次输入都污染 history */
+function setQuery(patch: Record<string, string | number | string[] | undefined>) {
+  const next: Record<string, string | undefined> = { ...(route.query as Record<string, string | undefined>) }
+  for (const [k, v] of Object.entries(patch)) {
+    if (v === undefined || v === '' || (Array.isArray(v) && v.length === 0)) {
+      delete next[k]
+    } else if (Array.isArray(v)) {
+      next[k] = v.join(',')
+    } else {
+      next[k] = String(v)
+    }
+  }
+  router.replace({ query: next })
+}
+
+// 仅 UI 临时态
 const isSpeaking = ref(false)
-const selectedTopic = ref('')
-const selectedLevels = ref<string[]>([])
 
 // 同步级别筛选到练习模式
-watch(selectedLevels, (v) => setQuizLevels(v))
+watch(selectedLevels, (v) => setQuizLevels(v), { immediate: true })
 
 const emit = defineEmits<{
   speak: [items: VocabItemWithCat[], from: number, to: number]
@@ -113,37 +148,32 @@ const pagedItems = computed(() => {
 })
 
 function onSearch(q: string) {
-  searchQuery.value = q
-  currentPage.value = 1
+  setQuery({ q, page: undefined })
 }
 
 function onTopicSelect(topic: string) {
-  selectedTopic.value = topic
-  currentPage.value = 1
+  setQuery({ topic, page: undefined })
 }
 
 function onLevelToggle(level: string) {
-  const idx = selectedLevels.value.indexOf(level)
-  if (idx >= 0) {
-    selectedLevels.value = selectedLevels.value.filter(l => l !== level)
-  } else {
-    selectedLevels.value = [...selectedLevels.value, level]
-  }
-  currentPage.value = 1
+  const cur = selectedLevels.value
+  const next = cur.includes(level) ? cur.filter((l) => l !== level) : [...cur, level]
+  setQuery({ lv: next, page: undefined })
 }
 
 function onLevelClear() {
-  selectedLevels.value = []
-  currentPage.value = 1
+  setQuery({ lv: undefined, page: undefined })
 }
 
 function onPageChange(dir: number) {
-  currentPage.value = Math.max(1, Math.min(totalPages.value, currentPage.value + dir))
+  const next = Math.max(1, Math.min(totalPages.value, currentPage.value + dir))
+  setQuery({ page: next === 1 ? undefined : next })
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 function onPageGoto(page: number) {
-  currentPage.value = Math.max(1, Math.min(totalPages.value, page))
+  const next = Math.max(1, Math.min(totalPages.value, page))
+  setQuery({ page: next === 1 ? undefined : next })
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
@@ -190,6 +220,7 @@ defineExpose({ stopSpeaking: () => { isSpeaking.value = false } })
             :total-items="filteredItems.length"
             :is-speaking="isSpeaking"
             :can-use-range="canUseRange"
+            :query="searchQuery"
             @search="onSearch"
             @speak="onSpeak"
             @stop="onStop"

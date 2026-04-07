@@ -2,6 +2,7 @@
  * 文章级统计：完整听次数 / 完整跟读次数，按 studyLang 分桶。
  */
 import type { StudyLang } from '@/types'
+import { safeGetJSON, safeSetJSON } from '@/storage/safeLS'
 
 function storageKey(lang: StudyLang): string {
   return `learn_${lang}_article_progress_v1`
@@ -13,18 +14,12 @@ export interface ArticleProgressEntry {
 }
 
 function readMap(lang: StudyLang): Record<string, ArticleProgressEntry> {
-  try {
-    const raw = localStorage.getItem(storageKey(lang))
-    if (!raw) return {}
-    const m = JSON.parse(raw)
-    return m && typeof m === 'object' ? m : {}
-  } catch {
-    return {}
-  }
+  const m = safeGetJSON<Record<string, ArticleProgressEntry>>(storageKey(lang), {})
+  return m && typeof m === 'object' ? m : {}
 }
 
 function writeMap(lang: StudyLang, m: Record<string, ArticleProgressEntry>) {
-  localStorage.setItem(storageKey(lang), JSON.stringify(m))
+  safeSetJSON(storageKey(lang), m)
 }
 
 export function getArticleProgress(lang: StudyLang, articleId: string): ArticleProgressEntry {

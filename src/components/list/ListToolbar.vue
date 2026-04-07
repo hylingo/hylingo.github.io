@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useLang } from '@/i18n'
 import { enableListSpeakSequenceRange } from '@/config/features'
 
@@ -9,15 +9,25 @@ const props = defineProps<{
   totalItems: number
   isSpeaking: boolean
   canUseRange: boolean
+  /** 受控搜索词：父组件从 URL query 派生 */
+  query?: string
 }>()
 
 const emit = defineEmits<{
   search: [query: string]
   speak: [from: number, to: number]
   stop: []
+  'update:query': [query: string]
 }>()
 
-const searchQuery = ref('')
+// 受控输入：v-model 绑到 computed，写入即 emit 给父
+const searchQuery = computed<string>({
+  get: () => props.query ?? '',
+  set: (v) => {
+    emit('update:query', v)
+    emit('search', v)
+  },
+})
 const listenFrom = ref(1)
 const listenTo = ref<number | undefined>(undefined)
 const showRange = ref(false)
@@ -28,10 +38,6 @@ watch(
     if (!canUseRange) showRange.value = false
   }
 )
-
-function onSearch() {
-  emit('search', searchQuery.value)
-}
 
 function onToggleSpeak() {
   if (props.isSpeaking) {
@@ -61,7 +67,6 @@ function onSpeakRange() {
           type="text"
           :placeholder="t('search')"
           class="list-toolbar-search theme-text w-full rounded-xl border border-[var(--border)] bg-transparent py-2 pl-9 pr-9 text-sm outline-none transition-[border-color,box-shadow] focus:border-[var(--primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--primary)_18%,transparent)]"
-          @input="onSearch"
         />
         <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 theme-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
@@ -71,7 +76,7 @@ function onSpeakRange() {
           type="button"
           aria-label="clear"
           class="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-5 w-5 items-center justify-center rounded-full border-none bg-[color-mix(in_srgb,var(--text)_12%,transparent)] theme-muted hover:bg-[color-mix(in_srgb,var(--text)_22%,transparent)] cursor-pointer transition-colors"
-          @click="searchQuery = ''; onSearch()"
+          @click="searchQuery = ''"
         >
           <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
             <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" />

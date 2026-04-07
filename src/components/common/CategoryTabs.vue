@@ -55,8 +55,8 @@ function mainTabSelected(key: string): boolean {
 const tabBtnRefs = ref<HTMLButtonElement[]>([])
 const indicatorStyle = ref<{ left: string; width: string; opacity: number }>({ left: '0px', width: '0px', opacity: 0 })
 
-function setBtnRef(el: any, idx: number) {
-  if (el) tabBtnRefs.value[idx] = el as HTMLButtonElement
+function setBtnRef(el: unknown, idx: number) {
+  if (el instanceof HTMLButtonElement) tabBtnRefs.value[idx] = el
 }
 
 async function updateIndicator() {

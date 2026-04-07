@@ -21,7 +21,7 @@ import { useFirebase } from '@/composables/useFirebase'
 
 export type QuizMode = 'word' | 'audio' | 'meaning'
 
-const quizItems = ref<any[]>([])
+const quizItems = ref<DataItem[]>([])
 const quizIndex = ref(0)
 const isAnswered = ref(false)
 const quizLevels = ref<string[]>([])

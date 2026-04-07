@@ -7,6 +7,13 @@
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"src/**/*.{ts,vue,js,json,css}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,vue,js,json,css}\"",
     "predeploy": "vite build",
     "deploy": "gh-pages-clean && gh-pages -d dist --nojekyll --no-history --repo git@github.com:hylingo/hylingo.github.io.git",
     "gen:scenes": "node scripts/gen-scenes.mjs",
@@ -15,17 +22,29 @@
   "dependencies": {
     "firebase": "^12.11.0",
     "pinia": "^3.0.4",
-    "vue": "^3.5.30"
+    "vue": "^3.5.30",
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.2.2",
     "@types/node": "^24.12.0",
     "@vitejs/plugin-vue": "^6.0.5",
+    "@vitest/ui": "^4.1.3",
     "@vue/tsconfig": "^0.9.0",
+    "eslint": "^10.2.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.8.0",
     "gh-pages": "^6.3.0",
+    "globals": "^17.4.0",
+    "jsdom": "^29.0.2",
+    "prettier": "^3.8.1",
     "tailwindcss": "^4.2.2",
     "typescript": "~5.9.3",
+    "typescript-eslint": "^8.58.0",
     "vite": "^8.0.1",
+    "vitest": "^4.1.3",
+    "vue-eslint-parser": "^10.4.0",
     "vue-tsc": "^3.2.5"
   }
 }

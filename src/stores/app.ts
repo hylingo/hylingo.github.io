@@ -1,7 +1,16 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import type { ArticleItem, GrammarPoint, StudyLang } from '@/types'
 import { clearMilestoneCache } from '@/learning/milestones'
+import { safeSet } from '@/storage/safeLS'
+import { LS } from '@/storage/keys'
+import { showError } from '@/composables/useToasts'
+import { t as i18nT } from '@/i18n'
+import { readPracticeSlot } from '@/storage/practiceSlot'
+import { KANA_DATA } from '@/data/kana'
+import { fetchVocabBundle, fetchArticleBundle } from '@/data/dataLoader'
+import { usePracticeArticle, catToFormat } from '@/composables/usePracticeArticle'
 
 export interface DataItem {
   id: number
@@ -20,6 +29,8 @@ export interface DataItem {
   _cat?: string
   _audioFn?: string
   _articleId?: string
+  /** 标记为本篇精读练习的题目（来自 articleToPracticeQuizItems） */
+  _quizSource?: 'article'
 }
 
 export interface AppData {
@@ -28,270 +39,54 @@ export interface AppData {
   kana: DataItem[]
 }
 
-const KANA_DATA: DataItem[] = [
-  // Hiragana
-  { id: 1, word: 'あ', reading: 'あ', meaning: 'a' },
-  { id: 2, word: 'い', reading: 'い', meaning: 'i' },
-  { id: 3, word: 'う', reading: 'う', meaning: 'u' },
-  { id: 4, word: 'え', reading: 'え', meaning: 'e' },
-  { id: 5, word: 'お', reading: 'お', meaning: 'o' },
-  { id: 6, word: 'か', reading: 'か', meaning: 'ka' },
-  { id: 7, word: 'き', reading: 'き', meaning: 'ki' },
-  { id: 8, word: 'く', reading: 'く', meaning: 'ku' },
-  { id: 9, word: 'け', reading: 'け', meaning: 'ke' },
-  { id: 10, word: 'こ', reading: 'こ', meaning: 'ko' },
-  { id: 11, word: 'さ', reading: 'さ', meaning: 'sa' },
-  { id: 12, word: 'し', reading: 'し', meaning: 'shi' },
-  { id: 13, word: 'す', reading: 'す', meaning: 'su' },
-  { id: 14, word: 'せ', reading: 'せ', meaning: 'se' },
-  { id: 15, word: 'そ', reading: 'そ', meaning: 'so' },
-  { id: 16, word: 'た', reading: 'た', meaning: 'ta' },
-  { id: 17, word: 'ち', reading: 'ち', meaning: 'chi' },
-  { id: 18, word: 'つ', reading: 'つ', meaning: 'tsu' },
-  { id: 19, word: 'て', reading: 'て', meaning: 'te' },
-  { id: 20, word: 'と', reading: 'と', meaning: 'to' },
-  { id: 21, word: 'な', reading: 'な', meaning: 'na' },
-  { id: 22, word: 'に', reading: 'に', meaning: 'ni' },
-  { id: 23, word: 'ぬ', reading: 'ぬ', meaning: 'nu' },
-  { id: 24, word: 'ね', reading: 'ね', meaning: 'ne' },
-  { id: 25, word: 'の', reading: 'の', meaning: 'no' },
-  { id: 26, word: 'は', reading: 'は', meaning: 'ha' },
-  { id: 27, word: 'ひ', reading: 'ひ', meaning: 'hi' },
-  { id: 28, word: 'ふ', reading: 'ふ', meaning: 'fu' },
-  { id: 29, word: 'ほ', reading: 'ほ', meaning: 'ho' },
-  { id: 30, word: 'へ', reading: 'へ', meaning: 'he' },
-  { id: 31, word: 'ま', reading: 'ま', meaning: 'ma' },
-  { id: 32, word: 'み', reading: 'み', meaning: 'mi' },
-  { id: 33, word: 'む', reading: 'む', meaning: 'mu' },
-  { id: 34, word: 'め', reading: 'め', meaning: 'me' },
-  { id: 35, word: 'も', reading: 'も', meaning: 'mo' },
-  { id: 36, word: 'や', reading: 'や', meaning: 'ya' },
-  { id: 37, word: 'ゆ', reading: 'ゆ', meaning: 'yu' },
-  { id: 38, word: 'よ', reading: 'よ', meaning: 'yo' },
-  { id: 39, word: 'ら', reading: 'ら', meaning: 'ra' },
-  { id: 40, word: 'り', reading: 'り', meaning: 'ri' },
-  { id: 41, word: 'る', reading: 'る', meaning: 'ru' },
-  { id: 42, word: 'れ', reading: 'れ', meaning: 're' },
-  { id: 43, word: 'ろ', reading: 'ろ', meaning: 'ro' },
-  { id: 44, word: 'わ', reading: 'わ', meaning: 'wa' },
-  { id: 45, word: 'を', reading: 'を', meaning: 'wo' },
-  { id: 46, word: 'ん', reading: 'ん', meaning: 'n' },
-  // Katakana
-  { id: 47, word: 'ア', reading: 'ア', meaning: 'a' },
-  { id: 48, word: 'イ', reading: 'イ', meaning: 'i' },
-  { id: 49, word: 'ウ', reading: 'ウ', meaning: 'u' },
-  { id: 50, word: 'エ', reading: 'エ', meaning: 'e' },
-  { id: 51, word: 'オ', reading: 'オ', meaning: 'o' },
-  { id: 52, word: 'カ', reading: 'カ', meaning: 'ka' },
-  { id: 53, word: 'キ', reading: 'キ', meaning: 'ki' },
-  { id: 54, word: 'ク', reading: 'ク', meaning: 'ku' },
-  { id: 55, word: 'ケ', reading: 'ケ', meaning: 'ke' },
-  { id: 56, word: 'コ', reading: 'コ', meaning: 'ko' },
-  { id: 57, word: 'サ', reading: 'サ', meaning: 'sa' },
-  { id: 58, word: 'シ', reading: 'シ', meaning: 'shi' },
-  { id: 59, word: 'ス', reading: 'ス', meaning: 'su' },
-  { id: 60, word: 'セ', reading: 'セ', meaning: 'se' },
-  { id: 61, word: 'ソ', reading: 'ソ', meaning: 'so' },
-  { id: 62, word: 'タ', reading: 'タ', meaning: 'ta' },
-  { id: 63, word: 'チ', reading: 'チ', meaning: 'chi' },
-  { id: 64, word: 'ツ', reading: 'ツ', meaning: 'tsu' },
-  { id: 65, word: 'テ', reading: 'テ', meaning: 'te' },
-  { id: 66, word: 'ト', reading: 'ト', meaning: 'to' },
-  { id: 67, word: 'ナ', reading: 'ナ', meaning: 'na' },
-  { id: 68, word: 'ニ', reading: 'ニ', meaning: 'ni' },
-  { id: 69, word: 'ヌ', reading: 'ヌ', meaning: 'nu' },
-  { id: 70, word: 'ネ', reading: 'ネ', meaning: 'ne' },
-  { id: 71, word: 'ノ', reading: 'ノ', meaning: 'no' },
-  { id: 72, word: 'ハ', reading: 'ハ', meaning: 'ha' },
-  { id: 73, word: 'ヒ', reading: 'ヒ', meaning: 'hi' },
-  { id: 74, word: 'フ', reading: 'フ', meaning: 'fu' },
-  { id: 75, word: 'ホ', reading: 'ホ', meaning: 'ho' },
-  { id: 76, word: 'ヘ', reading: 'ヘ', meaning: 'he' },
-  { id: 77, word: 'マ', reading: 'マ', meaning: 'ma' },
-  { id: 78, word: 'ミ', reading: 'ミ', meaning: 'mi' },
-  { id: 79, word: 'ム', reading: 'ム', meaning: 'mu' },
-  { id: 80, word: 'メ', reading: 'メ', meaning: 'me' },
-  { id: 81, word: 'モ', reading: 'モ', meaning: 'mo' },
-  { id: 82, word: 'ヤ', reading: 'ヤ', meaning: 'ya' },
-  { id: 83, word: 'ユ', reading: 'ユ', meaning: 'yu' },
-  { id: 84, word: 'ヨ', reading: 'ヨ', meaning: 'yo' },
-  { id: 85, word: 'ラ', reading: 'ラ', meaning: 'ra' },
-  { id: 86, word: 'リ', reading: 'リ', meaning: 'ri' },
-  { id: 87, word: 'ル', reading: 'ル', meaning: 'ru' },
-  { id: 88, word: 'レ', reading: 'レ', meaning: 're' },
-  { id: 89, word: 'ロ', reading: 'ロ', meaning: 'ro' },
-  { id: 90, word: 'ワ', reading: 'ワ', meaning: 'wa' },
-  { id: 91, word: 'ヲ', reading: 'ヲ', meaning: 'wo' },
-  { id: 92, word: 'ン', reading: 'ン', meaning: 'n' },
-]
-
 export const useAppStore = defineStore('app', () => {
-  const studyLang = ref<StudyLang>((localStorage.getItem('study_lang') as StudyLang) || 'ja')
+  const router = useRouter()
+  const route = router.currentRoute
 
+  // ---- 路由派生状态：URL 是真相源 ----
+  const studyLang = computed<StudyLang>(
+    () => ((route.value.params.lang as StudyLang) || 'ja'),
+  )
+  const currentCat = computed<string>(
+    () => (route.value.params.cat as string) || 'articles',
+  )
+  const currentMode = computed<string>(() => {
+    const n = route.value.name
+    if (n === 'practice' || n === 'practice-article') return 'practice'
+    if (n === 'stats') return 'stats'
+    return 'list'
+  })
 
-  async function switchStudyLang(lang: StudyLang) {
-    if (studyLang.value === lang && isDataLoaded.value) return
-    studyLang.value = lang
-    localStorage.setItem('study_lang', lang)
-    clearMilestoneCache()
-    if (lang === 'en' && currentCat.value === 'kana') {
-      currentCat.value = 'articles'
-    }
-    if (lang === 'en' && currentCat.value === 'verbs') {
-      currentCat.value = 'nouns'
-    }
-    await loadData()
-  }
-
-  const currentMode = ref<string>('list')
-  const currentCat = ref<string>('articles')
+  // ---- 远端数据 in-memory 缓存 ----
   const data = ref<AppData>({ nouns: [], verbs: [], kana: KANA_DATA })
   /** 精读文章（短文 / 对话）：日语 ja_articles.json，英语 en_articles.json */
   const articles = ref<ArticleItem[]>([])
   /** 语法点（按 id 索引） */
   const grammarMap = ref<Record<string, GrammarPoint>>({})
   const isDataLoaded = ref(false)
-
-  // --- 本篇练习：按 format 分别存储（essay / dialogue 各一篇） ---
-
-  type PracticeSlot = { id: string; title: string; index: number }
-
-  function readSlot(format: string): PracticeSlot | null {
-    const id = localStorage.getItem(`practice_${format}_id`)
-    if (!id) return null
-    return {
-      id,
-      title: localStorage.getItem(`practice_${format}_title`) || '',
-      index: Number(localStorage.getItem(`practice_${format}_index`) || '0'),
-    }
-  }
-
-  function writeSlot(format: string, slot: PracticeSlot | null) {
-    if (slot) {
-      localStorage.setItem(`practice_${format}_id`, slot.id)
-      localStorage.setItem(`practice_${format}_title`, slot.title)
-      localStorage.setItem(`practice_${format}_index`, String(slot.index))
-    } else {
-      localStorage.removeItem(`practice_${format}_id`)
-      localStorage.removeItem(`practice_${format}_title`)
-      localStorage.removeItem(`practice_${format}_index`)
-    }
-  }
-
-  // 当前激活的本篇练习（根据 currentCat 动态切换）
-  const practiceArticleId = ref<string | null>(null)
-  const practiceArticleTitle = ref('')
-  const practiceArticleIndex = ref(0)
-
-  function catToFormat(cat: string): string | null {
-    if (cat === 'articles') return 'essay'
-    if (cat === 'dialogues') return 'dialogue'
-    return null
-  }
-
-  /** 从 localStorage 加载当前分类对应的练习槽位 */
-  function syncSlotToCat() {
-    const fmt = catToFormat(currentCat.value)
-    if (!fmt) {
-      // 单词/50音分类，不清除内存，只是不显示
-      practiceArticleId.value = null
-      practiceArticleTitle.value = ''
-      practiceArticleIndex.value = 0
-      return
-    }
-    const slot = readSlot(fmt)
-    if (slot) {
-      practiceArticleId.value = slot.id
-      practiceArticleTitle.value = slot.title
-      practiceArticleIndex.value = slot.index
-    } else {
-      practiceArticleId.value = null
-      practiceArticleTitle.value = ''
-      practiceArticleIndex.value = 0
-    }
-  }
-
-  function clearArticlePractice() {
-    const fmt = catToFormat(currentCat.value)
-    if (fmt) writeSlot(fmt, null)
-    practiceArticleId.value = null
-    practiceArticleTitle.value = ''
-    practiceArticleIndex.value = 0
-  }
-
-  function savePracticeArticleIndex(index: number) {
-    practiceArticleIndex.value = index
-    // 找到这篇文章的 format 来存到对应槽位
-    const art = articles.value.find((a) => a.id === practiceArticleId.value)
-    const fmt = art?.format || catToFormat(currentCat.value)
-    if (fmt) {
-      localStorage.setItem(`practice_${fmt}_index`, String(index))
-    }
-  }
-
-  function startArticlePractice(articleId: string) {
-    const art = articles.value.find((a) => a.id === articleId)
-    if (!art) return
-    const fmt = art.format // 'essay' | 'dialogue'
-    // 确保 currentCat 与文章 format 一致，否则 syncSlotToCat 会读错槽位
-    const targetCat = fmt === 'dialogue' ? 'dialogues' : 'articles'
-    if (currentCat.value !== targetCat) currentCat.value = targetCat
-    const slot: PracticeSlot = { id: articleId, title: art.titleWord ?? '', index: 0 }
-    writeSlot(fmt, slot)
-    practiceArticleId.value = articleId
-    practiceArticleTitle.value = slot.title
-    practiceArticleIndex.value = 0
-    switchMode('practice')
-  }
-
-  /** 云端拉取后从 localStorage 刷新练习状态到 Pinia（仅恢复数据，不切模式） */
-  function restorePracticeArticleFromLS() {
-    syncSlotToCat()
-  }
-
-  function switchMode(mode: string) {
-    // 精读列表切到练：无指定篇目时仍进单词练习
-    if (mode === 'practice') {
-      syncSlotToCat()
-      if (!practiceArticleId.value && (currentCat.value === 'articles' || currentCat.value === 'dialogues')) {
-        currentCat.value = 'nouns'
-      }
-      // 文章练习需要 articles 数据
-      if (practiceArticleId.value) ensureArticles()
-    }
-    currentMode.value = mode
-  }
-
-  function switchCat(cat: string) {
-    currentCat.value = cat
-    if (cat === 'articles' || cat === 'dialogues') ensureArticles()
-    if (currentMode.value === 'practice') {
-      syncSlotToCat()
-    }
-  }
-
   const isArticlesLoaded = ref(false)
   let _articlesLoadPromise: Promise<void> | null = null
 
+  // ---- 本篇精读练习状态机：抽到 composable ----
+  const {
+    practiceArticleId,
+    practiceArticleTitle,
+    practiceArticleIndex,
+    startArticlePractice,
+    clearArticlePractice,
+    savePracticeArticleIndex,
+    restorePracticeArticleFromLS,
+  } = usePracticeArticle({ articles, studyLang, currentCat })
+
+  // ---- 数据加载 ----
+
   async function loadData() {
     try {
-      const base = import.meta.env.BASE_URL
-      const ja = studyLang.value === 'ja'
-
-      const nounPath = ja ? 'data/nouns.json' : 'data/en_nouns.json'
-      const verbPath = ja ? 'data/verbs.json' : ''
-
-      const [nouns, verbsRes] = await Promise.all([
-        fetch(`${base}${nounPath}`).then(r => r.json()),
-        verbPath
-          ? fetch(`${base}${verbPath}`).then(r => r.json())
-          : Promise.resolve([]),
-      ])
-      data.value.nouns = nouns
-      data.value.verbs = Array.isArray(verbsRes) ? verbsRes : []
+      const bundle = await fetchVocabBundle(studyLang.value)
+      data.value.nouns = bundle.nouns
+      data.value.verbs = bundle.verbs
       isDataLoaded.value = true
-
-      // articles + grammar 延迟加载，不阻塞首屏
+      // 切换语言后 articles 也要重新加载
       _articlesLoadPromise = null
       isArticlesLoaded.value = false
     } catch (e) {
@@ -300,7 +95,7 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
-  /** 按需加载 articles + grammar（首次调用触发 fetch，后续复用） */
+  /** 按需加载 articles + grammar（首次调用触发 fetch，后续复用 in-flight promise） */
   async function ensureArticles(): Promise<void> {
     if (isArticlesLoaded.value) return
     if (_articlesLoadPromise) return _articlesLoadPromise
@@ -310,53 +105,147 @@ export const useAppStore = defineStore('app', () => {
 
   async function _loadArticles(): Promise<void> {
     try {
-      const base = import.meta.env.BASE_URL
-      const ja = studyLang.value === 'ja'
-      const artPath = ja ? 'data/ja_articles.json' : 'data/en_articles.json'
-
-      const [articlesData, grammarData] = await Promise.all([
-        fetch(`${base}${artPath}`).then(r => r.json()),
-        fetch(`${base}data/grammar.json`).then(r => r.json()).catch(() => ({ items: [] })),
-      ])
-
-      articles.value = Array.isArray(articlesData?.items) ? articlesData.items : []
-      const gMap: Record<string, GrammarPoint> = {}
-      for (const g of grammarData?.items ?? []) gMap[g.id] = g
-      grammarMap.value = gMap
+      const bundle = await fetchArticleBundle(studyLang.value)
+      articles.value = bundle.articles
+      grammarMap.value = bundle.grammarMap
       isArticlesLoaded.value = true
 
-      // 恢复上次未完成的本篇练习
-      syncSlotToCat()
+      // 若 URL 上的 articleId 在最新数据里找不到，清掉并退回 practice 列表
       if (practiceArticleId.value) {
         const art = articles.value.find((a) => a.id === practiceArticleId.value)
-        if (!art) clearArticlePractice()
+        if (!art) {
+          clearArticlePractice()
+        } else {
+          // 触发 watcher 重新填 title/index
+          restorePracticeArticleFromLS()
+        }
       }
     } catch (e) {
       console.error('Failed to load articles', e)
       _articlesLoadPromise = null
+      showError(i18nT('toastArticlesLoadFailed') || '文章数据加载失败', {
+        actionLabel: i18nT('retry') || '重试',
+        onAction: () => { void ensureArticles() },
+      })
     }
   }
 
-  return {
+  // ---- 语言切换 ----
+
+  // 持久化 study_lang，供 / 重定向使用
+  watch(
     studyLang,
-    switchStudyLang,
+    (lang) => { safeSet(LS.STUDY_LANG, lang) },
+    { immediate: true },
+  )
+
+  // lang 变化：清缓存 + 重新拉数据（watch 仅在值真正变化时触发，无需手动 guard）
+  watch(studyLang, async () => {
+    clearMilestoneCache()
+    try {
+      await loadData()
+    } catch {
+      showError(i18nT('toastDataLoadFailed') || '数据加载失败', {
+        actionLabel: i18nT('retry') || '重试',
+        onAction: () => { void loadData().catch(() => {}) },
+      })
+      return
+    }
+    // loadData 重置了 isArticlesLoaded；若当前页/练习需要 articles，重新触发加载
+    if (
+      currentCat.value === 'articles' ||
+      currentCat.value === 'dialogues' ||
+      practiceArticleId.value
+    ) {
+      ensureArticles()
+    }
+  })
+
+  async function switchStudyLang(lang: StudyLang) {
+    if (studyLang.value === lang) return
+    // 切语言时落到一个安全的 cat
+    let cat = currentCat.value
+    if (lang === 'en' && cat === 'kana') cat = 'articles'
+    if (lang === 'en' && cat === 'verbs') cat = 'nouns'
+    await router.push({ name: 'list', params: { lang, cat } })
+  }
+
+  // ---- 模式 / 分类切换 ----
+
+  function switchMode(mode: string) {
+    const lang = studyLang.value
+    if (mode === 'stats') {
+      router.push({ name: 'stats', params: { lang } })
+      return
+    }
+    if (mode === 'practice') {
+      // 文章/对话分类下：尝试恢复 LS 槽位 → 直接进 article practice；
+      // 否则回退到 nouns 词练习（保留原行为）
+      const fmt = catToFormat(currentCat.value)
+      const slot = fmt ? readPracticeSlot(fmt) : null
+      if (slot) {
+        ensureArticles()
+        router.push({
+          name: 'practice-article',
+          params: { lang, cat: currentCat.value, articleId: slot.id },
+        })
+      } else {
+        const cat =
+          currentCat.value === 'articles' || currentCat.value === 'dialogues'
+            ? 'nouns'
+            : currentCat.value
+        router.push({ name: 'practice', params: { lang, cat } })
+      }
+      return
+    }
+    // list
+    router.push({ name: 'list', params: { lang, cat: currentCat.value } })
+  }
+
+  function switchCat(cat: string) {
+    const lang = studyLang.value
+    if (cat === 'articles' || cat === 'dialogues') ensureArticles()
+    // 在练习模式下切 cat：保持 practice 路由，并尝试恢复对应 cat 的文章槽位
+    if (currentMode.value === 'practice') {
+      const fmt = cat === 'articles' ? 'essay' : cat === 'dialogues' ? 'dialogue' : null
+      const slot = fmt ? readPracticeSlot(fmt) : null
+      if (slot) {
+        router.push({
+          name: 'practice-article',
+          params: { lang, cat, articleId: slot.id },
+        })
+      } else {
+        router.push({ name: 'practice', params: { lang, cat } })
+      }
+      return
+    }
+    router.push({ name: 'list', params: { lang, cat } })
+  }
+
+  return {
+    // 路由派生状态
+    studyLang,
     currentMode,
     currentCat,
+    // 远端数据
     data,
     articles,
     grammarMap,
     isDataLoaded,
     isArticlesLoaded,
+    loadData,
     ensureArticles,
+    // 本篇练习
     practiceArticleId,
     practiceArticleTitle,
     practiceArticleIndex,
-    savePracticeArticleIndex,
     startArticlePractice,
     clearArticlePractice,
+    savePracticeArticleIndex,
     restorePracticeArticleFromLS,
+    // 切换动作
+    switchStudyLang,
     switchMode,
     switchCat,
-    loadData,
   }
 })
