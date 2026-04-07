@@ -9,7 +9,7 @@ const { t } = useLang()
 const navItems = [
   { mode: 'list', icon: 'listen', key: 'tabList' },
   { mode: 'practice', icon: 'practice', key: 'tabPractice' },
-  { mode: 'stats', icon: 'stats', key: 'tabStats' },
+  { mode: 'stats', icon: 'profile', key: 'tabStats' },
 ] as const
 </script>
 
@@ -17,7 +17,7 @@ const navItems = [
   <!-- Mobile: floating island bottom bar -->
   <nav
     class="md:hidden fixed z-[200] left-[20px] right-[20px] theme-nav-mobile rounded-[20px]"
-    :style="`bottom: calc(env(safe-area-inset-bottom, 0px) + 16px); box-shadow: 0 4px 24px rgba(0,0,0,0.12);`"
+    :style="`bottom: calc(env(safe-area-inset-bottom, 0px) + 4px); box-shadow: 0 4px 24px rgba(0,0,0,0.12);`"
   >
     <div class="flex justify-center gap-1 p-[8px_6px]">
       <button
@@ -32,8 +32,7 @@ const navItems = [
           : `color: var(--nav-inactive-color);`"
         @click="store.switchMode(item.mode)"
       >
-        <AppIcon :name="item.icon" :size="17" />
-        <span class="text-[11px] font-semibold">{{ t(item.key) }}</span>
+        <AppIcon :name="item.icon" :size="20" />
       </button>
     </div>
   </nav>

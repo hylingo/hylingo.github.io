@@ -131,18 +131,26 @@ function resetStats() {
 
     <div class="theme-card mt-4 p-4 flex items-center justify-between">
       <div>
-        <div class="text-sm font-semibold">{{ t('darkMode') }}</div>
+        <div class="text-sm font-semibold">皮肤</div>
+        <div class="text-xs opacity-75">{{ themeMode === 'dusk' ? '暮色' : themeMode === 'warm' ? '暖云' : '墨金' }}</div>
       </div>
-      <div class="flex gap-[6px]">
+      <div class="flex gap-3">
         <button
           v-for="tm in ALL_THEMES"
           :key="tm"
           type="button"
-          class="w-[22px] h-[22px] rounded-full border-2 cursor-pointer transition-all"
-          :class="themeMode === tm ? 'ring-1 ring-offset-1' : ''"
+          class="w-[36px] h-[36px] cursor-pointer transition-all shrink-0 border-0 p-0"
           :style="`
-            background: ${tm === 'dusk' ? 'linear-gradient(135deg,#2a1f3d,#1c2a30)' : tm === 'warm' ? 'linear-gradient(135deg,#e8ddd0,#d8ccbc)' : 'linear-gradient(135deg,#141518,#18191e)'};
-            border-color: ${themeMode === tm ? 'var(--primary)' : 'var(--border)'};
+            border-radius: 50%;
+            background: ${tm === 'dusk'
+              ? 'linear-gradient(135deg,#2a1f3d 0%,#1a2235 35%,#1c2a30 70%,#c8a8e8 100%)'
+              : tm === 'warm'
+                ? 'linear-gradient(135deg,#e8ddd0 0%,#d8ccbc 50%,#7a9a78 100%)'
+                : 'linear-gradient(135deg,#141518 0%,#18191e 55%,#dcb478 100%)'};
+            outline: 2px solid ${themeMode === tm ? 'var(--primary)' : 'transparent'};
+            outline-offset: 2px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transform: ${themeMode === tm ? 'scale(1.08)' : 'scale(1)'};
           `"
           @click="setTheme(tm)"
           :aria-label="tm"

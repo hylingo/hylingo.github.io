@@ -53,30 +53,32 @@ async function onSubmit() {
 <template>
   <div
     v-if="visible"
-    class="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-primary/80 to-[#f0a06a]/80"
+    class="fixed inset-0 z-[9999] flex items-center justify-center"
+    style="background: var(--overlay-scrim); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);"
   >
-    <div class="bg-white rounded-2xl p-8 w-[90%] max-w-sm shadow-xl">
+    <div class="theme-card rounded-2xl p-8 w-[90%] max-w-sm" style="box-shadow: var(--shadow-lg); background: color-mix(in srgb, var(--card) 92%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
       <!-- Tabs -->
-      <div class="flex mb-6 border-b border-[#e8e2dc]">
+      <div class="flex mb-6 border-b" style="border-color: var(--border)">
         <button
-          class="flex-1 pb-2 text-sm font-semibold border-b-2 transition-colors cursor-pointer"
-          :class="tab === 'login' ? 'border-primary text-primary' : 'border-transparent text-[#999]'"
+          class="flex-1 pb-2 text-sm font-semibold border-b-2 transition-colors cursor-pointer bg-transparent"
+          :style="tab === 'login' ? 'border-color: var(--primary); color: var(--primary)' : 'border-color: transparent; color: var(--text-secondary)'"
           @click="switchTab('login')"
         >{{ t('loginTab') }}</button>
         <button
-          class="flex-1 pb-2 text-sm font-semibold border-b-2 transition-colors cursor-pointer"
-          :class="tab === 'register' ? 'border-primary text-primary' : 'border-transparent text-[#999]'"
+          class="flex-1 pb-2 text-sm font-semibold border-b-2 transition-colors cursor-pointer bg-transparent"
+          :style="tab === 'register' ? 'border-color: var(--primary); color: var(--primary)' : 'border-color: transparent; color: var(--text-secondary)'"
           @click="switchTab('register')"
         >{{ t('registerTab') }}</button>
       </div>
 
-      <p class="text-sm text-[#777] mb-4 text-center">
+      <p class="text-sm mb-4 text-center" style="color: var(--text-secondary)">
         {{ tab === 'register' ? t('registerDesc') : t('loginDescShort') }}
       </p>
 
       <input
         v-model="username"
-        class="w-full px-4 py-3 border border-[#e8e2dc] rounded-xl text-base text-[#2d2d2d] outline-none focus:border-primary transition-colors"
+        class="w-full px-4 py-3 border rounded-xl text-base outline-none transition-colors"
+        style="border-color: var(--border); color: var(--text); background: var(--card);"
         :placeholder="t('usernamePlaceholder')"
         maxlength="30"
         autocomplete="username"
@@ -87,7 +89,8 @@ async function onSubmit() {
         <input
           v-model="password"
           :type="showPwd ? 'text' : 'password'"
-          class="w-full px-4 py-3 pr-12 border border-[#e8e2dc] rounded-xl text-base text-[#2d2d2d] outline-none focus:border-primary transition-colors"
+          class="w-full px-4 py-3 pr-12 border rounded-xl text-base outline-none transition-colors"
+          style="border-color: var(--border); color: var(--text); background: var(--card);"
           :placeholder="tab === 'register' ? t('passwordPlaceholder') : t('passwordInput')"
           maxlength="50"
           autocomplete="current-password"
@@ -95,7 +98,8 @@ async function onSubmit() {
         />
         <button
           type="button"
-          class="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer text-[#999] hover:text-primary transition-colors"
+          class="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer transition-colors"
+          style="color: var(--text-secondary)"
           @click="showPwd = !showPwd"
         >
           <svg v-if="showPwd" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -120,7 +124,8 @@ async function onSubmit() {
       </div>
 
       <button
-        class="w-full mt-3 border-none bg-transparent text-[#777] text-[13px] cursor-pointer underline"
+        class="w-full mt-3 border-none bg-transparent text-[13px] cursor-pointer underline"
+        style="color: var(--text-secondary)"
         @click="emit('close')"
       >
         {{ t('cancel') }}

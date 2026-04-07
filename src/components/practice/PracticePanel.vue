@@ -27,7 +27,7 @@ const QUIZ_MODES: { key: QuizMode; labelKey: string }[] = [
 const {
   quizItems, quizIndex, isAnswered,
   articleBlockJustCompleted,
-  showAnswer, submitCorrect, advanceAfterWrong,
+  showAnswer, hideAnswer, submitStudy, submitMastered, nextQuestion,
   dismissArticleBlockComplete,
 } = useQuiz()
 
@@ -142,33 +142,60 @@ function scoreColor(score: number) {
   return getComputedStyle(document.documentElement).getPropertyValue('--primary-dark').trim() || '#c45a3e'
 }
 
-function resetRecordState() {
+// === 听音模式：编辑距离打分 ===
+const listenInput = ref('')
+const listenScore = ref<number | null>(null)
+const listenSubmitted = ref(false)
+const LISTEN_PASS = 70
+
+/** Levenshtein 编辑距离 */
+function editDistance(a: string, b: string): number {
+  if (a === b) return 0
+  if (!a.length) return b.length
+  if (!b.length) return a.length
+  let prev = new Array(b.length + 1)
+  let curr = new Array(b.length + 1)
+  for (let j = 0; j <= b.length; j++) prev[j] = j
+  for (let i = 1; i <= a.length; i++) {
+    curr[0] = i
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1
+      curr[j] = Math.min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost)
+    }
+    ;[prev, curr] = [curr, prev]
+  }
+  return prev[b.length]
+}
+
+function calcListenScore(input: string, item: { word: string; reading?: string }): number {
+  const norm = (s: string) => normalizeJpSpeech(s || '')
+  const a = norm(input)
+  if (!a) return 0
+  const w = norm(item.word)
+  const r = norm(item.reading || '')
+  const score = (target: string) => {
+    if (!target) return 0
+    const d = editDistance(a, target)
+    return Math.max(0, Math.round((1 - d / Math.max(a.length, target.length)) * 100))
+  }
+  return Math.max(score(w), score(r))
+}
+
+function resetInteractionState() {
   sttResult.value = ''
   sttScore.value = null
+  listenInput.value = ''
+  listenScore.value = null
+  listenSubmitted.value = false
   stopPlayback()
   clearRecording()
+  hideAnswer()
 }
 
-// === 练习模式 ===
-function onPracticeCorrect() {
-  submitCorrect()
-  resetRecordState()
-}
-
-function onPracticeWrong() {
-  showAnswer()
-  resetRecordState()
-}
-
-function onPracticeWrongNext() {
-  advanceAfterWrong()
-  resetRecordState()
-}
-
-// === 测试模式 ===
+// === 录音（按住录音按钮）===
 let recordGuard = false
 
-function onTestRecordDown(e: PointerEvent) {
+function onRecordDown(e: PointerEvent) {
   ;(e.target as HTMLElement)?.setPointerCapture?.(e.pointerId)
   recordGuard = true
   sttResult.value = ''
@@ -176,22 +203,53 @@ function onTestRecordDown(e: PointerEvent) {
   stopPlayback()
   clearRecording()
   startRecording()
-  if (sttSupported.value) startStt(onTestSttDone)
+  if (sttSupported.value) startStt(onSttDone)
 }
 
-function onTestRecordUp() {
+function onRecordUp() {
   if (!recordGuard) return
   recordGuard = false
-  if (recording.value) stopRecording()
-  if (sttListening.value) stopStt()
+  // 延迟 350ms 再停，给麦克风缓冲和 STT 决策留出尾音时间
+  setTimeout(() => {
+    if (recording.value) stopRecording()
+    if (sttListening.value) stopStt()
+    // 录音 Tab：松手即算完成一次学习（不看分，因为 STT 不稳定）
+    submitStudy()
+  }, 350)
 }
 
-function onTestSttDone(text: string) {
+function onSttDone(text: string) {
   sttResult.value = text || ''
   const item = currentItem.value
   if (!item) return
   const score = text ? calcScore(text, item) : 0
   sttScore.value = score
+}
+
+// === 听音模式：提交输入 ===
+function onListenSubmit() {
+  const item = currentItem.value
+  if (!item) return
+  const score = calcListenScore(listenInput.value, item)
+  listenScore.value = score
+  listenSubmitted.value = true
+  if (score >= LISTEN_PASS) {
+    submitStudy()
+    // 略停顿让用户看到分数再进下一题
+    setTimeout(() => {
+      nextQuestion()
+    }, 600)
+  }
+}
+
+// === 底部按钮 ===
+function onShowAnswer() {
+  showAnswer()
+}
+
+function onMastered() {
+  submitMastered()
+  resetInteractionState()
 }
 
 function playCurrentAudio() {
@@ -200,7 +258,9 @@ function playCurrentAudio() {
 }
 
 // 切题时重置
-watch(quizIndex, () => resetRecordState())
+watch(quizIndex, () => resetInteractionState())
+// 切换 Tab 时也重置（避免上一种交互的残留状态）
+watch(quizMode, () => resetInteractionState())
 
 // 音频模式自动播放
 watch([quizMode, quizIndex], () => {
@@ -247,110 +307,147 @@ const progressText = computed(() => {
     <template v-else>
     <div class="text-sm theme-muted font-medium text-center px-1 whitespace-pre-line">{{ progressText }}</div>
 
-    <!-- ========== 练习模式 ========== -->
-    <template v-if="true">
-      <template v-if="hasQuizItems && currentItem">
-        <!-- 不认识：显示答案 -->
-        <template v-if="isAnswered">
-          <div class="relative w-full max-w-[400px] mx-auto rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.10)] theme-surface p-10 text-center cursor-pointer active:scale-[0.98] transition-transform" @click="playCurrentAudio">
-            <button
-              type="button"
-              class="absolute top-3 right-3 w-7 h-7 flex items-center justify-center cursor-pointer bg-transparent border-none outline-none active:scale-90 transition-transform"
-              @click.stop="onToggleStar"
-            >
-              <svg v-if="currentStarred" class="w-4 h-4 text-[#e8a44c]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg v-else class="w-4 h-4 theme-muted opacity-30 hover:opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            </button>
-            <div class="text-content-original mb-2 text-3xl font-bold leading-relaxed">
-              <RubyText v-if="currentItem.ruby" :tokens="currentItem.ruby" />
-              <template v-else>{{ currentItem.word }}</template>
-            </div>
-            <div class="text-xl font-bold text-content-translation">{{ localMeaning(currentItem, lang) }}</div>
-          </div>
+    <!-- ========== 练习模式（统一布局，无 isAnswered 分屏）========== -->
+    <template v-if="hasQuizItems && currentItem">
+      <!-- Tab 切换 -->
+      <div class="flex items-center justify-center gap-1 mb-2">
+        <button
+          v-for="m in QUIZ_MODES" :key="m.key"
+          type="button"
+          class="rounded-full px-3 py-1 text-[11px] font-medium cursor-pointer transition-all border-none outline-none"
+          :class="quizMode === m.key ? 'bg-[var(--primary)]/12 text-[var(--primary)]' : 'bg-transparent theme-muted hover:text-[var(--primary)]'"
+          @click="quizMode = m.key"
+        >{{ t(m.labelKey) }}</button>
+      </div>
 
-          <!-- 评分 + 回放 + 录音（固定高度区域，避免布局跳动） -->
-          <div class="w-full max-w-[400px] flex flex-col items-center gap-2">
-            <!-- 评分结果 -->
-            <div v-if="sttScore !== null" class="flex items-center justify-center gap-2 w-full min-w-0">
-              <span class="text-lg font-bold tabular-nums shrink-0" :style="{ color: scoreColor(sttScore) }">{{ sttScore }}</span>
-              <span v-if="sttResult" class="text-sm theme-text truncate min-w-0">{{ sttResult }}</span>
-            </div>
+      <!-- 题面卡片 -->
+      <div class="relative w-full max-w-[400px] mx-auto rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.10)] theme-surface p-10 text-center">
+        <button
+          type="button"
+          class="absolute top-3 right-3 w-7 h-7 flex items-center justify-center cursor-pointer bg-transparent border-none outline-none active:scale-90 transition-transform"
+          @click.stop="onToggleStar"
+        >
+          <svg v-if="currentStarred" class="w-4 h-4 text-[#e8a44c]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg v-else class="w-4 h-4 theme-muted opacity-30 hover:opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </button>
 
-            <!-- 回放条（始终占位） -->
-            <div
-              class="relative h-9 rounded-xl overflow-hidden w-full"
-              :class="audioUrl ? (recording ? 'opacity-40 pointer-events-none' : 'cursor-pointer') : 'opacity-0 pointer-events-none'"
-              style="background: color-mix(in srgb, var(--text) 8%, transparent)"
-              @click="togglePlayback"
-            >
-              <div
-                class="absolute inset-y-0 left-0 rounded-xl transition-[width] duration-100"
-                :style="{ width: playbackProgress + '%', background: (sttScore !== null ? scoreColor(sttScore) : 'var(--primary)') + '20' }"
-              />
-              <div class="relative flex items-center justify-center gap-2 h-full px-4">
-                <svg v-if="!isPlayingBack" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" :style="{ color: sttScore !== null ? scoreColor(sttScore) : 'var(--primary)' }"><polygon points="8,6 18,12 8,18" /></svg>
-                <svg v-else width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" :style="{ color: sttScore !== null ? scoreColor(sttScore) : 'var(--primary)' }"><line x1="9" y1="6" x2="9" y2="18" /><line x1="15" y1="6" x2="15" y2="18" /></svg>
-                <span class="text-[11px] font-medium" :style="{ color: sttScore !== null ? scoreColor(sttScore) : 'var(--primary)' }">{{ isPlayingBack ? t('followPlaying') : t('followPlayback') }}</span>
-              </div>
-            </div>
-
-            <!-- 录音 -->
-            <div class="flex items-center justify-center gap-3">
-              <div class="flex items-center gap-[3px] h-8">
-                <span v-for="i in 5" :key="i" class="w-[3px] rounded-full transition-all duration-300" :class="recording ? 'bg-red-400 animate-wave' : 'bg-current opacity-20'" :style="{ height: recording ? undefined : '8px', animationDelay: recording ? (i * 0.12) + 's' : undefined, color: 'var(--text-secondary)' }" />
-              </div>
-              <button type="button" class="w-14 h-14 flex items-center justify-center rounded-full text-white cursor-pointer active:scale-[0.96] transition-all" :class="recording ? 'bg-red-500 shadow-[0_6px_20px_rgba(239,68,68,0.35)]' : 'bg-gradient-to-b from-[#f38a73] to-primary shadow-[0_6px_20px_rgba(232,115,90,0.3)]'" style="touch-action: none" @pointerdown.prevent="onTestRecordDown" @pointerup.prevent="onTestRecordUp" @pointercancel="onTestRecordUp">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
-              </button>
-              <div class="flex items-center gap-[3px] h-8">
-                <span v-for="i in 5" :key="'r'+i" class="w-[3px] rounded-full transition-all duration-300" :class="recording ? 'bg-red-400 animate-wave' : 'bg-current opacity-20'" :style="{ height: recording ? undefined : '8px', animationDelay: recording ? (i * 0.12) + 's' : undefined, color: 'var(--text-secondary)' }" />
-              </div>
-            </div>
-          </div>
-
-          <button class="w-full max-w-[400px] py-3 rounded-[10px] text-base font-semibold cursor-pointer transition-all btn-grad-primary" @click="onPracticeWrongNext">{{ t('masteryNext') }}</button>
-        </template>
-
-        <!-- 出题：原文/翻译/声音 → 认识/不认识 -->
-        <template v-else>
-          <!-- 模式切换 -->
-          <div class="flex items-center justify-center gap-1 mb-2">
-            <button
-              v-for="m in QUIZ_MODES" :key="m.key"
-              type="button"
-              class="rounded-full px-3 py-1 text-[11px] font-medium cursor-pointer transition-all border-none outline-none"
-              :class="quizMode === m.key ? 'bg-[var(--primary)]/12 text-[var(--primary)]' : 'bg-transparent theme-muted hover:text-[var(--primary)]'"
-              @click="quizMode = m.key"
-            >{{ t(m.labelKey) }}</button>
-          </div>
-
-          <div class="w-full max-w-[400px] mx-auto rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.10)] theme-surface p-10 text-center">
-            <!-- 原文模式 -->
-            <div v-if="quizMode === 'word'" class="text-content-original text-3xl font-bold leading-relaxed">{{ currentItem.word }}</div>
-            <!-- 翻译模式 -->
-            <div v-else-if="quizMode === 'meaning'" class="text-2xl font-bold text-content-translation">{{ localMeaning(currentItem, lang) }}</div>
-            <!-- 声音模式 -->
-            <div v-else class="flex flex-col items-center gap-3">
-              <button
-                type="button"
-                class="w-20 h-20 rounded-full border-2 text-3xl cursor-pointer transition-all active:scale-95"
-                style="border-color: var(--primary); background: var(--primary-light)"
-                @click.stop="playCurrentAudio"
-              ><AppIcon name="volume" :size="20" /></button>
-            </div>
-          </div>
-
-          <div class="flex gap-3 w-full max-w-[400px]">
-            <button class="flex-1 py-3 rounded-[10px] text-base font-semibold cursor-pointer transition-all btn-grad-primary" @click="onPracticeCorrect">{{ t('correct') }}</button>
-            <button class="flex-1 py-3 rounded-[10px] text-base font-semibold cursor-pointer transition-all border-2 theme-surface theme-muted hover:border-primary-dark" @click="onPracticeWrong">{{ t('wrong') }}</button>
-          </div>
-        </template>
-      </template>
-      <template v-else>
-        <div class="text-sm theme-muted text-center py-10">
-          {{ articleCategoryPracticeEmpty ? t('articlePracticeEmptyShort') : t('allMastered') }}
+        <!-- 原文模式：显示原文 -->
+        <div v-if="quizMode === 'word'" class="text-content-original text-3xl font-bold leading-relaxed">
+          <RubyText v-if="isAnswered && currentItem.ruby" :tokens="currentItem.ruby" />
+          <template v-else>{{ currentItem.word }}</template>
         </div>
-      </template>
+        <!-- 翻译模式：显示中文 -->
+        <div v-else-if="quizMode === 'meaning'" class="text-2xl font-bold text-content-translation">{{ localMeaning(currentItem, lang) }}</div>
+        <!-- 听音模式：扬声器按钮 -->
+        <div v-else class="flex flex-col items-center gap-3">
+          <button
+            type="button"
+            class="w-20 h-20 rounded-full border-2 cursor-pointer transition-all active:scale-95 flex items-center justify-center"
+            style="border-color: var(--primary); background: var(--primary-light); color: var(--primary)"
+            @click.stop="playCurrentAudio"
+          ><AppIcon name="volume" :size="32" /></button>
+        </div>
+
+        <!-- 看答案后展开：补充对照 -->
+        <template v-if="isAnswered">
+          <div v-if="quizMode === 'word'" class="mt-4 text-xl font-bold text-content-translation">{{ localMeaning(currentItem, lang) }}</div>
+          <div v-else-if="quizMode === 'meaning'" class="mt-4 text-2xl font-bold text-content-original">
+            <RubyText v-if="currentItem.ruby" :tokens="currentItem.ruby" />
+            <template v-else>{{ currentItem.word }}</template>
+          </div>
+          <div v-else class="mt-4 text-2xl font-bold text-content-original">
+            <RubyText v-if="currentItem.ruby" :tokens="currentItem.ruby" />
+            <template v-else>{{ currentItem.word }}</template>
+            <div class="mt-1 text-base font-bold text-content-translation">{{ localMeaning(currentItem, lang) }}</div>
+          </div>
+        </template>
+      </div>
+
+      <!-- 交互区：录音 (word/meaning) 或 输入 (audio) -->
+      <div class="w-full max-w-[400px] flex flex-col items-center gap-2">
+        <!-- ========== 录音模式（word + meaning） ========== -->
+        <template v-if="quizMode !== 'audio'">
+          <!-- 评分结果 -->
+          <div v-if="sttScore !== null" class="flex items-center justify-center gap-2 w-full min-w-0">
+            <span class="text-lg font-bold tabular-nums shrink-0" :style="{ color: scoreColor(sttScore) }">{{ sttScore }}</span>
+            <span v-if="sttResult" class="text-sm theme-text truncate min-w-0">{{ sttResult }}</span>
+          </div>
+
+          <!-- 回放条 -->
+          <div
+            class="relative h-9 rounded-xl overflow-hidden w-full"
+            :class="audioUrl ? (recording ? 'opacity-40 pointer-events-none' : 'cursor-pointer') : 'opacity-0 pointer-events-none'"
+            style="background: color-mix(in srgb, var(--text) 8%, transparent)"
+            @click="togglePlayback"
+          >
+            <div
+              class="absolute inset-y-0 left-0 rounded-xl transition-[width] duration-100"
+              :style="{ width: playbackProgress + '%', background: (sttScore !== null ? scoreColor(sttScore) : 'var(--primary)') + '20' }"
+            />
+            <div class="relative flex items-center justify-center gap-2 h-full px-4">
+              <svg v-if="!isPlayingBack" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" :style="{ color: sttScore !== null ? scoreColor(sttScore) : 'var(--primary)' }"><polygon points="8,6 18,12 8,18" /></svg>
+              <svg v-else width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" :style="{ color: sttScore !== null ? scoreColor(sttScore) : 'var(--primary)' }"><line x1="9" y1="6" x2="9" y2="18" /><line x1="15" y1="6" x2="15" y2="18" /></svg>
+              <span class="text-[11px] font-medium" :style="{ color: sttScore !== null ? scoreColor(sttScore) : 'var(--primary)' }">{{ isPlayingBack ? t('followPlaying') : t('followPlayback') }}</span>
+            </div>
+          </div>
+
+          <!-- 录音按钮 -->
+          <div class="flex items-center justify-center gap-3">
+            <div class="flex items-center gap-[3px] h-8">
+              <span v-for="i in 5" :key="i" class="w-[3px] rounded-full transition-all duration-300" :class="recording ? 'bg-red-400 animate-wave' : 'bg-current opacity-20'" :style="{ height: recording ? undefined : '8px', animationDelay: recording ? (i * 0.12) + 's' : undefined, color: 'var(--text-secondary)' }" />
+            </div>
+            <button type="button" class="w-14 h-14 flex items-center justify-center rounded-full text-white cursor-pointer active:scale-[0.96] transition-all" :class="recording ? 'bg-red-500 shadow-[0_6px_20px_rgba(239,68,68,0.35)]' : 'bg-gradient-to-b from-[#f38a73] to-primary shadow-[0_6px_20px_rgba(232,115,90,0.3)]'" style="touch-action: none" @pointerdown.prevent="onRecordDown" @pointerup.prevent="onRecordUp" @pointercancel="onRecordUp">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+            </button>
+            <div class="flex items-center gap-[3px] h-8">
+              <span v-for="i in 5" :key="'r'+i" class="w-[3px] rounded-full transition-all duration-300" :class="recording ? 'bg-red-400 animate-wave' : 'bg-current opacity-20'" :style="{ height: recording ? undefined : '8px', animationDelay: recording ? (i * 0.12) + 's' : undefined, color: 'var(--text-secondary)' }" />
+            </div>
+          </div>
+        </template>
+
+        <!-- ========== 听音输入模式 ========== -->
+        <template v-else>
+          <input
+            v-model="listenInput"
+            type="text"
+            :placeholder="t('listenInputPlaceholder')"
+            class="w-full rounded-xl border-2 theme-surface theme-text px-4 py-3 text-base outline-none transition-colors"
+            :class="listenSubmitted && listenScore !== null && listenScore < 70 ? 'border-[var(--primary-dark)]' : 'border-[var(--border)] focus:border-[var(--primary)]'"
+            @keyup.enter="onListenSubmit"
+          />
+          <div v-if="listenSubmitted && listenScore !== null" class="flex items-center justify-center gap-2 w-full">
+            <span class="text-lg font-bold tabular-nums" :style="{ color: scoreColor(listenScore) }">{{ listenScore }}</span>
+            <span v-if="listenScore < 70" class="text-xs theme-muted">{{ t('listenScoreFail') }}</span>
+          </div>
+          <button
+            type="button"
+            class="w-full py-2.5 rounded-[10px] text-sm font-semibold cursor-pointer transition-all btn-grad-primary"
+            @click="onListenSubmit"
+          >{{ t('listenSubmit') }}</button>
+        </template>
+      </div>
+
+      <!-- 底部按钮：看答案 / 掌握了 -->
+      <div class="flex gap-3 w-full max-w-[400px] mt-1">
+        <button
+          type="button"
+          class="flex-1 py-2 rounded-[10px] text-sm font-medium cursor-pointer transition-all border theme-surface theme-muted"
+          style="border-color: var(--border)"
+          :disabled="isAnswered"
+          @click="onShowAnswer"
+        >{{ t('practiceShowAnswer') }}</button>
+        <button
+          type="button"
+          class="flex-1 py-2 rounded-[10px] text-sm font-medium cursor-pointer transition-all border theme-surface"
+          style="border-color: var(--border); color: var(--text)"
+          @click="onMastered"
+        >{{ t('practiceMastered') }}</button>
+      </div>
+    </template>
+    <template v-else>
+      <div class="text-sm theme-muted text-center py-10">
+        {{ articleCategoryPracticeEmpty ? t('articlePracticeEmptyShort') : t('allMastered') }}
+      </div>
     </template>
     </template>
   </div>

@@ -489,17 +489,19 @@ onUnmounted(() => {
             <button
               v-if="!loopPlaying"
               type="button"
-              class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer theme-muted border-[var(--border)] bg-transparent hover:theme-text"
+              class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold cursor-pointer transition-all active:scale-[0.97] btn-grad-primary btn-grad-primary--borderless text-white"
               @click="playAllWithLoopPlayer"
             >
+              <AppIcon name="play" :size="14" />
               {{ t('articlePlayAll') }}
             </button>
             <button
               v-else
               type="button"
-              class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer bg-primary/15 border-primary/40 text-primary-dark"
+              class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold cursor-pointer transition-all active:scale-[0.97] btn-grad-primary btn-grad-primary--borderless text-white"
               @click="stopLoop"
             >
+              <AppIcon name="pause" :size="14" />
               {{ t('articleStopPlayback') }}
             </button>
           </template>

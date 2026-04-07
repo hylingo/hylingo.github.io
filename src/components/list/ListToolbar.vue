@@ -60,12 +60,23 @@ function onSpeakRange() {
           v-model="searchQuery"
           type="text"
           :placeholder="t('search')"
-          class="list-toolbar-search theme-text w-full rounded-xl border border-[var(--border)] bg-transparent py-2 pr-3 pl-9 text-sm outline-none transition-[border-color,box-shadow] focus:border-[var(--primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--primary)_18%,transparent)]"
+          class="list-toolbar-search theme-text w-full rounded-xl border border-[var(--border)] bg-transparent py-2 pl-9 pr-9 text-sm outline-none transition-[border-color,box-shadow] focus:border-[var(--primary)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--primary)_18%,transparent)]"
           @input="onSearch"
         />
         <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 theme-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
         </svg>
+        <button
+          v-if="searchQuery"
+          type="button"
+          aria-label="clear"
+          class="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-5 w-5 items-center justify-center rounded-full border-none bg-[color-mix(in_srgb,var(--text)_12%,transparent)] theme-muted hover:bg-[color-mix(in_srgb,var(--text)_22%,transparent)] cursor-pointer transition-colors"
+          @click="searchQuery = ''; onSearch()"
+        >
+          <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" />
+          </svg>
+        </button>
       </div>
       <div class="flex shrink-0 items-center gap-2 self-stretch sm:self-center sm:justify-end">
         <!-- 实心渐变 + 胶囊形：与浅色搜索框区分，明确为「播放」操作而非第二个输入框 -->

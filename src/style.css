@@ -250,7 +250,7 @@ body::before {
   background: var(--grad-primary);
   color: #fff;
   border-color: color-mix(in srgb, #ffffff 26%, var(--primary));
-  box-shadow: 0 2px 10px color-mix(in srgb, var(--primary) 32%, transparent);
+  box-shadow: 0 2px 9px color-mix(in srgb, var(--primary) 20%, transparent);
 }
 
 .filter-chip--off {
@@ -377,8 +377,13 @@ body::before {
 
 .theme-loop-panel {
   background: var(--card);
+  backdrop-filter: var(--card-blur, blur(24px));
+  -webkit-backdrop-filter: var(--card-blur, blur(24px));
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
 }
+:root.theme-warm .theme-loop-panel { background: rgba(248, 242, 232, 0.92); }
+:root.theme-dusk .theme-loop-panel { background: rgba(26, 28, 36, 0.92); }
+:root.theme-ink  .theme-loop-panel { background: rgba(20, 21, 24, 0.95); }
 
 .theme-switch {
   position: relative;
@@ -447,7 +452,7 @@ body::before {
   background: var(--grad-primary);
   color: #fff;
   border: 2px solid color-mix(in srgb, #ffffff 22%, var(--primary));
-  box-shadow: 0 4px 16px color-mix(in srgb, var(--primary) 28%, transparent);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--primary) 20%, transparent);
   transition: filter 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -462,19 +467,19 @@ body::before {
 .btn-grad-primary--pressed {
   background: var(--grad-primary-pressed);
   border-color: color-mix(in srgb, #ffffff 18%, var(--primary-dark));
-  box-shadow: 0 3px 12px color-mix(in srgb, var(--primary) 22%, transparent);
+  box-shadow: 0 2px 9px color-mix(in srgb, var(--primary) 16%, transparent);
 }
 
 .btn-grad-primary--borderless {
   border: none;
-  box-shadow: 0 4px 18px color-mix(in srgb, var(--primary) 26%, transparent);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--primary) 18%, transparent);
 }
 
 .btn-grad-accent {
   background: var(--grad-accent);
   color: #fff;
   border: 2px solid color-mix(in srgb, #ffffff 20%, var(--accent));
-  box-shadow: 0 4px 16px color-mix(in srgb, var(--accent) 28%, transparent);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--accent) 20%, transparent);
   transition: filter 0.15s ease;
 }
 
@@ -488,7 +493,7 @@ body::before {
 
 .btn-grad-accent--borderless {
   border: none;
-  box-shadow: 0 2px 12px color-mix(in srgb, var(--accent) 24%, transparent);
+  box-shadow: 0 2px 9px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 /* Nav flag background decoration */

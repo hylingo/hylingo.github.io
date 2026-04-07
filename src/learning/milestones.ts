@@ -1,13 +1,20 @@
 /**
- * 学习里程碑：练习·认识、连续答对自动掌握。
- * 单词掌握条件：连续答对 N 次（MASTERY_STREAK）自动标记。
- * 文章/对话掌握：由 articlePracticeDone 按篇管理，不走本模块。
+ * 学习里程碑：宽松 SRS 复习 + 手动「掌握了」。
+ *
+ * 核心规则：
+ * - 任意完成一次学习（录音 / 听写）→ recordStudy(cat, id)
+ *   - counts +1（既有 recordItemSeen）
+ *   - 按 counts 查间隔表，写入 delays 作为下次复习时间
+ * - 用户主动点「掌握了」→ markMastered(cat, id)
+ * - 「我的-掌握列表」可取消 → unmarkMastered(cat, id)
+ *
+ * 旧 API（markPracticeAnswerKnown / markPracticeAnswerUnknown / 自动连续答对掌握）
+ * 已废弃但保留 no-op 避免破坏外部引用，新代码不要使用。
  */
 import { makeItemKey } from './itemKey'
 import { milestoneStateTick } from './milestoneTick'
-import { recordItemSeen, delayItem } from '@/composables/useSpacedRepetition'
+import { recordItemSeen, delayItem, getItemCount } from '@/composables/useSpacedRepetition'
 import { useFirebase } from '@/composables/useFirebase'
-import { practice as practiceThresholds } from '@/config/thresholds'
 import { readSyncedJson, writeSyncedJson } from '@/learning/learnStorage'
 import { useAppStore } from '@/stores/app'
 
@@ -15,8 +22,19 @@ const { debouncedSync } = useFirebase()
 
 export { milestoneStateTick }
 
-/** 连续答对几次自动掌握 */
-const MASTERY_STREAK = 3
+/**
+ * SRS 间隔表（按学习次数 → 复习间隔天数）。
+ * 索引 = 学习次数（已完成的次数）；首次学完 (count=1) 用 SRS_INTERVALS[1] = 1 天。
+ * 超出表长用最后一个值（封顶 240 天）。
+ */
+const SRS_INTERVALS = [0, 1, 2, 4, 7, 14, 30, 60, 120, 240]
+
+/** 按已完成的学习次数算下次到期的天数 */
+export function srsIntervalDays(studyCount: number): number {
+  if (studyCount <= 0) return 0
+  if (studyCount >= SRS_INTERVALS.length) return SRS_INTERVALS[SRS_INTERVALS.length - 1]
+  return SRS_INTERVALS[studyCount]
+}
 
 type SyncedMapKey = 'practiceRecognized' | 'masteryQuizPassed' | 'practiceStreak'
 
@@ -54,55 +72,14 @@ export function clearMilestoneCache() {
   _cache.clear()
 }
 
-// --- 连续答对计数 ---
+// --- 学习一次（录音 / 听写完成）---
 
-function readStreakMap(): Record<string, number> {
-  return readJsonMap<Record<string, number>>('practiceStreak')
-}
-
-function writeStreakMap(r: Record<string, number>) {
-  writeJsonMap('practiceStreak', r)
-}
-
-// --- 练习：认识 / 不认识 ---
-
-/** 练习中点「✓ 认识」：计次 + 短期推迟 + 连续答对计数（达标自动掌握） */
-export function markPracticeAnswerKnown(cat: string, id: number): void {
-  const k = makeItemKey(cat, id)
-
-  // 写入「曾认识」
-  const r = readJsonMap<Record<string, true>>('practiceRecognized')
-  r[k] = true
-  writeJsonMap('practiceRecognized', r)
-
-  // 连续答对 +1，达标自动掌握
-  const streaks = readStreakMap()
-  const next = (streaks[k] || 0) + 1
-  streaks[k] = next
-  writeStreakMap(streaks)
-
-  if (next >= MASTERY_STREAK) {
-    markMasteryPassed(cat, id)
-  }
-
+/** 完成一次练习：counts++，并按新次数推迟到 SRS 间隔表对应的天数 */
+export function recordStudy(cat: string, id: number): void {
   recordItemSeen(cat, id)
-  delayItem(cat, id, practiceThresholds.knownDelayDays)
-}
-
-/** 练习中点「✗ 不认识」：重置连续答对计数 + 计练习次数 */
-export function markPracticeAnswerUnknown(cat: string, id: number): void {
-  const k = makeItemKey(cat, id)
-  const streaks = readStreakMap()
-  if (streaks[k]) {
-    streaks[k] = 0
-    writeStreakMap(streaks)
-  }
-  recordItemSeen(cat, id)
-}
-
-/** 是否曾在练习中点过「认识」 */
-export function hasPracticeRecognized(cat: string, id: number): boolean {
-  return !!readJsonMap<Record<string, true>>('practiceRecognized')[makeItemKey(cat, id)]
+  const next = getItemCount(cat, id) // recordItemSeen 内部已 +1，这里读到的是新值
+  const days = srsIntervalDays(next)
+  if (days > 0) delayItem(cat, id, days)
 }
 
 // --- 掌握 ---
@@ -115,15 +92,42 @@ export function hasMasteryQuizPassed(cat: string, id: number): boolean {
   return !!readJsonMap<Record<string, true>>('masteryQuizPassed')[makeItemKey(cat, id)]
 }
 
-/** 标记单词掌握（连续答对达标时自动调用） */
-function markMasteryPassed(cat: string, id: number): void {
+/** 用户主动点「掌握了」 */
+export function markMastered(cat: string, id: number): void {
   const k = makeItemKey(cat, id)
   const r = readJsonMap<Record<string, true>>('masteryQuizPassed')
+  if (r[k]) return
   r[k] = true
   writeJsonMap('masteryQuizPassed', r)
 }
 
-/** 已掌握：连续答对 N 次自动标记 */
+/** 取消掌握（从掌握列表里移除，回到学习中状态） */
+export function unmarkMastered(cat: string, id: number): void {
+  const k = makeItemKey(cat, id)
+  const r = readJsonMap<Record<string, true>>('masteryQuizPassed')
+  if (!r[k]) return
+  delete r[k]
+  writeJsonMap('masteryQuizPassed', r)
+}
+
+/** 已掌握 */
 export function isItemMastered(cat: string, id: number): boolean {
   return !!readJsonMap<Record<string, true>>('masteryQuizPassed')[makeItemKey(cat, id)]
+}
+
+// --- 旧 API 兼容 shim（已废弃，新代码请用 recordStudy / markMastered） ---
+
+/** @deprecated 使用 recordStudy 代替 */
+export function markPracticeAnswerKnown(cat: string, id: number): void {
+  recordStudy(cat, id)
+}
+
+/** @deprecated 不再有「不认识」语义，调用等价于一次普通学习 */
+export function markPracticeAnswerUnknown(cat: string, id: number): void {
+  recordStudy(cat, id)
+}
+
+/** @deprecated 不再使用 */
+export function hasPracticeRecognized(_cat: string, _id: number): boolean {
+  return false
 }

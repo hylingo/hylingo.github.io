@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useAppStore, type DataItem } from '../../stores/app'
-import { hasMasteryQuizPassed, milestoneStateTick } from '@/learning'
+import { hasMasteryQuizPassed, milestoneStateTick, unmarkMastered } from '@/learning'
 import { speakWithExample } from '../../composables/useAudio'
 import { useLang } from '@/i18n'
 import { localMeaning, localExampleCn } from '@/utils/helpers'
@@ -34,6 +34,10 @@ const masteredItems = computed<MasteredItem[]>(() => {
 
 function onSpeak(item: MasteredItem) {
   speakWithExample(item.word, item.audio)
+}
+
+function onUnmaster(item: MasteredItem) {
+  unmarkMastered(item._cat, item.id)
 }
 </script>
 
@@ -84,6 +88,12 @@ function onSpeak(item: MasteredItem) {
         >
           <AppIcon name="volume" :size="16" />
         </button>
+        <button
+          type="button"
+          class="ml-2 shrink-0 px-2.5 py-1 rounded-md text-[11px] font-medium cursor-pointer border theme-muted bg-transparent"
+          style="border-color: var(--border)"
+          @click.stop="onUnmaster(item)"
+        >{{ t('practiceUnmaster') }}</button>
       </div>
     </div>
   </div>
