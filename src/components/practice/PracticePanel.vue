@@ -396,7 +396,7 @@ const progressText = computed(() => {
             <div class="flex items-center gap-[3px] h-8">
               <span v-for="i in 5" :key="i" class="w-[3px] rounded-full transition-all duration-300" :class="recording ? 'bg-red-400 animate-wave' : 'bg-current opacity-20'" :style="{ height: recording ? undefined : '8px', animationDelay: recording ? (i * 0.12) + 's' : undefined, color: 'var(--text-secondary)' }" />
             </div>
-            <button type="button" class="w-14 h-14 flex items-center justify-center rounded-full text-white cursor-pointer active:scale-[0.96] transition-all" :class="recording ? 'bg-red-500 shadow-[0_6px_20px_rgba(239,68,68,0.35)]' : 'bg-gradient-to-b from-[#f38a73] to-primary shadow-[0_6px_20px_rgba(232,115,90,0.3)]'" style="touch-action: none" @pointerdown.prevent="onRecordDown" @pointerup.prevent="onRecordUp" @pointercancel="onRecordUp">
+            <button type="button" class="w-14 h-14 flex items-center justify-center rounded-full cursor-pointer active:scale-[0.96] transition-all" :style="recording ? { background: 'var(--primary)', color: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.18)', touchAction: 'none' } : { background: 'color-mix(in srgb, var(--primary) 18%, transparent)', color: 'var(--primary)', touchAction: 'none' }" @pointerdown.prevent="onRecordDown" @pointerup.prevent="onRecordUp" @pointercancel="onRecordUp">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
             </button>
             <div class="flex items-center gap-[3px] h-8">
@@ -428,18 +428,17 @@ const progressText = computed(() => {
       </div>
 
       <!-- 底部按钮：看答案 / 掌握了 -->
-      <div class="flex gap-3 w-full max-w-[400px] mt-1">
+      <div class="flex flex-col items-center gap-7 w-full max-w-[400px] mt-1">
         <button
           type="button"
-          class="flex-1 py-2 rounded-[10px] text-sm font-medium cursor-pointer transition-all border theme-surface theme-muted"
+          class="w-full py-2 rounded-[10px] text-sm font-medium cursor-pointer transition-all border theme-surface theme-muted"
           style="border-color: var(--border)"
           :disabled="isAnswered"
           @click="onShowAnswer"
         >{{ t('practiceShowAnswer') }}</button>
         <button
           type="button"
-          class="flex-1 py-2 rounded-[10px] text-sm font-medium cursor-pointer transition-all border theme-surface"
-          style="border-color: var(--border); color: var(--text)"
+          class="py-1.5 px-3 text-xs cursor-pointer bg-transparent border-none outline-none theme-muted hover:opacity-80 transition-opacity"
           @click="onMastered"
         >{{ t('practiceMastered') }}</button>
       </div>

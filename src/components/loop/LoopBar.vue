@@ -244,7 +244,7 @@ function onCardMainClick() {
   </div>
 
   <!-- 展开 -->
-  <div v-if="visible && !collapsed" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/30">
+  <div v-if="visible && !collapsed" class="fixed inset-0 z-[200] flex items-center justify-center backdrop-blur-sm" :style="{ background: 'var(--overlay-scrim)' }">
     <div class="w-[95%] max-w-lg md:w-[90%] md:max-w-sm theme-loop-panel rounded-3xl overflow-hidden max-h-[min(92svh,900px)] flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.15)]">
       <!-- Info bar -->
       <div class="flex items-center justify-between px-4 pt-3 pb-2 md:px-5 shrink-0">
@@ -365,8 +365,7 @@ function onCardMainClick() {
                 type="button"
                 class="flex h-16 w-16 shrink-0 cursor-pointer items-center justify-center rounded-full text-white transition-transform active:scale-[0.96]"
                 :class="recording ? 'bg-red-500 shadow-[0_6px_20px_rgba(239,68,68,0.35)]' : 'shadow-[0_6px_20px_rgba(232,115,90,0.3)]'"
-                :style="!recording ? { background: 'var(--grad-primary)' } : {}"
-                style="touch-action: none"
+                :style="!recording ? { background: 'var(--grad-primary)', touchAction: 'none' } : { touchAction: 'none' }"
                 :title="t('followHint')"
                 @pointerdown.prevent="onRecordDown"
                 @pointerup.prevent="onRecordUp"
@@ -414,7 +413,7 @@ function onCardMainClick() {
           </button>
           <button
             type="button"
-            class="flex h-14 w-14 cursor-pointer items-center justify-center rounded-full text-white shadow-[0_6px_18px_rgba(232,115,90,0.3)] transition-all active:scale-[0.93] hover:shadow-[0_8px_24px_rgba(232,115,90,0.4)]"
+            class="flex h-14 w-14 cursor-pointer items-center justify-center rounded-full text-white shadow-[0_2px_8px_rgba(232,115,90,0.18)] transition-all active:scale-[0.93] hover:shadow-[0_3px_10px_rgba(232,115,90,0.22)]"
             style="background: var(--grad-primary)"
             :title="t('loopTapToPlay')"
             @click="togglePlay"

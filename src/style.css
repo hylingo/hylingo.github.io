@@ -26,9 +26,9 @@ input, select, textarea {
 
 /* ── Theme: Warm Cloud (light) ── */
 :root.theme-warm {
-  --bg: #e8ddd0;
-  --bg-gradient: linear-gradient(175deg, #e8ddd0 0%, #ddd2c4 40%, #d8ccbc 100%);
-  --bg-glow: radial-gradient(circle at 30% 0%, rgba(255,240,220,0.35) 0%, transparent 60%);
+  --bg: #fff4dd;
+  --bg-gradient: linear-gradient(175deg, #fff8e8 0%, #fde8c4 45%, #f6d8a4 100%);
+  --bg-glow: radial-gradient(circle at 30% 0%, rgba(255,220,160,0.7) 0%, transparent 70%);
   --card: rgba(255,255,255,0.5);
   --card-border: rgba(255,255,255,0.4);
   --card-blur: blur(20px);
@@ -39,7 +39,7 @@ input, select, textarea {
   --accent: #7a9a78;
   --accent-light: rgba(120,160,120,0.1);
   --text: #2a2420;
-  --text-secondary: #8a7a68;
+  --text-secondary: #6a5440;
   --border: rgba(0,0,0,0.06);
   --shadow: 0 2px 12px rgba(0,0,0,0.03);
   --shadow-lg: 0 8px 32px rgba(0,0,0,0.06);
@@ -58,13 +58,13 @@ input, select, textarea {
   --grad-tab-solid: rgba(255,255,255,0.7);
   --tab-rail-bg: rgba(0,0,0,0.06);
   --tab-active-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  --overlay-scrim: rgba(20, 18, 16, 0.2);
+  --overlay-scrim: rgba(80, 50, 20, 0.45);
   --kana-cell: rgba(255,255,255,0.4);
   --kana-cell-hover: rgba(255,255,255,0.55);
   --content-original: var(--text);
   --content-translation: #6a5a48;
   --content-example: #8a7a68;
-  --content-ruby: #a08868;
+  --content-ruby: #6b4a28;
   --stat-listen: linear-gradient(135deg, rgba(160,130,100,0.35), rgba(160,130,100,0.15));
   --stat-read: linear-gradient(135deg, rgba(120,160,120,0.3), rgba(120,160,120,0.12));
   --stat-practice: linear-gradient(135deg, rgba(140,120,180,0.25), rgba(140,120,180,0.1));
@@ -89,7 +89,7 @@ input, select, textarea {
   --primary-dark: #a888c8;
   --accent: #80c8a8;
   --accent-light: rgba(120,180,160,0.12);
-  --text: #f0ebe5;
+  --text: #d8d2c8;
   --text-secondary: rgba(255,255,255,0.35);
   --border: rgba(255,255,255,0.07);
   --shadow: none;
@@ -225,6 +225,22 @@ body::before {
   color: var(--text);
   box-shadow: var(--tab-active-shadow);
   border-radius: 10px;
+}
+
+.category-tab-btn--active-text {
+  color: var(--text);
+}
+
+.category-tab-indicator {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  background: var(--grad-tab-solid);
+  box-shadow: var(--tab-active-shadow);
+  border-radius: 10px;
+  pointer-events: none;
+  transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1), width 0.28s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s;
+  z-index: 0;
 }
 
 .category-tab-btn--inactive {
@@ -377,13 +393,21 @@ body::before {
 
 .theme-loop-panel {
   background: var(--card);
-  backdrop-filter: var(--card-blur, blur(24px));
-  -webkit-backdrop-filter: var(--card-blur, blur(24px));
+  backdrop-filter: blur(40px) saturate(160%);
+  -webkit-backdrop-filter: blur(40px) saturate(160%);
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
-:root.theme-warm .theme-loop-panel { background: rgba(248, 242, 232, 0.92); }
-:root.theme-dusk .theme-loop-panel { background: rgba(26, 28, 36, 0.92); }
-:root.theme-ink  .theme-loop-panel { background: rgba(20, 21, 24, 0.95); }
+:root.theme-warm .theme-loop-panel {
+  background: linear-gradient(135deg, rgba(255,250,240,0.55) 0%, rgba(248,238,220,0.35) 100%);
+}
+:root.theme-dusk .theme-loop-panel {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+}
+:root.theme-ink  .theme-loop-panel {
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(220,180,120,0.08) 100%);
+}
 
 .theme-switch {
   position: relative;

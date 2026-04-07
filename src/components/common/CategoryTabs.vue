@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, nextTick, onMounted, watch } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { useLang } from '@/i18n'
 import { starredTick, getStarredCount } from '@/learning'
@@ -51,6 +51,35 @@ function mainTabSelected(key: string): boolean {
   return store.currentCat === key
 }
 
+// 滑动指示器
+const tabBtnRefs = ref<HTMLButtonElement[]>([])
+const indicatorStyle = ref<{ left: string; width: string; opacity: number }>({ left: '0px', width: '0px', opacity: 0 })
+
+function setBtnRef(el: any, idx: number) {
+  if (el) tabBtnRefs.value[idx] = el as HTMLButtonElement
+}
+
+async function updateIndicator() {
+  await nextTick()
+  const idx = categories.value.findIndex((c) => mainTabSelected(c.key))
+  const btn = idx >= 0 ? tabBtnRefs.value[idx] : null
+  if (!btn) {
+    indicatorStyle.value = { ...indicatorStyle.value, opacity: 0 }
+    return
+  }
+  indicatorStyle.value = {
+    left: btn.offsetLeft + 'px',
+    width: btn.offsetWidth + 'px',
+    opacity: 1,
+  }
+}
+
+onMounted(() => {
+  updateIndicator()
+  window.addEventListener('resize', updateIndicator)
+})
+watch(() => [store.currentCat, categories.value.length] as const, updateIndicator)
+
 const wordSubTabs = computed(() => {
   const tabs: { key: string; label: string; count: number }[] = [
     { key: 'nouns', label: t('catNouns'), count: store.data.nouns.length },
@@ -72,18 +101,20 @@ const wordSubTabs = computed(() => {
   >
     <div
       role="tablist"
-      class="category-tab-rail flex w-full max-w-full flex-wrap items-stretch gap-0.5 rounded-2xl p-1 sm:flex-nowrap"
+      class="category-tab-rail relative flex w-full max-w-full flex-wrap items-stretch gap-0.5 rounded-2xl p-1 sm:flex-nowrap"
     >
+      <div class="category-tab-indicator" :style="indicatorStyle" aria-hidden="true" />
       <button
-        v-for="cat in categories"
+        v-for="(cat, i) in categories"
         :key="cat.key"
+        :ref="(el) => setBtnRef(el, i)"
         type="button"
         role="tab"
         :aria-selected="mainTabSelected(cat.key)"
-        class="category-tab-btn min-h-[40px] min-w-0 flex-1 rounded-[11px] px-2 py-2 text-center transition-all duration-200 outline-none cursor-pointer focus-visible:ring-2 focus-visible:ring-[var(--primary)]/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)] sm:px-4"
+        class="category-tab-btn relative z-[1] min-h-[40px] min-w-0 flex-1 rounded-[11px] px-2 py-2 text-center transition-colors duration-200 outline-none cursor-pointer focus-visible:ring-2 focus-visible:ring-[var(--primary)]/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)] sm:px-4"
         :class="
           mainTabSelected(cat.key)
-            ? 'category-tab-btn--active'
+            ? 'category-tab-btn--active-text'
             : 'category-tab-btn--inactive'
         "
         @click="onMainTabClick(cat.key)"
