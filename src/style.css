@@ -33,50 +33,51 @@ input, select, textarea {
   --card: rgba(255,255,255,0.72);
   --card-border: rgba(255,255,255,0.8);
   --card-blur: blur(10px);
-  --card-shadow: 0 4px 18px rgba(70,80,100,0.06);
-  /* 主色：水墨蓝，从背景的蓝色水彩里抽取，做按钮/高亮主色 */
-  --primary: #4a6584;
-  --primary-light: rgba(74,101,132,0.12);
-  --primary-dark: #324862;
-  /* 辅色：淡水彩粉，点缀用 */
-  --accent: #c47a88;
-  --accent-light: rgba(196,122,136,0.1);
-  /* 文字：中性墨灰，略带冷调，跟各种水彩色都不打架 */
-  --text: #2d3142;
-  --text-secondary: #5c6175;
-  --border: rgba(60,70,90,0.08);
-  --shadow: 0 2px 12px rgba(70,80,100,0.04);
-  --shadow-lg: 0 8px 32px rgba(70,80,100,0.08);
+  --card-shadow: 0 4px 18px rgba(120,90,70,0.06);
+  /* 主色：暖玫瑰墨，从水彩粉色洗染里抽取，和纸底同温调 */
+  --primary: #f0cd51;
+  --primary-light: rgba(240,205,81,0.14);
+  --primary-dark: #d4ae30;
+  /* 辅色：赭黄，点缀用 */
+  --accent: #c48a52;
+  --accent-light: rgba(196,138,82,0.1);
+  /* 文字：冷墨蓝灰，跟冰玻璃 icon 同温调 */
+  --text: #3b4555;
+  --text-secondary: #6d7a8f;
+  --border: rgba(120,90,70,0.1);
+  --shadow: 0 2px 12px rgba(120,90,70,0.05);
+  --shadow-lg: 0 8px 32px rgba(120,90,70,0.09);
   --header-grad: rgba(255,255,255,0.6);
   --header-blur: saturate(180%) blur(16px);
   --header-title: var(--text);
   --nav-bg: rgba(255,255,255,0.6);
   --nav-blur: blur(24px);
   --nav-border: rgba(255,255,255,0.5);
-  --nav-active-bg: rgba(74,101,132,0.1);
-  --nav-active-color: #4a6584;
-  --nav-inactive-color: #8a90a2;
-  --grad-primary: rgba(74,101,132,0.85);
-  --grad-primary-pressed: rgba(50,72,98,0.9);
-  --grad-accent: linear-gradient(135deg, #c47a88 0%, #a85e6e 100%);
-  --grad-tab-solid: rgba(255,255,255,0.8);
-  --tab-rail-bg: rgba(60,70,90,0.06);
-  --tab-active-shadow: 0 1px 4px rgba(70,80,100,0.08);
-  --overlay-scrim: rgba(40, 50, 70, 0.45);
+  --nav-active-bg: rgba(240,205,81,0.16);
+  --nav-active-color: #b8901a;
+  --nav-inactive-color: #a0907e;
+  /* 围绕 #f0cd51 的近邻渐变：浅金 → 本色 → 深琥珀 */
+  --grad-primary: #f0cd51;
+  --grad-primary-pressed: #dab032;
+  --grad-accent: linear-gradient(135deg, #d39a62 0%, #b07838 100%);
+  --grad-tab-solid: rgba(255,250,242,0.82);
+  --tab-rail-bg: rgba(120,90,70,0.06);
+  --tab-active-shadow: 0 1px 4px rgba(120,90,70,0.1);
+  --overlay-scrim: rgba(245, 245, 248, 0.28);
   --kana-cell: rgba(255,255,255,0.55);
   --kana-cell-hover: rgba(255,255,255,0.72);
   --content-original: var(--text);
-  --content-translation: #626778;
-  --content-example: #858a9c;
-  --content-ruby: #4a6584;
-  --stat-listen: linear-gradient(135deg, rgba(196,122,136,0.3), rgba(196,122,136,0.12));
-  --stat-read: linear-gradient(135deg, rgba(74,140,170,0.28), rgba(74,140,170,0.1));
-  --stat-practice: linear-gradient(135deg, rgba(140,170,120,0.28), rgba(140,170,120,0.1));
-  --stat-mastered: linear-gradient(135deg, rgba(200,170,100,0.28), rgba(200,170,100,0.1));
-  --stat-listen-icon: #c47a88;
-  --stat-read-icon: #4a8caa;
-  --stat-practice-icon: #7aa27a;
-  --stat-mastered-icon: #c4a05a;
+  --content-translation: #6b5e52;
+  --content-example: #8d7f71;
+  --content-ruby: #a8566a;
+  --stat-listen: linear-gradient(135deg, rgba(168,86,106,0.28), rgba(168,86,106,0.1));
+  --stat-read: linear-gradient(135deg, rgba(120,140,90,0.26), rgba(120,140,90,0.08));
+  --stat-practice: linear-gradient(135deg, rgba(196,138,82,0.28), rgba(196,138,82,0.1));
+  --stat-mastered: linear-gradient(135deg, rgba(180,120,70,0.26), rgba(180,120,70,0.08));
+  --stat-listen-icon: #a8566a;
+  --stat-read-icon: #7a8c5a;
+  --stat-practice-icon: #c48a52;
+  --stat-mastered-icon: #b47846;
 }
 
 /* ── Theme: Dusk (cold) ── */
@@ -415,7 +416,22 @@ body::before {
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
 :root.theme-watercolor .theme-loop-panel {
-  background: linear-gradient(135deg, rgba(255,250,240,0.55) 0%, rgba(248,238,220,0.35) 100%);
+  /* Liquid Ice：冷蓝微染的冰片玻璃，像 dusk 主题里那种冰的感觉 */
+  background: linear-gradient(
+    180deg,
+    rgba(220,232,248,0.42) 0%,
+    rgba(210,222,240,0.24) 50%,
+    rgba(200,215,235,0.2) 100%
+  );
+  backdrop-filter: blur(44px) saturate(160%) brightness(1.02);
+  -webkit-backdrop-filter: blur(44px) saturate(160%) brightness(1.02);
+  border: 1px solid rgba(230,238,250,0.55);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.85) inset,
+    0 -1px 0 rgba(200,215,235,0.25) inset,
+    0 0 0 1px rgba(230,240,255,0.18) inset,
+    0 12px 44px rgba(40,55,80,0.12),
+    0 2px 8px rgba(40,55,80,0.06);
 }
 :root.theme-dusk .theme-loop-panel {
   background: var(--card);
@@ -481,6 +497,82 @@ body::before {
   background: var(--kana-cell-hover);
 }
 
+/* 播放器里的次级圆按钮（麦/上一首/下一首/循环）：Liquid Glass 风
+   —— 半透白 + 重 blur + 顶部白高光 + 内描边，跟主面板一套语言 */
+:root.theme-watercolor .theme-loop-panel button.rounded-full:not(.play-btn-glow) {
+  background: rgba(220,232,248,0.28) !important;
+  backdrop-filter: blur(22px) saturate(160%) brightness(1.03);
+  -webkit-backdrop-filter: blur(22px) saturate(160%) brightness(1.03);
+  border-color: rgba(230,240,255,0.55) !important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.9) inset,
+    0 0 0 1px rgba(230,240,255,0.2) inset,
+    0 4px 14px rgba(40,55,80,0.1),
+    0 1px 3px rgba(40,55,80,0.06);
+  color: rgba(55,65,85,0.78) !important;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+:root.theme-watercolor .theme-loop-panel button.rounded-full:not(.play-btn-glow):hover {
+  background: rgba(225,238,255,0.42) !important;
+}
+
+/* 播放器中央主播放按钮：纯 Liquid Glass，不再带金色底
+   依靠外围金色光晕和图标颜色保持焦点 */
+:root.theme-watercolor .play-btn-glow {
+  background: rgba(220,232,248,0.22) !important;
+  backdrop-filter: blur(24px) saturate(170%) brightness(1.03);
+  -webkit-backdrop-filter: blur(24px) saturate(170%) brightness(1.03);
+  border: 1px solid rgba(230,240,255,0.6);
+  color: var(--primary) !important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.9) inset,
+    0 0 0 1px rgba(255,255,255,0.25) inset,
+    0 0 0 4px color-mix(in srgb, var(--primary) 20%, transparent),
+    0 0 24px 2px color-mix(in srgb, var(--primary) 48%, transparent),
+    0 0 48px 6px color-mix(in srgb, var(--primary) 28%, transparent);
+}
+:root.theme-watercolor .play-btn-glow:hover {
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.95) inset,
+    0 0 0 1px rgba(255,255,255,0.3) inset,
+    0 0 0 5px color-mix(in srgb, var(--primary) 26%, transparent),
+    0 0 30px 3px color-mix(in srgb, var(--primary) 58%, transparent),
+    0 0 60px 8px color-mix(in srgb, var(--primary) 34%, transparent);
+}
+
+/* 水彩主题实心主按钮（练习本篇等）：纯玻璃，文字用主色 */
+:root.theme-watercolor .btn-grad-primary {
+  background: rgba(220,232,248,0.25) !important;
+  backdrop-filter: blur(18px) saturate(160%) brightness(1.03);
+  -webkit-backdrop-filter: blur(18px) saturate(160%) brightness(1.03);
+  border: 1px solid rgba(230,240,255,0.55) !important;
+  color: var(--primary-dark) !important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.85) inset,
+    0 0 0 1px rgba(255,255,255,0.22) inset,
+    0 4px 14px rgba(30,30,40,0.08),
+    0 1px 3px rgba(30,30,40,0.05) !important;
+}
+:root.theme-watercolor .btn-grad-primary:hover {
+  background: rgba(225,238,255,0.38) !important;
+}
+
+/* 水彩主题主按钮文字：纯白在金色上太扎眼，改成暖奶白 */
+:root.theme-watercolor .btn-grad-primary,
+:root.theme-watercolor .btn-grad-primary--pressed {
+  color: #fff8e8;
+}
+
+/* 水彩主题下，stat 卡片底色是浅色水洗渐变，原本硬写的 text-white 会糊掉
+   这里覆盖为暖墨色；图标 opacity 也提一下，保证可读 */
+:root.theme-watercolor .stat-card {
+  color: #3b4555 !important;
+}
+:root.theme-watercolor .stat-card .opacity-90 {
+  opacity: 1;
+  color: #6d7a8f;
+}
+
 .theme-tab-active {
   border-color: var(--primary);
   background: var(--primary-light);
@@ -492,8 +584,11 @@ body::before {
   background: var(--grad-primary);
   color: #fff;
   border: 2px solid color-mix(in srgb, #ffffff 22%, var(--primary));
-  box-shadow: 0 2px 10px color-mix(in srgb, var(--primary) 20%, transparent);
-  transition: filter 0.15s ease, box-shadow 0.15s ease;
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--primary) 22%, transparent),
+    0 0 24px 2px color-mix(in srgb, var(--primary) 55%, transparent),
+    0 0 48px 4px color-mix(in srgb, var(--primary) 30%, transparent);
+  transition: filter 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
 
 .btn-grad-primary:hover {

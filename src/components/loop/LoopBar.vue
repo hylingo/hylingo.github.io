@@ -254,7 +254,7 @@ function onCardMainClick() {
   <!-- 展开 -->
   <div v-if="visible && !collapsed" class="fixed inset-0 z-[200] flex items-center justify-center backdrop-blur-sm" :style="{ background: 'var(--overlay-scrim)' }">
     <div
-      class="theme-loop-panel rounded-3xl overflow-hidden max-h-[min(92svh,900px)] flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.15)]"
+      class="theme-loop-panel rounded-3xl max-h-[min(92svh,900px)] flex flex-col shadow-[0_20px_60px_rgba(0,0,0,0.15)]"
       :class="isArticleItem
         ? 'w-[95%] max-w-xl md:w-[92%] md:max-w-lg'
         : 'w-[95%] max-w-lg md:w-[90%] md:max-w-sm'"
@@ -436,7 +436,7 @@ function onCardMainClick() {
           </button>
           <button
             type="button"
-            class="flex h-14 w-14 cursor-pointer items-center justify-center rounded-full text-white shadow-[0_2px_8px_rgba(232,115,90,0.18)] transition-all active:scale-[0.93] hover:shadow-[0_3px_10px_rgba(232,115,90,0.22)]"
+            class="play-btn-glow flex h-14 w-14 cursor-pointer items-center justify-center rounded-full text-white transition-all active:scale-[0.93]"
             style="background: var(--grad-primary)"
             :title="t('loopTapToPlay')"
             @click="togglePlay"

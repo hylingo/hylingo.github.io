@@ -429,9 +429,8 @@ const progressText = computed(() => {
           type="button"
           class="w-full py-2 rounded-[10px] text-sm font-medium cursor-pointer transition-all border theme-surface theme-muted"
           style="border-color: var(--border)"
-          :disabled="isAnswered"
-          @click="onShowAnswer"
-        >{{ t('practiceShowAnswer') }}</button>
+          @click="isAnswered ? nextQuestion() : onShowAnswer()"
+        >{{ isAnswered ? t('next') : t('practiceShowAnswer') }}</button>
         <button
           type="button"
           class="py-1.5 px-3 text-xs cursor-pointer bg-transparent border-none outline-none theme-muted hover:opacity-80 transition-opacity"

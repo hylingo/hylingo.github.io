@@ -186,7 +186,8 @@ function back() {
           <button
             v-if="!loopPlaying"
             type="button"
-            class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold cursor-pointer transition-all active:scale-[0.97] btn-grad-primary btn-grad-primary--borderless text-white"
+            class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-[10px] text-xs font-medium cursor-pointer transition-all active:scale-[0.97] border theme-surface theme-muted"
+            style="border-color: var(--border)"
             @click="playAllWithLoopPlayer"
           >
             <AppIcon name="play" :size="14" />
@@ -195,7 +196,8 @@ function back() {
           <button
             v-else
             type="button"
-            class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold cursor-pointer transition-all active:scale-[0.97] btn-grad-primary btn-grad-primary--borderless text-white"
+            class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-[10px] text-xs font-medium cursor-pointer transition-all active:scale-[0.97] border theme-surface theme-muted"
+            style="border-color: var(--border)"
             @click="stopLoop"
           >
             <AppIcon name="pause" :size="14" />
@@ -205,7 +207,8 @@ function back() {
         <button
           v-if="flatSentences.length > 0"
           type="button"
-          class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all active:scale-[0.98] btn-grad-primary btn-grad-primary--borderless text-white shadow-[0_3px_12px_rgba(232,115,90,0.3)]"
+          class="inline-flex items-center justify-center px-4 py-1.5 rounded-[10px] text-xs font-medium cursor-pointer transition-all active:scale-[0.98] border theme-surface theme-muted"
+          style="border-color: var(--border)"
           @click="startPracticeFromArticle"
         >
           {{ t('articlePracticeButton') }}
@@ -257,8 +260,8 @@ function back() {
           <button
             v-if="audioFnForJp(seg)"
             type="button"
-            class="shrink-0 w-9 h-9 mt-0.5 rounded-full flex items-center justify-center cursor-pointer border-0 transition-transform active:scale-95"
-            style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff;"
+            class="shrink-0 w-9 h-9 mt-0.5 rounded-[10px] flex items-center justify-center cursor-pointer transition-all active:scale-95 border theme-surface theme-muted"
+            style="border-color: var(--border)"
             @click="playSentenceAt(i)"
           >
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
