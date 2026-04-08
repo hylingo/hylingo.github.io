@@ -108,7 +108,8 @@ async function loadInitialDataWithRetry() {
 
 onMounted(async () => {
   initTheme()
-  initFirebase()
+  // Firebase Auth 状态恢复是异步的，先等它确定再判断 userId
+  await initFirebase()
   await loadInitialDataWithRetry()
 
   if (userId.value) {

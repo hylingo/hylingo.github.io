@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/database'
+import 'firebase/compat/auth'
 import { t } from '@/i18n'
 import { mergeListenCountMaps } from '@/utils/listenCount'
 import { cloudSync } from '@/config/thresholds'
@@ -12,7 +13,7 @@ import {
   type LangBundle,
 } from '@/learning/learnStorage'
 import type { StudyLang, StatsMap, DayStats } from '@/types'
-import { safeGet, safeSet, safeRemove, safeGetNumber } from '@/storage/safeLS'
+import { safeSet, safeRemove, safeGetNumber } from '@/storage/safeLS'
 import { LS } from '@/storage/keys'
 import { readPracticeSlot, writePracticeSlot } from '@/storage/practiceSlot'
 
@@ -26,9 +27,22 @@ const firebaseConfig = {
   appId: "1:1055060519096:web:ed0421d0a6938186c6ec4d",
 }
 
-const userId = ref(safeGet(LS.FB_USER_ID) || '')
+// userId 现在仅用作显示名（来自 Firebase Auth 的 displayName，等同注册时的用户名）。
+// 真正用于 RTDB 路径的是 Firebase Auth 的 UID（见 currentUid()）。
+const userId = ref('')
 let db: firebase.database.Database | null = null
+let auth: firebase.auth.Auth | null = null
 let syncTimer: ReturnType<typeof setTimeout> | null = null
+
+/** 用户名 → 伪邮箱：交给 Firebase Auth 认证 */
+const PSEUDO_EMAIL_DOMAIN = '@hylingo.local'
+function usernameToEmail(name: string): string {
+  return name.toLowerCase() + PSEUDO_EMAIL_DOMAIN
+}
+
+function currentUid(): string | null {
+  return auth?.currentUser?.uid ?? null
+}
 
 /** 所有 RTDB .set 串行 + await，避免多次上传乱序完成用旧快照覆盖新数据（测验队列等） */
 let serializedCloudChain: Promise<void> = Promise.resolve()
@@ -201,42 +215,48 @@ function buildV2Payload(ja: LangBundle, en: LangBundle, resetAt?: number) {
   return payload
 }
 
-async function hashPassword(password: string): Promise<string> {
-  const encoder = new TextEncoder()
-  const data = encoder.encode(password + 'jp-learn-salt')
-  const hash = await crypto.subtle.digest('SHA-256', data)
-  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('')
-}
-
-function initFirebase() {
+let _initResolved = false
+function initFirebase(): Promise<void> {
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig)
   }
   db = firebase.database()
+  auth = firebase.auth()
+  return new Promise<void>((resolve) => {
+    auth!.onAuthStateChanged((user) => {
+      userId.value = user?.displayName || ''
+      if (!_initResolved) {
+        _initResolved = true
+        resolve()
+      }
+    })
+  })
 }
 
 async function performCloudUpload(): Promise<void> {
-  if (!userId.value || !db) return
+  const uid = currentUid()
+  if (!uid || !db) return
   const { ja, en } = readBothBundlesFromLS()
   if (!langBundleHasAny(ja) && !langBundleHasAny(en)) return
   const resetAt = safeGetNumber(LS.FB_RESET_AT, 0)
-  await db.ref('users/' + userId.value + '/data').set(
+  await db.ref('users/' + uid + '/data').set(
     buildV2Payload(ja, en, resetAt > 0 ? resetAt : undefined),
   )
 }
 
 function syncToCloud() {
-  if (!userId.value || !db) return
+  if (!currentUid() || !db) return
   runSerialized(() => performCloudUpload()).catch(() => {})
 }
 
 async function flushDataToCloud(): Promise<void> {
-  if (!userId.value || !db) return
+  const uid = currentUid()
+  if (!uid || !db) return
   const resetAt = Date.now()
   safeSet(LS.FB_RESET_AT, String(resetAt))
   await runSerialized(async () => {
     const { ja, en } = readBothBundlesFromLS()
-    await db!.ref('users/' + userId.value + '/data').set(buildV2Payload(ja, en, resetAt))
+    await db!.ref('users/' + uid + '/data').set(buildV2Payload(ja, en, resetAt))
   })
 }
 
@@ -314,15 +334,16 @@ function mergeCloudIntoLocal(cloudRaw: unknown): void {
 }
 
 async function pullAndMerge(): Promise<boolean> {
-  if (!userId.value || !db) return false
+  const uid = currentUid()
+  if (!uid || !db) return false
   try {
     return await runSerialized(async () => {
-      const snap = await db!.ref('users/' + userId.value + '/data').once('value')
+      const snap = await db!.ref('users/' + uid + '/data').once('value')
       if (!snap.exists()) return false
       mergeCloudIntoLocal(snap.val())
       const { ja, en } = readBothBundlesFromLS()
       const resetAt = safeGetNumber(LS.FB_RESET_AT, 0)
-      await db!.ref('users/' + userId.value + '/data').set(
+      await db!.ref('users/' + uid + '/data').set(
         buildV2Payload(ja, en, resetAt > 0 ? resetAt : undefined),
       )
       return true
@@ -331,6 +352,8 @@ async function pullAndMerge(): Promise<boolean> {
     return false
   }
 }
+
+type FirebaseAuthError = { code?: string }
 
 async function register(username: string, password: string): Promise<{ success: boolean; message: string }> {
   const name = username.trim().toLowerCase()
@@ -343,33 +366,37 @@ async function register(username: string, password: string): Promise<{ success: 
   if (password.length < 6) {
     return { success: false, message: t('passwordMinLen') }
   }
-  if (!db) {
+  if (!auth || !db) {
     return { success: false, message: t('loginFail') }
   }
 
   try {
-    const snap = await db.ref('users/' + name + '/profile').once('value')
-    if (snap.exists()) {
-      return { success: false, message: t('usernameTaken') }
-    }
+    const cred = await auth.createUserWithEmailAndPassword(usernameToEmail(name), password)
+    const user = cred.user
+    if (!user) return { success: false, message: t('loginFail') }
+    await user.updateProfile({ displayName: name })
+    userId.value = name
 
-    const hash = await hashPassword(password)
-    await db.ref('users/' + name + '/profile').set({ passwordHash: hash })
-
+    // 注册后把本地已有数据上传一份做初始化
     const { ja, en } = readBothBundlesFromLS()
     if (langBundleHasAny(ja) || langBundleHasAny(en)) {
       const resetAt = safeGetNumber(LS.FB_RESET_AT, 0)
       await runSerialized(async () => {
         await db!
-          .ref('users/' + name + '/data')
+          .ref('users/' + user.uid + '/data')
           .set(buildV2Payload(ja, en, resetAt > 0 ? resetAt : undefined))
       })
     }
 
-    userId.value = name
-    safeSet(LS.FB_USER_ID, name)
     return { success: true, message: t('registerSuccess') }
-  } catch {
+  } catch (e) {
+    const code = (e as FirebaseAuthError)?.code
+    if (code === 'auth/email-already-in-use') {
+      return { success: false, message: t('usernameTaken') }
+    }
+    if (code === 'auth/weak-password') {
+      return { success: false, message: t('passwordMinLen') }
+    }
     return { success: false, message: t('loginFail') }
   }
 }
@@ -382,45 +409,44 @@ async function login(username: string, password: string): Promise<{ success: boo
   if (!password) {
     return { success: false, message: t('passwordMinLen') }
   }
-  if (!db) {
+  if (!auth || !db) {
     return { success: false, message: t('loginFail') }
   }
 
   try {
-    const snap = await db.ref('users/' + name + '/profile').once('value')
-    if (!snap.exists()) {
-      return { success: false, message: t('userNotFound') }
-    }
+    const cred = await auth.signInWithEmailAndPassword(usernameToEmail(name), password)
+    const user = cred.user
+    if (!user) return { success: false, message: t('loginFail') }
+    userId.value = user.displayName || name
 
-    const hash = await hashPassword(password)
-    const profile = snap.val()
-    if (profile.passwordHash !== hash) {
-      return { success: false, message: t('wrongPassword') }
-    }
-
-    userId.value = name
-    safeSet(LS.FB_USER_ID, name)
-
-    const cloudSnap = await db.ref('users/' + name + '/data').once('value')
+    const cloudSnap = await db.ref('users/' + user.uid + '/data').once('value')
     if (cloudSnap.exists()) {
       const cloud = cloudSnap.val()
       await runSerialized(async () => {
         mergeCloudIntoLocal(cloud)
         const { ja, en } = readBothBundlesFromLS()
         const resetAt = safeGetNumber(LS.FB_RESET_AT, 0)
-        await db!.ref('users/' + name + '/data').set(
+        await db!.ref('users/' + user.uid + '/data').set(
           buildV2Payload(ja, en, resetAt > 0 ? resetAt : undefined),
         )
       })
     }
 
     return { success: true, message: t('loginFound') }
-  } catch {
+  } catch (e) {
+    const code = (e as FirebaseAuthError)?.code
+    if (code === 'auth/user-not-found') {
+      return { success: false, message: t('userNotFound') }
+    }
+    if (code === 'auth/wrong-password' || code === 'auth/invalid-credential' || code === 'auth/invalid-login-credentials') {
+      return { success: false, message: t('wrongPassword') }
+    }
     return { success: false, message: t('loginFail') }
   }
 }
 
 function logout() {
+  auth?.signOut().catch(() => {})
   userId.value = ''
   safeRemove(LS.FB_USER_ID)
 }
