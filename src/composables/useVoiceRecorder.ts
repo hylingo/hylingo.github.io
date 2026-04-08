@@ -57,6 +57,8 @@ export function useVoiceRecorder() {
       if (duration > 0.5) recordReadTime(duration)
     }
     recording.value = false
+    // 释放麦克风轨道，否则浏览器标签页会一直显示录音指示
+    releaseStream()
   }
 
   function clearRecording() {

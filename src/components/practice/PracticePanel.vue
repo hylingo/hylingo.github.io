@@ -317,7 +317,11 @@ const progressText = computed(() => {
       </div>
 
       <!-- 题面卡片 -->
-      <div class="relative w-full max-w-[400px] mx-auto rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.10)] theme-surface p-10 text-center">
+      <div
+        class="relative w-full max-w-[400px] mx-auto rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.10)] theme-surface p-10 text-center transition-all"
+        :class="{ 'cursor-pointer hover:bg-black/[0.03] active:scale-[0.98] dark:hover:bg-white/[0.05]': isAnswered }"
+        @click="isAnswered && playCurrentAudio()"
+      >
         <button
           type="button"
           class="absolute top-3 right-3 w-7 h-7 flex items-center justify-center cursor-pointer bg-transparent border-none outline-none active:scale-90 transition-transform"

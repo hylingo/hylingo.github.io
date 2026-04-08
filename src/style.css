@@ -515,6 +515,16 @@ body::before {
 :root.theme-watercolor .theme-loop-panel button.rounded-full:not(.play-btn-glow):hover {
   background: rgba(225,238,255,0.42) !important;
 }
+/* 选中态（单曲循环 / 跟读切换）：液体玻璃下无法靠底色区分，改用与播放按钮一致的外发光 */
+:root.theme-watercolor .theme-loop-panel button.rounded-full.loop-toggle-on {
+  color: var(--primary) !important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.9) inset,
+    0 0 0 1px rgba(255,255,255,0.25) inset,
+    0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent),
+    0 0 18px 2px color-mix(in srgb, var(--primary) 45%, transparent),
+    0 0 36px 4px color-mix(in srgb, var(--primary) 25%, transparent);
+}
 
 /* 播放器中央主播放按钮：纯 Liquid Glass，不再带金色底
    依靠外围金色光晕和图标颜色保持焦点 */

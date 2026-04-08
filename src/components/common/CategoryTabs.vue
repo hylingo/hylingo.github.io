@@ -96,7 +96,7 @@ const wordSubTabs = computed(() => {
 
 <template>
   <div
-    v-if="store.currentMode !== 'stats'"
+    v-if="store.currentMode !== 'stats' && !store.articleDetailOpen"
     class="w-full min-w-0 px-4 pt-2 pb-2 md:px-10 md:max-w-[800px] md:mx-auto md:pb-3"
   >
     <div

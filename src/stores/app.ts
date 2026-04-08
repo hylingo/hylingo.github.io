@@ -67,6 +67,9 @@ export const useAppStore = defineStore('app', () => {
   const isArticlesLoaded = ref(false)
   let _articlesLoadPromise: Promise<void> | null = null
 
+  // 文章详情是否打开（仅 UI 状态：决定是否隐藏全局分类 tab）
+  const articleDetailOpen = ref(false)
+
   // ---- 本篇精读练习状态机：抽到 composable ----
   const {
     practiceArticleId,
@@ -227,6 +230,8 @@ export const useAppStore = defineStore('app', () => {
     studyLang,
     currentMode,
     currentCat,
+    // UI 状态
+    articleDetailOpen,
     // 远端数据
     data,
     articles,

@@ -364,8 +364,8 @@ function onCardMainClick() {
           <div class="flex w-full max-w-md items-center gap-2">
             <button
               type="button"
-              class="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border transition-colors"
-              :style="{ background: 'var(--primary-light)', color: 'var(--primary)', borderColor: 'var(--primary)' }"
+              class="loop-toggle-on flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border transition-colors"
+              :style="{ background: 'var(--grad-primary)', color: '#fff', borderColor: 'transparent' }"
               :aria-pressed="followMode"
               :title="t('loopFollowToggle')"
               @click="onFollowToggle"
@@ -386,13 +386,14 @@ function onCardMainClick() {
               </div>
               <button
                 type="button"
-                class="flex h-16 w-16 shrink-0 cursor-pointer items-center justify-center rounded-full text-white transition-transform active:scale-[0.96]"
+                class="select-none flex h-16 w-16 shrink-0 cursor-pointer items-center justify-center rounded-full text-white transition-transform active:scale-[0.96]"
                 :class="recording ? 'bg-red-500 shadow-[0_6px_20px_rgba(239,68,68,0.35)]' : 'shadow-[0_6px_20px_rgba(232,115,90,0.3)]'"
-                :style="!recording ? { background: 'var(--grad-primary)', touchAction: 'none' } : { touchAction: 'none' }"
+                :style="!recording ? { background: 'var(--grad-primary)', touchAction: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none' } : { touchAction: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none' }"
                 :title="t('followHint')"
                 @pointerdown.prevent="onRecordDown"
                 @pointerup.prevent="onRecordUp"
                 @pointercancel="onRecordUp"
+                @contextmenu.prevent
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
@@ -449,7 +450,8 @@ function onCardMainClick() {
           </button>
           <button
             class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border transition-colors"
-            :style="loopRepeat ? { background: 'var(--primary-light)', color: 'var(--primary)', borderColor: 'var(--primary)' } : { background: 'var(--card)', color: 'var(--text-secondary)', borderColor: 'var(--border)' }"
+            :class="{ 'loop-toggle-on': loopRepeat }"
+            :style="loopRepeat ? { background: 'var(--grad-primary)', color: '#fff', borderColor: 'transparent' } : { background: 'var(--card)', color: 'var(--text-secondary)', borderColor: 'var(--border)' }"
             @click="toggleRepeat"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">

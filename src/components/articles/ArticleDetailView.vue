@@ -11,7 +11,7 @@ import { useArticlePrefs } from '@/composables/useArticlePrefs'
 import { useArticlePlayback } from '@/composables/useArticlePlayback'
 
 const props = defineProps<{ article: ArticleItem }>()
-const emit = defineEmits<{ back: [] }>()
+const emit = defineEmits<{ back: []; select: [id: string] }>()
 
 const store = useAppStore()
 const { t, currentLang } = useLang()
@@ -46,6 +46,23 @@ watch(
 onUnmounted(() => invalidateArticlePlayback())
 
 // ---- 派生 ----
+
+// 配对篇：根据 id 后缀（-essay / -dialogue）查找同主题的另一种体裁
+const counterpart = computed<ArticleItem | null>(() => {
+  const id = props.article.id
+  const suffix = props.article.format === 'essay' ? '-essay' : '-dialogue'
+  if (!id.endsWith(suffix)) return null
+  const base = id.slice(0, -suffix.length)
+  const otherSuffix = props.article.format === 'essay' ? '-dialogue' : '-essay'
+  return store.articles.find((a) => a.id === base + otherSuffix) ?? null
+})
+
+function openCounterpart() {
+  if (!counterpart.value) return
+  invalidateArticlePlayback()
+  stopLoop()
+  emit('select', counterpart.value.id)
+}
 
 const articleGrammar = computed((): GrammarPoint[] => {
   if (!props.article.grammar?.length) return []
@@ -363,6 +380,18 @@ function back() {
         </section>
       </article>
     </template>
+
+    <!-- ====== 配对篇入口 ====== -->
+    <div v-if="counterpart" class="mt-4">
+      <button
+        type="button"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border theme-muted border-[var(--border)] bg-transparent hover:theme-text transition-colors cursor-pointer"
+        @click="openCounterpart"
+      >
+        <AppIcon :name="counterpart.format === 'dialogue' ? 'chat' : 'book'" :size="14" />
+        {{ counterpart.format === 'dialogue' ? t('articleSwitchToDialogue') : t('articleSwitchToEssay') }}
+      </button>
+    </div>
 
     <!-- ====== 本文句型 ====== -->
     <div v-if="articleGrammar.length" class="mt-4">

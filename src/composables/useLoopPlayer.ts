@@ -438,12 +438,14 @@ function toggleRepeat() {
 
 function nextTrack() {
   clearLoopScheduling()
+  loopPaused.value = false
   loopIndex.value = (loopIndex.value + 1) % loopPlaylist.value.length
   playLoopItem()
 }
 
 function prevTrack() {
   clearLoopScheduling()
+  loopPaused.value = false
   loopIndex.value = (loopIndex.value - 1 + loopPlaylist.value.length) % loopPlaylist.value.length
   playLoopItem()
 }

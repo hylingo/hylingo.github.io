@@ -5,7 +5,7 @@
  *   - 列表/搜索  → ArticleListView
  *   - 详情/播放  → ArticleDetailView + useArticlePlayback + useArticlePrefs
  */
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { useAppStore } from '@/stores/app'
 import SkeletonArticleList from '@/components/common/SkeletonArticleList.vue'
 import ArticleListView from './ArticleListView.vue'
@@ -31,13 +31,22 @@ const selected = computed(() => {
 
 function onSelect(id: string) {
   selectedId.value = id
+  store.articleDetailOpen = true
 }
 
 function onBack() {
   selectedId.value = null
+  store.articleDetailOpen = false
   // 回到列表时刷新进度（详情里可能更新过 listen/shadow 计数）
   listViewRef.value?.refreshProgressMap()
 }
+
+// 切换 cat（散文/对话 tab 互切）或卸载时，复位标志
+watch(() => props.filterFormat, () => {
+  selectedId.value = null
+  store.articleDetailOpen = false
+})
+onBeforeUnmount(() => { store.articleDetailOpen = false })
 </script>
 
 <template>
@@ -49,6 +58,6 @@ function onBack() {
       :filter-format="props.filterFormat"
       @select="onSelect"
     />
-    <ArticleDetailView v-else :article="selected" @back="onBack" />
+    <ArticleDetailView v-else :article="selected" @back="onBack" @select="onSelect" />
   </div>
 </template>
