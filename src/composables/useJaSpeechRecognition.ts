@@ -1,4 +1,5 @@
 import { ref, computed, onUnmounted } from 'vue'
+import { pushSttDebug } from '@/utils/sttDebug'
 
 type SpeechRec = SpeechRecognition
 type SpeechRecCtor = new () => SpeechRec
@@ -76,7 +77,9 @@ export function useJaSpeechRecognition() {
    */
   function start(onDone?: (fullText: string) => void) {
     const Ctor = getSpeechRecognitionCtor()
+    pushSttDebug('start', `android=${IS_ANDROID} supported=${!!Ctor} ua=${typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 80) : ''}`)
     if (!Ctor) {
+      pushSttDebug('error', 'no SpeechRecognition ctor')
       onDone?.('')
       return
     }
@@ -104,6 +107,7 @@ export function useJaSpeechRecognition() {
       r.onresult = (event: SpeechRecognitionEvent) => {
         if (myToken !== token) return
         resetSilenceTimer()
+        pushSttDebug('result', `n=${event.results.length} idx=${event.resultIndex}`)
         let interim = ''
         let finals = lastFinalText.value
         const alts: string[] = []
@@ -127,6 +131,7 @@ export function useJaSpeechRecognition() {
 
       r.onerror = (event: SpeechRecognitionErrorEvent) => {
         lastError.value = event.error || 'error'
+        pushSttDebug('error', `${event.error}${event.message ? ' / ' + event.message : ''}`)
         // Android 单次模式下 no-speech / aborted 会被 onend 接力重启；其他错误直接结束
         if (IS_ANDROID && !userStopped && (event.error === 'no-speech' || event.error === 'aborted')) return
         userStopped = true
@@ -135,6 +140,7 @@ export function useJaSpeechRecognition() {
 
       r.onend = () => {
         if (myToken !== token) return
+        pushSttDebug('end', `userStopped=${userStopped} final="${lastFinalText.value}" interim="${interimText.value}"`)
         // Android 单次模式：用户没主动停就重启一段
         if (IS_ANDROID && !userStopped && alive) {
           // interim 升格成 final，避免下一段覆盖
@@ -174,8 +180,9 @@ export function useJaSpeechRecognition() {
       rec.start()
       resetSilenceTimer()
       listening.value = true
-    } catch {
+    } catch (e) {
       lastError.value = 'start_failed'
+      pushSttDebug('error', `start threw: ${(e as Error)?.message || e}`)
       listening.value = false
       recInst = null
       if (alive) onDone?.('')

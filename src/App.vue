@@ -25,6 +25,7 @@ import LoopBar from '@/components/loop/LoopBar.vue'
 import KanaGrid from '@/components/kana/KanaGrid.vue'
 import ArticlesPanel from '@/components/articles/ArticlesPanel.vue'
 import ToastStack from '@/components/common/ToastStack.vue'
+import SttDebugOverlay from '@/components/common/SttDebugOverlay.vue'
 import { showError } from '@/composables/useToasts'
 import { t as i18nT } from '@/i18n'
 import { useLoopPlayer } from '@/composables/useLoopPlayer'
@@ -158,4 +159,5 @@ onMounted(async () => {
   </div>
   <LoopBar />
   <ToastStack />
+  <SttDebugOverlay />
 </template>
