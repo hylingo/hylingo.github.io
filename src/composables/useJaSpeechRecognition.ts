@@ -117,18 +117,22 @@ export function useJaSpeechRecognition() {
     }
 
     const bind = (r: SpeechRec) => {
+      let lastLoggedFinal = ''
+      let lastLoggedInterim = ''
+      let hadFinalThisSession = false
       r.onresult = (event: SpeechRecognitionEvent) => {
         if (myToken !== token) return
         resetSilenceTimer()
-        pushSttDebug('result', `n=${event.results.length} idx=${event.resultIndex}`)
         let interim = ''
         let finals = lastFinalText.value
         const alts: string[] = []
+        let sawFinal = false
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const result = event.results[i]
           const piece = result[0]?.transcript ?? ''
           if (result.isFinal) {
             finals += piece
+            sawFinal = true
             for (let j = 0; j < result.length; j++) {
               const alt = result[j]?.transcript
               if (alt) alts.push(alt)
@@ -140,6 +144,18 @@ export function useJaSpeechRecognition() {
         lastFinalText.value = finals
         interimText.value = interim
         if (alts.length) alternatives.value = alts
+
+        // 节流日志：只在 final 出现或 interim 文本真正变了时写一条
+        if (sawFinal && finals !== lastLoggedFinal) {
+          pushSttDebug('final', JSON.stringify(finals))
+          lastLoggedFinal = finals
+          hadFinalThisSession = true
+        } else if (!sawFinal && interim && interim !== lastLoggedInterim) {
+          pushSttDebug('interim', JSON.stringify(interim))
+          lastLoggedInterim = interim
+        }
+        // suppress unused-var lint
+        void hadFinalThisSession
       }
 
       r.onerror = (event: SpeechRecognitionErrorEvent) => {
