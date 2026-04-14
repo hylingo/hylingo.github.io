@@ -8,6 +8,9 @@ function getSpeechRecognitionCtor(): SpeechRecCtor | null {
   return window.SpeechRecognition || window.webkitSpeechRecognition || null
 }
 
+/** Android Chrome 不支持 continuous: 设了反而拿不到任何结果，需要单次模式 + 自动 restart */
+const IS_ANDROID = typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent)
+
 /**
  * 日语口述识别（Web Speech API），仅用于「测」等需要 ja-JP 的场景。
  */
@@ -22,6 +25,7 @@ export function useJaSpeechRecognition() {
   let recInst: SpeechRec | null = null
   let token = 0
   let alive = true
+  let setUserStopped: () => void = () => {}
   let silenceTimer: ReturnType<typeof setTimeout> | null = null
   const SILENCE_TIMEOUT = 15_000
 
@@ -81,36 +85,9 @@ export function useJaSpeechRecognition() {
     destroyRecognition()
     resetSessionText()
 
-    const rec = new Ctor()
-    rec.lang = 'ja-JP'
-    rec.continuous = true
-    rec.interimResults = true
-
-    rec.onresult = (event: SpeechRecognitionEvent) => {
-      if (myToken !== token) return
-      resetSilenceTimer()
-      let interim = ''
-      let finals = lastFinalText.value
-      const alts: string[] = []
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const result = event.results[i]
-        const piece = result[0]?.transcript ?? ''
-        if (result.isFinal) {
-          finals += piece
-          for (let j = 0; j < result.length; j++) {
-            const alt = result[j]?.transcript
-            if (alt) alts.push(alt)
-          }
-        } else {
-          interim += piece
-        }
-      }
-      lastFinalText.value = finals
-      interimText.value = interim
-      if (alts.length) alternatives.value = alts
-    }
-
+    let userStopped = false
     let settled = false
+
     const settle = () => {
       if (settled) return
       settled = true
@@ -118,18 +95,79 @@ export function useJaSpeechRecognition() {
       listening.value = false
       recInst = null
       if (!alive) return
+      // 拼接 interim 是为了 Android 单次模式下 onend 时尚未升格为 final 的尾段
       const full = `${lastFinalText.value}${interimText.value}`.trim()
       onDone?.(full)
     }
 
-    rec.onerror = (event: SpeechRecognitionErrorEvent) => {
-      lastError.value = event.error || 'error'
-      settle()
+    const bind = (r: SpeechRec) => {
+      r.onresult = (event: SpeechRecognitionEvent) => {
+        if (myToken !== token) return
+        resetSilenceTimer()
+        let interim = ''
+        let finals = lastFinalText.value
+        const alts: string[] = []
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const result = event.results[i]
+          const piece = result[0]?.transcript ?? ''
+          if (result.isFinal) {
+            finals += piece
+            for (let j = 0; j < result.length; j++) {
+              const alt = result[j]?.transcript
+              if (alt) alts.push(alt)
+            }
+          } else {
+            interim += piece
+          }
+        }
+        lastFinalText.value = finals
+        interimText.value = interim
+        if (alts.length) alternatives.value = alts
+      }
+
+      r.onerror = (event: SpeechRecognitionErrorEvent) => {
+        lastError.value = event.error || 'error'
+        // Android 单次模式下 no-speech / aborted 会被 onend 接力重启；其他错误直接结束
+        if (IS_ANDROID && !userStopped && (event.error === 'no-speech' || event.error === 'aborted')) return
+        userStopped = true
+        settle()
+      }
+
+      r.onend = () => {
+        if (myToken !== token) return
+        // Android 单次模式：用户没主动停就重启一段
+        if (IS_ANDROID && !userStopped && alive) {
+          // interim 升格成 final，避免下一段覆盖
+          if (interimText.value) {
+            lastFinalText.value += interimText.value
+            interimText.value = ''
+          }
+          try {
+            const next = buildRec()
+            bind(next)
+            recInst = next
+            next.start()
+            resetSilenceTimer()
+            return
+          } catch {
+            /* fallthrough to settle */
+          }
+        }
+        settle()
+      }
     }
 
-    rec.onend = () => {
-      settle()
+    const buildRec = (): SpeechRec => {
+      const r = new Ctor()
+      r.lang = 'ja-JP'
+      // Android Chrome 设 continuous=true 会导致 onresult 永不触发，必须用单次模式
+      r.continuous = !IS_ANDROID
+      r.interimResults = true
+      return r
     }
+
+    const rec = buildRec()
+    bind(rec)
 
     try {
       recInst = rec
@@ -142,6 +180,9 @@ export function useJaSpeechRecognition() {
       recInst = null
       if (alive) onDone?.('')
     }
+
+    // 暴露给 stopListening 用的“用户主动停”信号
+    setUserStopped = () => { userStopped = true }
   }
 
   onUnmounted(() => {
@@ -152,6 +193,7 @@ export function useJaSpeechRecognition() {
 
   /** 正常结束录音（等待最终结果后触发 onDone） */
   function stopListening() {
+    setUserStopped()
     if (!recInst) return
     try {
       recInst.stop()
