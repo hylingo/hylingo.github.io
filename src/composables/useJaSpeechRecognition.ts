@@ -77,11 +77,24 @@ export function useJaSpeechRecognition() {
    */
   function start(onDone?: (fullText: string) => void) {
     const Ctor = getSpeechRecognitionCtor()
-    pushSttDebug('start', `android=${IS_ANDROID} supported=${!!Ctor} ua=${typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 80) : ''}`)
+    pushSttDebug('start', `android=${IS_ANDROID} supported=${!!Ctor} secure=${typeof window !== 'undefined' && window.isSecureContext} ua=${typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 80) : ''}`)
     if (!Ctor) {
       pushSttDebug('error', 'no SpeechRecognition ctor')
       onDone?.('')
       return
+    }
+
+    // 显式申请麦克风：Android Chrome 没权限时 SpeechRecognition.start() 会立即 aborted 而非抛错
+    if (typeof navigator !== 'undefined' && navigator.mediaDevices?.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then((stream) => {
+          pushSttDebug('mic', 'permission granted')
+          // 立刻关掉，识别引擎自己会再开
+          stream.getTracks().forEach((t) => t.stop())
+        })
+        .catch((e) => {
+          pushSttDebug('mic', `permission denied: ${(e as Error)?.name || e}`)
+        })
     }
 
     const myToken = ++token
@@ -132,8 +145,6 @@ export function useJaSpeechRecognition() {
       r.onerror = (event: SpeechRecognitionErrorEvent) => {
         lastError.value = event.error || 'error'
         pushSttDebug('error', `${event.error}${event.message ? ' / ' + event.message : ''}`)
-        // Android 单次模式下 no-speech / aborted 会被 onend 接力重启；其他错误直接结束
-        if (IS_ANDROID && !userStopped && (event.error === 'no-speech' || event.error === 'aborted')) return
         userStopped = true
         settle()
       }
@@ -141,24 +152,6 @@ export function useJaSpeechRecognition() {
       r.onend = () => {
         if (myToken !== token) return
         pushSttDebug('end', `userStopped=${userStopped} final="${lastFinalText.value}" interim="${interimText.value}"`)
-        // Android 单次模式：用户没主动停就重启一段
-        if (IS_ANDROID && !userStopped && alive) {
-          // interim 升格成 final，避免下一段覆盖
-          if (interimText.value) {
-            lastFinalText.value += interimText.value
-            interimText.value = ''
-          }
-          try {
-            const next = buildRec()
-            bind(next)
-            recInst = next
-            next.start()
-            resetSilenceTimer()
-            return
-          } catch {
-            /* fallthrough to settle */
-          }
-        }
         settle()
       }
     }
