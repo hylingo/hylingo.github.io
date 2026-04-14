@@ -194,6 +194,10 @@ function resetInteractionState() {
 
 // === 录音（按住录音按钮）===
 let recordGuard = false
+// Android Chrome 不允许 MediaRecorder 和 SpeechRecognition 同时占麦，
+// 同开会让 SR 立即 aborted 拿不到文字。Android 上只跑 STT，放弃回放录音。
+const IS_ANDROID = typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent)
+const useMediaRecorder = !IS_ANDROID
 
 function onRecordDown(e: PointerEvent) {
   ;(e.target as HTMLElement)?.setPointerCapture?.(e.pointerId)
@@ -202,7 +206,7 @@ function onRecordDown(e: PointerEvent) {
   sttScore.value = null
   stopPlayback()
   clearRecording()
-  startRecording()
+  if (useMediaRecorder) startRecording()
   if (sttSupported.value) startStt(onSttDone)
 }
 
@@ -211,7 +215,7 @@ function onRecordUp() {
   recordGuard = false
   // 延迟 350ms 再停，给麦克风缓冲和 STT 决策留出尾音时间
   setTimeout(() => {
-    if (recording.value) stopRecording()
+    if (useMediaRecorder && recording.value) stopRecording()
     if (sttListening.value) stopStt()
     // 录音 Tab：松手即算完成一次学习（不看分，因为 STT 不稳定）
     submitStudy()

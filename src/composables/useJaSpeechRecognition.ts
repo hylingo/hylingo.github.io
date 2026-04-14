@@ -84,19 +84,6 @@ export function useJaSpeechRecognition() {
       return
     }
 
-    // 显式申请麦克风：Android Chrome 没权限时 SpeechRecognition.start() 会立即 aborted 而非抛错
-    if (typeof navigator !== 'undefined' && navigator.mediaDevices?.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({ audio: true })
-        .then((stream) => {
-          pushSttDebug('mic', 'permission granted')
-          // 立刻关掉，识别引擎自己会再开
-          stream.getTracks().forEach((t) => t.stop())
-        })
-        .catch((e) => {
-          pushSttDebug('mic', `permission denied: ${(e as Error)?.name || e}`)
-        })
-    }
-
     const myToken = ++token
     destroyRecognition()
     resetSessionText()
