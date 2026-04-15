@@ -9,6 +9,7 @@ import { clearAllLearnProgressLocal } from '@/learning/learnStorage'
 import { useLang } from '@/i18n'
 import { useTheme } from '@/composables/useTheme'
 import { useAppStore } from '@/stores/app'
+import { APP_VERSION } from '@/version'
 
 const { t, currentLang, switchLang } = useLang()
 const store = useAppStore()
@@ -205,5 +206,6 @@ function resetStats() {
       </div>
     </div>
     </template>
+    <div class="text-center text-[11px] text-[var(--text-secondary)] opacity-50 mt-6 pb-2 select-none">v{{ APP_VERSION }}</div>
   </div>
 </template>
