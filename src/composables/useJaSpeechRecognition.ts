@@ -18,6 +18,8 @@ const IS_ANDROID = typeof navigator !== 'undefined' && /Android/i.test(navigator
  */
 let sharedRec: SpeechRec | null = null
 let sharedRecRunning = false
+/** 在 onstart 之前就被要求停止 → 等 onstart 触发后立刻 stop */
+let sharedRecPendingStop = false
 let sharedRecHandlers: {
   onresult?: (e: SpeechRecognitionEvent) => void
   onerror?: (e: SpeechRecognitionErrorEvent) => void
@@ -34,9 +36,17 @@ function ensureSharedRec(Ctor: SpeechRecCtor): SpeechRec {
   r.onerror = (e) => sharedRecHandlers.onerror?.(e)
   r.onend = () => {
     sharedRecRunning = false
+    sharedRecPendingStop = false
     sharedRecHandlers.onend?.()
   }
-  r.addEventListener('start', () => { sharedRecRunning = true })
+  r.addEventListener('start', () => {
+    sharedRecRunning = true
+    // 用户在 start 真正触发之前就松手了 —— 立刻停
+    if (sharedRecPendingStop) {
+      sharedRecPendingStop = false
+      try { r.stop() } catch { /* ignore */ }
+    }
+  })
   sharedRec = r
   return r
 }
@@ -86,6 +96,7 @@ export function useJaSpeechRecognition() {
 
     const myToken = ++token
     const rec = ensureSharedRec(Ctor)
+    sharedRecPendingStop = false
     resetSessionText()
 
     let userStopped = false
@@ -197,7 +208,13 @@ export function useJaSpeechRecognition() {
 
   function stopListening() {
     setUserStopped()
-    if (!sharedRec || !sharedRecRunning) return
+    if (!sharedRec) return
+    if (!sharedRecRunning) {
+      // onstart 还没触发，先挂个 pending 信号，等 onstart 自动收尾
+      sharedRecPendingStop = true
+      pushSttDebug('stop', 'pending (start not fired yet)')
+      return
+    }
     try {
       sharedRec.stop()
     } catch {
