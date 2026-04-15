@@ -255,6 +255,7 @@ function onListenSubmit() {
 // === 底部按钮 ===
 function onShowAnswer() {
   showAnswer()
+  playCurrentAudio()
 }
 
 function onMastered() {
