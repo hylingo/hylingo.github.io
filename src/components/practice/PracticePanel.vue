@@ -258,17 +258,16 @@ function onRecordDown(e: PointerEvent) {
   if (sttSupported.value) startStt(onSttDone)
 }
 
+const READ_PASS = 60
+
 function onRecordUp() {
   if (!recordGuard) return
   recordGuard = false
-  // 松开即算一次"录"
+  // 松开即算一次"录"（无论识别好坏）
   recordReadTime()
-  // 延迟 350ms 再停，给麦克风缓冲和 STT 决策留出尾音时间
   setTimeout(() => {
     if (useMediaRecorder && recording.value) stopRecording()
     if (sttListening.value) stopStt()
-    // 录音 Tab：松手即算完成一次学习（不看分，因为 STT 不稳定）
-    submitStudy()
   }, 350)
 }
 
@@ -278,6 +277,8 @@ function onSttDone(text: string) {
   if (!item) return
   const score = text ? calcScore(text, item) : 0
   sttScore.value = score
+  // 念对了才算练过一次
+  if (score >= READ_PASS) submitStudy()
 }
 
 // === 听音模式：提交输入 ===
@@ -300,6 +301,8 @@ function onListenSubmit() {
 function onShowAnswer() {
   showAnswer()
   playCurrentAudio()
+  // 主动看答案也算练过一次
+  submitStudy()
 }
 
 function onMastered() {
