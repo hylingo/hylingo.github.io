@@ -124,7 +124,7 @@ function onKeydown(e: KeyboardEvent) {
   } else if (e.key === 'ArrowRight') {
     e.preventDefault()
     nextQuestion()
-  } else if (e.code === 'Space' && !e.repeat && !e.metaKey && !e.ctrlKey) {
+  } else if (e.key === 'ArrowUp' && !e.repeat && !e.metaKey && !e.ctrlKey) {
     if (recKeyHeld) return
     recKeyHeld = true
     e.preventDefault()
@@ -138,8 +138,7 @@ function onKeydown(e: KeyboardEvent) {
   }
 }
 function onKeyup(e: KeyboardEvent) {
-  if (e.code === 'Space' && recKeyHeld) {
-    // 防止焦点按钮在 Space keyup 时触发 click（浏览器默认会把 Space 当按钮激活）
+  if (e.key === 'ArrowUp' && recKeyHeld) {
     e.preventDefault()
     recKeyHeld = false
     onRecordUp()
