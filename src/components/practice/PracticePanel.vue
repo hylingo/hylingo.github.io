@@ -437,14 +437,23 @@ const progressText = computed(() => {
         </template>
       </div>
 
-      <!-- 底部按钮：看答案 / 掌握了 -->
+      <!-- 底部按钮：看答案 + 下一个（未揭晓时并排）/ 下一个（已揭晓时独占） -->
       <div class="flex flex-col items-center gap-7 w-full max-w-[400px] mt-1">
-        <button
-          type="button"
-          class="w-full py-2 rounded-[10px] text-sm font-medium cursor-pointer transition-all border theme-surface theme-muted"
-          style="border-color: var(--border)"
-          @click="isAnswered ? nextQuestion() : onShowAnswer()"
-        >{{ isAnswered ? t('next') : t('practiceShowAnswer') }}</button>
+        <div class="flex items-center gap-2 w-full">
+          <button
+            v-if="!isAnswered"
+            type="button"
+            class="flex-1 py-2 rounded-[10px] text-sm font-medium cursor-pointer transition-all border theme-surface theme-muted"
+            style="border-color: var(--border)"
+            @click="onShowAnswer"
+          >{{ t('practiceShowAnswer') }}</button>
+          <button
+            type="button"
+            class="flex-1 py-2 rounded-[10px] text-sm font-medium cursor-pointer transition-all border theme-surface theme-muted"
+            style="border-color: var(--border)"
+            @click="nextQuestion"
+          >{{ t('next') }}</button>
+        </div>
         <button
           type="button"
           class="py-1.5 px-3 text-xs cursor-pointer bg-transparent border-none outline-none theme-muted hover:opacity-80 transition-opacity"
