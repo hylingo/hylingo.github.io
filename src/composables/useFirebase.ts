@@ -132,6 +132,9 @@ function mergeStats(a: StatsMap, b: StatsMap): StatsMap {
       quizzed: Math.max(da.quizzed || 0, db.quizzed || 0),
       correct: Math.max(da.correct || 0, db.correct || 0),
       listened: Math.max(da.listened || 0, db.listened || 0),
+      recorded: Math.max(da.recorded || 0, db.recorded || 0),
+      followCompleted: Math.max(da.followCompleted || 0, db.followCompleted || 0),
+      followSentences: Math.max(da.followSentences || 0, db.followSentences || 0),
       wrong: mergeMaxNumbers(da.wrong || {}, db.wrong || {}),
     }
   }
