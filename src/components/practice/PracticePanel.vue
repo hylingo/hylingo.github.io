@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch, ref, onUnmounted } from 'vue'
+import { computed, watch, ref, onMounted, onUnmounted } from 'vue'
 import { useAppStore } from '../../stores/app'
 import { useQuiz } from '../../composables/useQuiz'
 import { speakWithExample } from '../../composables/useAudio'
@@ -109,6 +109,25 @@ function stopPlayback() {
 }
 
 onUnmounted(() => stopPlayback())
+
+// === 键盘快捷键：Space 看答案 / → 下一个 ===
+function onKeydown(e: KeyboardEvent) {
+  // 正在输入 / 非练习模式 / 没有题，不劫持
+  const tag = (e.target as HTMLElement)?.tagName
+  if (tag === 'INPUT' || tag === 'TEXTAREA') return
+  if (store.currentMode !== 'practice') return
+  if (!hasQuizItems.value || !currentItem.value) return
+
+  if (e.code === 'Space') {
+    e.preventDefault()
+    if (!isAnswered.value) onShowAnswer()
+  } else if (e.key === 'ArrowRight') {
+    e.preventDefault()
+    nextQuestion()
+  }
+}
+onMounted(() => window.addEventListener('keydown', onKeydown))
+onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 
 const { supported: sttSupported, listening: sttListening, start: startStt, stopListening: stopStt } = useJaSpeechRecognition()
 const sttResult = ref('')
