@@ -153,7 +153,7 @@ onUnmounted(() => {
   window.removeEventListener('keyup', onKeyup)
 })
 
-const { supported: sttSupported, listening: sttListening, start: startStt, stopListening: stopStt } = useJaSpeechRecognition()
+const { supported: sttSupported, listening: sttListening, start: startStt, stopListening: stopStt, alternatives: sttAlternatives } = useJaSpeechRecognition()
 const sttResult = ref('')
 const sttScore = ref<number | null>(null)
 
@@ -170,14 +170,20 @@ function lcsLen(a: string, b: string): number {
   return curr[n]
 }
 
-function calcScore(transcript: string, item: { word: string; reading: string }): number {
-  const tr = normalizeJpSpeech(transcript)
-  if (!tr) return 0
+function calcScore(transcript: string, item: { word: string; reading: string }, alts: string[] = []): number {
   const w = normalizeJpSpeech(item.word)
   const r = normalizeJpSpeech(item.reading)
-  const scoreW = w.length ? lcsLen(tr, w) / Math.max(tr.length, w.length) : 0
-  const scoreR = r.length ? lcsLen(tr, r) / Math.max(tr.length, r.length) : 0
-  return Math.round(Math.max(scoreW, scoreR) * 100)
+  if (!w.length && !r.length) return 0
+  const candidates = [transcript, ...alts].map(normalizeJpSpeech).filter(Boolean)
+  if (!candidates.length) return 0
+  let best = 0
+  for (const tr of candidates) {
+    const sW = w.length ? lcsLen(tr, w) / Math.max(tr.length, w.length) : 0
+    const sR = r.length ? lcsLen(tr, r) / Math.max(tr.length, r.length) : 0
+    const s = Math.max(sW, sR)
+    if (s > best) best = s
+  }
+  return Math.round(best * 100)
 }
 
 function scoreColor(score: number) {
@@ -274,7 +280,7 @@ function onSttDone(text: string) {
   sttResult.value = text || ''
   const item = currentItem.value
   if (!item) return
-  const score = text ? calcScore(text, item) : 0
+  const score = text ? calcScore(text, item, sttAlternatives.value) : 0
   sttScore.value = score
   // 念对了才算练过一次
   if (score >= READ_PASS) submitStudy()

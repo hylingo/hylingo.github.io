@@ -41,13 +41,26 @@ export function normalizeNumbers(s: string): string {
   return s
 }
 
-/** 口述比对：去空白、标点，并将汉数字归一为阿拉伯数字 */
+/** 片假名 → 平假名（U+30A1..U+30F6 → 对应平假名），其他保留。用于对比时归一 */
+export function toHiragana(s: string): string {
+  let out = ''
+  for (let i = 0; i < s.length; i++) {
+    const c = s.charCodeAt(i)
+    if (c >= 0x30a1 && c <= 0x30f6) out += String.fromCharCode(c - 0x60)
+    else out += s[i]
+  }
+  return out
+}
+
+/** 口述比对：去空白、标点、汉数字归一、片假名 → 平假名 */
 export function normalizeJpSpeech(s: string): string {
-  return normalizeNumbers(
-    s
-      .trim()
-      .replace(/[\s\u3000]+/g, '')
-      .replace(/[。．、，,.]/g, ''),
+  return toHiragana(
+    normalizeNumbers(
+      s
+        .trim()
+        .replace(/[\s\u3000]+/g, '')
+        .replace(/[。．、，,.]/g, ''),
+    ),
   )
 }
 
