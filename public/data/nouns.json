@@ -18812,14 +18812,18 @@
   },
   {
     "id": 1143,
-    "word": "まずい",
+    "word": "不味い",
     "reading": "まずい",
     "meaning": "难吃的/糟糕的",
     "level": "N5",
     "topic": "食物料理",
     "ruby": [
       {
-        "t": "まずい"
+        "t": "不味",
+        "r": "まず"
+      },
+      {
+        "t": "い"
       }
     ],
     "meaningEn": "bad-tasting; bad",
@@ -38757,7 +38761,7 @@
   },
   {
     "id": 2286,
-    "word": "つける",
+    "word": "点ける",
     "reading": "つける",
     "meaning": "to turn on (e.g., a light)；拿；带",
     "meaningEn": "to turn on (e.g., a light); to take",
@@ -38765,7 +38769,11 @@
     "topic": "生活用品",
     "ruby": [
       {
-        "t": "つける"
+        "t": "点",
+        "r": "つ"
+      },
+      {
+        "t": "ける"
       }
     ],
     "audio": "jp/664974e1f81c.mp3"
