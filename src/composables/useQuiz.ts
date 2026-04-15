@@ -54,9 +54,19 @@ const W_DUE = 100
 const W_NEW = 70
 const W_NOT_DUE = 30
 
+/** 新词按难度加权：没选级别筛选时，简单的权重更高，让新词优先从 N5 起步 */
+const LEVEL_EASY_BIAS: Record<string, number> = {
+  N5: 2.0, N4: 1.5, N3: 1.0, N2: 0.6, N1: 0.35,
+}
+function newWeightByLevel(level?: string): number {
+  if (!level) return W_NEW
+  const mult = LEVEL_EASY_BIAS[level] ?? 1.0
+  return W_NEW * mult
+}
+
 type PoolEntry = { it: DataItem & { _cat?: string }; weight: number }
 
-function collectPool(cat: string): PoolEntry[] {
+function collectPool(cat: string, applyEasyBias: boolean): PoolEntry[] {
   const store = useAppStore()
   const delays = getDelays()
   const today = new Date().toISOString().slice(0, 10)
@@ -84,7 +94,7 @@ function collectPool(cat: string): PoolEntry[] {
       const cnt = counts[`${c}:${it.id}`] || 0
       let weight: number
       if (cnt === 0) {
-        weight = W_NEW
+        weight = applyEasyBias ? newWeightByLevel(it.level) : W_NEW
       } else {
         const due = delays[k]
         weight = !due || due <= today ? W_DUE : W_NOT_DUE
@@ -127,9 +137,10 @@ function startQuiz() {
     }
   }
 
-  // 宽松 SRS：分桶加权随机
-  const pool = collectPool(cat).filter((e) => {
-    if (quizLevels.value.length === 0) return true
+  // 宽松 SRS：分桶加权随机。没选级别筛选时，新词按 N5→N1 降权，优先抽简单的。
+  const noLevelFilter = quizLevels.value.length === 0
+  const pool = collectPool(cat, noLevelFilter).filter((e) => {
+    if (noLevelFilter) return true
     return !!e.it.level && quizLevels.value.includes(e.it.level)
   })
   quizItems.value = weightedSample(pool, POOL_SIZE)
