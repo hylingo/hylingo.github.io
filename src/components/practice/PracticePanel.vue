@@ -139,6 +139,8 @@ function onKeydown(e: KeyboardEvent) {
 }
 function onKeyup(e: KeyboardEvent) {
   if (e.code === 'Space' && recKeyHeld) {
+    // 防止焦点按钮在 Space keyup 时触发 click（浏览器默认会把 Space 当按钮激活）
+    e.preventDefault()
     recKeyHeld = false
     onRecordUp()
   }
