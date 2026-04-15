@@ -18,6 +18,21 @@ input, select, textarea {
   font-size: 16px !important;
 }
 
+/* iOS Safari：按钮长按会选中文字/弹出放大镜/拖拽，全部禁掉 */
+button {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+/* 按住录音时整个练习面板禁止选中，避免 iOS Safari 选中 ruby/题面文字 */
+.no-select-while-hold,
+.no-select-while-hold * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
 /* Non-theme defaults */
 :root {
   --radius: 16px;
