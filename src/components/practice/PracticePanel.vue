@@ -286,7 +286,7 @@ const progressText = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center gap-4 py-6" :class="{ 'no-select-while-hold': recording || sttListening }">
+  <div class="flex flex-col items-center gap-2 pt-2 pb-6" :class="{ 'no-select-while-hold': recording || sttListening }">
     <!-- 本篇练完 -->
     <template v-if="articleBlockJustCompleted">
       <div class="w-full max-w-[400px] mx-auto rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.10)] theme-surface p-8 text-center space-y-3">
@@ -310,7 +310,7 @@ const progressText = computed(() => {
     <!-- ========== 练习模式（统一布局，无 isAnswered 分屏）========== -->
     <template v-if="hasQuizItems && currentItem">
       <!-- Tab 切换 -->
-      <div class="flex items-center justify-center gap-1 mb-2">
+      <div class="flex items-center justify-center gap-1">
         <button
           v-for="m in QUIZ_MODES" :key="m.key"
           type="button"
@@ -371,9 +371,9 @@ const progressText = computed(() => {
       <div class="w-full max-w-[400px] flex flex-col items-center gap-2">
         <!-- ========== 录音模式（word + meaning） ========== -->
         <template v-if="quizMode !== 'audio'">
-          <!-- 评分结果 -->
-          <div v-if="sttScore !== null" class="flex items-center justify-center gap-2 w-full min-w-0">
-            <span class="text-lg font-bold tabular-nums shrink-0" :style="{ color: scoreColor(sttScore) }">{{ sttScore }}</span>
+          <!-- 评分结果（始终占位，避免录音按钮按下时布局跳动导致误选中文本） -->
+          <div class="flex items-center justify-center gap-2 w-full min-w-0 h-7" :style="{ visibility: sttScore !== null ? 'visible' : 'hidden' }">
+            <span v-if="sttScore !== null" class="text-lg font-bold tabular-nums shrink-0" :style="{ color: scoreColor(sttScore) }">{{ sttScore }}</span>
             <span v-if="sttResult" class="text-sm theme-text truncate min-w-0">{{ sttResult }}</span>
           </div>
 
