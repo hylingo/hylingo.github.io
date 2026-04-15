@@ -502,6 +502,7 @@ const progressText = computed(() => {
           class="py-1.5 px-3 text-xs cursor-pointer bg-transparent border-none outline-none theme-muted hover:opacity-80 transition-opacity"
           @click="onMastered"
         >{{ t('practiceMastered') }}</button>
+        <div class="hidden md:block text-[11px] theme-muted opacity-60 tracking-wide select-none">{{ t('practiceShortcuts') }}</div>
       </div>
     </template>
     <template v-else>
