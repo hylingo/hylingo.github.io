@@ -110,9 +110,9 @@ function stopPlayback() {
 
 onUnmounted(() => stopPlayback())
 
-// === 键盘快捷键：Space 看答案 / → 下一个 ===
+// === 键盘快捷键：Space 看答案 / → 下一个 / R 按住录音 ===
+let recKeyHeld = false
 function onKeydown(e: KeyboardEvent) {
-  // 正在输入 / 非练习模式 / 没有题，不劫持
   const tag = (e.target as HTMLElement)?.tagName
   if (tag === 'INPUT' || tag === 'TEXTAREA') return
   if (store.currentMode !== 'practice') return
@@ -124,10 +124,34 @@ function onKeydown(e: KeyboardEvent) {
   } else if (e.key === 'ArrowRight') {
     e.preventDefault()
     nextQuestion()
+  } else if (e.code === 'KeyR' && !e.repeat && !e.metaKey && !e.ctrlKey) {
+    // R 按下开始录音；系统自动重复（长按）时 e.repeat=true，忽略
+    if (recKeyHeld) return
+    recKeyHeld = true
+    e.preventDefault()
+    recordGuard = true
+    sttResult.value = ''
+    sttScore.value = null
+    stopPlayback()
+    clearRecording()
+    if (useMediaRecorder) startRecording()
+    if (sttSupported.value) startStt(onSttDone)
   }
 }
-onMounted(() => window.addEventListener('keydown', onKeydown))
-onUnmounted(() => window.removeEventListener('keydown', onKeydown))
+function onKeyup(e: KeyboardEvent) {
+  if (e.code === 'KeyR' && recKeyHeld) {
+    recKeyHeld = false
+    onRecordUp()
+  }
+}
+onMounted(() => {
+  window.addEventListener('keydown', onKeydown)
+  window.addEventListener('keyup', onKeyup)
+})
+onUnmounted(() => {
+  window.removeEventListener('keydown', onKeydown)
+  window.removeEventListener('keyup', onKeyup)
+})
 
 const { supported: sttSupported, listening: sttListening, start: startStt, stopListening: stopStt } = useJaSpeechRecognition()
 const sttResult = ref('')
