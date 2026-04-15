@@ -207,5 +207,6 @@ function resetStats() {
     </div>
     </template>
     <div class="text-center text-[11px] text-[var(--text-secondary)] opacity-50 mt-6 pb-2 select-none">v{{ APP_VERSION }}</div>
+    <!-- note: 仅末位递增，例 1.0.1 → 1.0.2 -->
   </div>
 </template>
