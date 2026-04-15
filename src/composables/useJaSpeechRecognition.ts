@@ -9,21 +9,45 @@ function getSpeechRecognitionCtor(): SpeechRecCtor | null {
   return window.SpeechRecognition || window.webkitSpeechRecognition || null
 }
 
-/** Android Chrome 不支持 continuous: 设了反而拿不到任何结果，需要单次模式 + 自动 restart */
 const IS_ANDROID = typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent)
 
 /**
- * 日语口述识别（Web Speech API），仅用于「测」等需要 ja-JP 的场景。
+ * 全局单例 SR 实例：iOS Safari 对多次 new SpeechRecognition 释放不彻底，第二次
+ * start() 常被静默拒绝（连麦克风指示器都不亮）。改为全页面共用一个实例，
+ * 每次会话只换 handler，不重建对象。
  */
+let sharedRec: SpeechRec | null = null
+let sharedRecRunning = false
+let sharedRecHandlers: {
+  onresult?: (e: SpeechRecognitionEvent) => void
+  onerror?: (e: SpeechRecognitionErrorEvent) => void
+  onend?: () => void
+} = {}
+
+function ensureSharedRec(Ctor: SpeechRecCtor): SpeechRec {
+  if (sharedRec) return sharedRec
+  const r = new Ctor()
+  r.lang = 'ja-JP'
+  r.continuous = !IS_ANDROID
+  r.interimResults = true
+  r.onresult = (e) => sharedRecHandlers.onresult?.(e)
+  r.onerror = (e) => sharedRecHandlers.onerror?.(e)
+  r.onend = () => {
+    sharedRecRunning = false
+    sharedRecHandlers.onend?.()
+  }
+  r.addEventListener('start', () => { sharedRecRunning = true })
+  sharedRec = r
+  return r
+}
+
 export function useJaSpeechRecognition() {
   const listening = ref(false)
   const interimText = ref('')
   const lastFinalText = ref('')
   const lastError = ref<string | null>(null)
-  /** 所有候选识别结果（含同音异字），用于模糊匹配 */
   const alternatives = ref<string[]>([])
 
-  let recInst: SpeechRec | null = null
   let token = 0
   let alive = true
   let setUserStopped: () => void = () => {}
@@ -39,16 +63,6 @@ export function useJaSpeechRecognition() {
     alternatives.value = []
   }
 
-  /** 用户主动取消当前聆听（会触发结束回调，可与正常结束同样处理） */
-  function abortListening() {
-    if (!recInst) return
-    try {
-      recInst.abort()
-    } catch {
-      /* ignore */
-    }
-  }
-
   function clearSilenceTimer() {
     if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null }
   }
@@ -58,26 +72,12 @@ export function useJaSpeechRecognition() {
     silenceTimer = setTimeout(() => { stopListening() }, SILENCE_TIMEOUT)
   }
 
-  function destroyRecognition() {
-    clearSilenceTimer()
-    if (recInst) {
-      try {
-        recInst.abort()
-      } catch {
-        /* ignore */
-      }
-    }
-    recInst = null
-    listening.value = false
-  }
-
   /**
-   * 开始一次识别（continuous=true，停顿不会结束会话；须调用 stopListening 才结束）。
-   * 结束后调用 onDone(合并后的识别文本)。
+   * 启动识别。若上一会话仍在收尾，等它结束再启，避免 iOS 静默失败。
    */
   function start(onDone?: (fullText: string) => void) {
     const Ctor = getSpeechRecognitionCtor()
-    pushSttDebug('start', `android=${IS_ANDROID} supported=${!!Ctor} secure=${typeof window !== 'undefined' && window.isSecureContext} ua=${typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 80) : ''}`)
+    pushSttDebug('start', `android=${IS_ANDROID} supported=${!!Ctor} running=${sharedRecRunning} secure=${typeof window !== 'undefined' && window.isSecureContext} ua=${typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 80) : ''}`)
     if (!Ctor) {
       pushSttDebug('error', 'no SpeechRecognition ctor')
       onDone?.('')
@@ -85,7 +85,7 @@ export function useJaSpeechRecognition() {
     }
 
     const myToken = ++token
-    destroyRecognition()
+    const rec = ensureSharedRec(Ctor)
     resetSessionText()
 
     let userStopped = false
@@ -96,18 +96,16 @@ export function useJaSpeechRecognition() {
       settled = true
       if (myToken !== token) return
       listening.value = false
-      recInst = null
       if (!alive) return
-      // 拼接 interim 是为了 Android 单次模式下 onend 时尚未升格为 final 的尾段
       const full = `${lastFinalText.value}${interimText.value}`.trim()
       onDone?.(full)
     }
 
-    const bind = (r: SpeechRec) => {
-      let lastLoggedFinal = ''
-      let lastLoggedInterim = ''
-      let hadFinalThisSession = false
-      r.onresult = (event: SpeechRecognitionEvent) => {
+    let lastLoggedFinal = ''
+    let lastLoggedInterim = ''
+
+    sharedRecHandlers = {
+      onresult: (event) => {
         if (myToken !== token) return
         resetSilenceTimer()
         let interim = ''
@@ -131,79 +129,96 @@ export function useJaSpeechRecognition() {
         lastFinalText.value = finals
         interimText.value = interim
         if (alts.length) alternatives.value = alts
-
-        // 节流日志：只在 final 出现或 interim 文本真正变了时写一条
         if (sawFinal && finals !== lastLoggedFinal) {
           pushSttDebug('final', JSON.stringify(finals))
           lastLoggedFinal = finals
-          hadFinalThisSession = true
         } else if (!sawFinal && interim && interim !== lastLoggedInterim) {
           pushSttDebug('interim', JSON.stringify(interim))
           lastLoggedInterim = interim
         }
-        // suppress unused-var lint
-        void hadFinalThisSession
-      }
-
-      r.onerror = (event: SpeechRecognitionErrorEvent) => {
+      },
+      onerror: (event) => {
         lastError.value = event.error || 'error'
         pushSttDebug('error', `${event.error}${event.message ? ' / ' + event.message : ''}`)
         userStopped = true
         settle()
-      }
-
-      r.onend = () => {
+      },
+      onend: () => {
         if (myToken !== token) return
         pushSttDebug('end', `userStopped=${userStopped} final="${lastFinalText.value}" interim="${interimText.value}"`)
         settle()
+      },
+    }
+
+    const tryStart = () => {
+      try {
+        rec.start()
+        resetSilenceTimer()
+        listening.value = true
+      } catch (e) {
+        const msg = (e as Error)?.message || String(e)
+        pushSttDebug('error', `start threw: ${msg}`)
+        // Safari 已在运行中再 start 会抛 "already started" —— 当成上一会话尚未完全收尾，稍等再试
+        if (/already|InvalidState/i.test(msg)) {
+          try { rec.abort() } catch { /* ignore */ }
+          setTimeout(() => {
+            if (myToken !== token) return
+            try {
+              rec.start()
+              resetSilenceTimer()
+              listening.value = true
+              pushSttDebug('start', 'retry ok')
+            } catch (e2) {
+              pushSttDebug('error', `retry failed: ${(e2 as Error)?.message || e2}`)
+              lastError.value = 'start_failed'
+              listening.value = false
+              if (alive) onDone?.('')
+            }
+          }, 150)
+          return
+        }
+        lastError.value = 'start_failed'
+        listening.value = false
+        if (alive) onDone?.('')
       }
     }
 
-    const buildRec = (): SpeechRec => {
-      const r = new Ctor()
-      r.lang = 'ja-JP'
-      // Android Chrome 设 continuous=true 会导致 onresult 永不触发，必须用单次模式
-      r.continuous = !IS_ANDROID
-      r.interimResults = true
-      return r
+    // 若上次的 SR 还在 running（来不及收尾），先 abort 再稍等启动
+    if (sharedRecRunning) {
+      pushSttDebug('start', 'waiting for previous session to end')
+      try { rec.abort() } catch { /* ignore */ }
+      setTimeout(tryStart, 120)
+    } else {
+      tryStart()
     }
 
-    const rec = buildRec()
-    bind(rec)
-
-    try {
-      recInst = rec
-      rec.start()
-      resetSilenceTimer()
-      listening.value = true
-    } catch (e) {
-      lastError.value = 'start_failed'
-      pushSttDebug('error', `start threw: ${(e as Error)?.message || e}`)
-      listening.value = false
-      recInst = null
-      if (alive) onDone?.('')
-    }
-
-    // 暴露给 stopListening 用的“用户主动停”信号
     setUserStopped = () => { userStopped = true }
+  }
+
+  function stopListening() {
+    setUserStopped()
+    if (!sharedRec || !sharedRecRunning) return
+    try {
+      sharedRec.stop()
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function abortListening() {
+    if (!sharedRec) return
+    try { sharedRec.abort() } catch { /* ignore */ }
   }
 
   onUnmounted(() => {
     alive = false
     token++
-    destroyRecognition()
-  })
-
-  /** 正常结束录音（等待最终结果后触发 onDone） */
-  function stopListening() {
-    setUserStopped()
-    if (!recInst) return
-    try {
-      recInst.stop()
-    } catch {
-      /* ignore */
+    clearSilenceTimer()
+    // 不销毁 sharedRec，留给其他消费者用
+    if (sharedRecRunning) {
+      try { sharedRec?.abort() } catch { /* ignore */ }
     }
-  }
+  })
 
   return {
     supported,
