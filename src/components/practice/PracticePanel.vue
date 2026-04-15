@@ -194,10 +194,13 @@ function resetInteractionState() {
 
 // === 录音（按住录音按钮）===
 let recordGuard = false
-// Android Chrome 不允许 MediaRecorder 和 SpeechRecognition 同时占麦，
-// 同开会让 SR 立即 aborted 拿不到文字。Android 上只跑 STT，放弃回放录音。
-const IS_ANDROID = typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent)
-const useMediaRecorder = !IS_ANDROID
+// Android 和 iOS 都会让 MediaRecorder 与 SpeechRecognition 抢麦：
+//   Android Chrome → SR 立即 aborted
+//   iOS Safari     → SR 只收到静音，反复 "No speech detected"
+// 移动端统一只跑 STT，放弃回放录音。
+const UA = typeof navigator !== 'undefined' ? navigator.userAgent : ''
+const IS_MOBILE = /Android/i.test(UA) || /iPhone|iPad|iPod/i.test(UA)
+const useMediaRecorder = !IS_MOBILE
 
 function onRecordDown(e: PointerEvent) {
   ;(e.target as HTMLElement)?.setPointerCapture?.(e.pointerId)
