@@ -110,7 +110,7 @@ function stopPlayback() {
 
 onUnmounted(() => stopPlayback())
 
-// === 键盘快捷键：Space 看答案 / → 下一个 / R 按住录音 ===
+// === 键盘快捷键：↓ 看答案 / → 下一个 / Space 按住录音 ===
 let recKeyHeld = false
 function onKeydown(e: KeyboardEvent) {
   const tag = (e.target as HTMLElement)?.tagName
@@ -118,15 +118,13 @@ function onKeydown(e: KeyboardEvent) {
   if (store.currentMode !== 'practice') return
   if (!hasQuizItems.value || !currentItem.value) return
 
-  if (e.code === 'Space') {
+  if (e.key === 'ArrowDown') {
     e.preventDefault()
-    if (isAnswered.value) nextQuestion()
-    else onShowAnswer()
+    if (!isAnswered.value) onShowAnswer()
   } else if (e.key === 'ArrowRight') {
     e.preventDefault()
     nextQuestion()
-  } else if (e.code === 'KeyR' && !e.repeat && !e.metaKey && !e.ctrlKey) {
-    // R 按下开始录音；系统自动重复（长按）时 e.repeat=true，忽略
+  } else if (e.code === 'Space' && !e.repeat && !e.metaKey && !e.ctrlKey) {
     if (recKeyHeld) return
     recKeyHeld = true
     e.preventDefault()
@@ -140,7 +138,7 @@ function onKeydown(e: KeyboardEvent) {
   }
 }
 function onKeyup(e: KeyboardEvent) {
-  if (e.code === 'KeyR' && recKeyHeld) {
+  if (e.code === 'Space' && recKeyHeld) {
     recKeyHeld = false
     onRecordUp()
   }
