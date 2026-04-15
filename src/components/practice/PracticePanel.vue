@@ -120,7 +120,8 @@ function onKeydown(e: KeyboardEvent) {
 
   if (e.code === 'Space') {
     e.preventDefault()
-    if (!isAnswered.value) onShowAnswer()
+    if (isAnswered.value) nextQuestion()
+    else onShowAnswer()
   } else if (e.key === 'ArrowRight') {
     e.preventDefault()
     nextQuestion()
