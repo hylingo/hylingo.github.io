@@ -4,51 +4,92 @@ import { pushSttDebug } from '@/utils/sttDebug'
 type SpeechRec = SpeechRecognition
 type SpeechRecCtor = new () => SpeechRec
 
-function getSpeechRecognitionCtor(): SpeechRecCtor | null {
+const IS_ANDROID = typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent)
+const SILENCE_TIMEOUT = 15_000
+
+function getCtor(): SpeechRecCtor | null {
   if (typeof window === 'undefined') return null
   return window.SpeechRecognition || window.webkitSpeechRecognition || null
 }
 
-const IS_ANDROID = typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent)
-
 /**
- * 全局单例 SR 实例：iOS Safari 对多次 new SpeechRecognition 释放不彻底，第二次
- * start() 常被静默拒绝（连麦克风指示器都不亮）。改为全页面共用一个实例，
- * 每次会话只换 handler，不重建对象。
+ * iOS Safari 对多次 new SpeechRecognition 释放不彻底，单例复用避免"第二次静默失败"。
+ *
+ * 状态机：
+ *   idle → start() → starting → (onstart) → running → stop() → stopping → (onend) → idle
+ *
+ * - 在 starting 期间调用 stop() → 标记 wantStop，onstart 触发后立即 stop()
+ * - 在 running 时调用 start() → 直接 abort，等 onend 触发再递归启动
+ * - 多处 .start() / .stop() 抛 InvalidState 都 catch 掉，状态机兜底
  */
-let sharedRec: SpeechRec | null = null
-let sharedRecRunning = false
-/** 在 onstart 之前就被要求停止 → 等 onstart 触发后立刻 stop */
-let sharedRecPendingStop = false
-let sharedRecHandlers: {
-  onresult?: (e: SpeechRecognitionEvent) => void
-  onerror?: (e: SpeechRecognitionErrorEvent) => void
-  onend?: () => void
-} = {}
+type RecState = 'idle' | 'starting' | 'running' | 'stopping'
 
-function ensureSharedRec(Ctor: SpeechRecCtor): SpeechRec {
-  if (sharedRec) return sharedRec
+interface Session {
+  token: number
+  onResult: (e: SpeechRecognitionEvent) => void
+  onError: (e: SpeechRecognitionErrorEvent) => void
+  onEnd: () => void
+}
+
+let rec: SpeechRec | null = null
+let state: RecState = 'idle'
+let wantStop = false
+let currentSession: Session | null = null
+let queuedSession: Session | null = null
+
+function ensureRec(Ctor: SpeechRecCtor): SpeechRec {
+  if (rec) return rec
   const r = new Ctor()
   r.lang = 'ja-JP'
   r.continuous = !IS_ANDROID
   r.interimResults = true
-  r.onresult = (e) => sharedRecHandlers.onresult?.(e)
-  r.onerror = (e) => sharedRecHandlers.onerror?.(e)
-  r.onend = () => {
-    sharedRecRunning = false
-    sharedRecPendingStop = false
-    sharedRecHandlers.onend?.()
-  }
   r.addEventListener('start', () => {
-    sharedRecRunning = true
-    // 用户在 start 真正触发之前就松手了 —— 立刻停
-    if (sharedRecPendingStop) {
-      sharedRecPendingStop = false
-      try { r.stop() } catch { /* ignore */ }
+    state = 'running'
+    if (wantStop) {
+      wantStop = false
+      safeStop()
     }
   })
-  sharedRec = r
+  r.onresult = (e) => currentSession?.onResult(e)
+  r.onerror = (e) => currentSession?.onError(e)
+  r.onend = () => {
+    const ended = currentSession
+    currentSession = null
+    state = 'idle'
+    wantStop = false
+    ended?.onEnd()
+    // 如果有被挤掉的会话在排队，现在启动它
+    if (queuedSession) {
+      const next = queuedSession
+      queuedSession = null
+      runStart(next)
+    }
+  }
+  rec = r
   return r
+}
+
+function safeStart(): boolean {
+  try { rec!.start(); return true } catch { return false }
+}
+function safeStop() {
+  try { rec!.stop() } catch { /* ignore */ }
+}
+function safeAbort() {
+  try { rec!.abort() } catch { /* ignore */ }
+}
+
+function runStart(s: Session) {
+  currentSession = s
+  state = 'starting'
+  wantStop = false
+  if (!safeStart()) {
+    // 罕见：start 抛出（例如 Safari 老版本并发），回退 abort 后换队列重试
+    safeAbort()
+    state = 'idle'
+    currentSession = null
+    queuedSession = s
+  }
 }
 
 export function useJaSpeechRecognition() {
@@ -58,67 +99,54 @@ export function useJaSpeechRecognition() {
   const lastError = ref<string | null>(null)
   const alternatives = ref<string[]>([])
 
-  let token = 0
-  let alive = true
-  let setUserStopped: () => void = () => {}
+  let sessionToken = 0
   let silenceTimer: ReturnType<typeof setTimeout> | null = null
-  const SILENCE_TIMEOUT = 15_000
 
-  const supported = computed(() => getSpeechRecognitionCtor() !== null)
+  const supported = computed(() => getCtor() !== null)
 
-  function resetSessionText() {
+  function resetSilence() {
+    if (silenceTimer) clearTimeout(silenceTimer)
+    silenceTimer = setTimeout(() => stopListening(), SILENCE_TIMEOUT)
+  }
+  function clearSilence() {
+    if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null }
+  }
+
+  function start(onDone?: (fullText: string) => void) {
+    const Ctor = getCtor()
+    if (!Ctor) { onDone?.(''); return }
+
+    const token = ++sessionToken
+    ensureRec(Ctor)
+    pushSttDebug('start', `state=${state} android=${IS_ANDROID}`)
+
+    // 清空本次会话文本
     interimText.value = ''
     lastFinalText.value = ''
     lastError.value = null
     alternatives.value = []
-  }
-
-  function clearSilenceTimer() {
-    if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null }
-  }
-
-  function resetSilenceTimer() {
-    clearSilenceTimer()
-    silenceTimer = setTimeout(() => { stopListening() }, SILENCE_TIMEOUT)
-  }
-
-  /**
-   * 启动识别。若上一会话仍在收尾，等它结束再启，避免 iOS 静默失败。
-   */
-  function start(onDone?: (fullText: string) => void) {
-    const Ctor = getSpeechRecognitionCtor()
-    pushSttDebug('start', `android=${IS_ANDROID} supported=${!!Ctor} running=${sharedRecRunning} secure=${typeof window !== 'undefined' && window.isSecureContext} ua=${typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 80) : ''}`)
-    if (!Ctor) {
-      pushSttDebug('error', 'no SpeechRecognition ctor')
-      onDone?.('')
-      return
-    }
-
-    const myToken = ++token
-    const rec = ensureSharedRec(Ctor)
-    sharedRecPendingStop = false
-    resetSessionText()
+    listening.value = true
 
     let userStopped = false
     let settled = false
+    let loggedFinal = ''
+    let loggedInterim = ''
 
-    const settle = () => {
+    const finish = () => {
       if (settled) return
       settled = true
-      if (myToken !== token) return
+      if (token !== sessionToken) return
       listening.value = false
-      if (!alive) return
-      const full = `${lastFinalText.value}${interimText.value}`.trim()
+      clearSilence()
+      const full = (lastFinalText.value + interimText.value).trim()
       onDone?.(full)
     }
 
-    let lastLoggedFinal = ''
-    let lastLoggedInterim = ''
-
-    sharedRecHandlers = {
-      onresult: (event) => {
-        if (myToken !== token) return
-        resetSilenceTimer()
+    const session: Session = {
+      token,
+      onResult: (event) => {
+        if (token !== sessionToken) return
+        resetSilence()
         let interim = ''
         let finals = lastFinalText.value
         const alts: string[] = []
@@ -140,101 +168,67 @@ export function useJaSpeechRecognition() {
         lastFinalText.value = finals
         interimText.value = interim
         if (alts.length) alternatives.value = alts
-        if (sawFinal && finals !== lastLoggedFinal) {
+        if (sawFinal && finals !== loggedFinal) {
           pushSttDebug('final', JSON.stringify(finals))
-          lastLoggedFinal = finals
-        } else if (!sawFinal && interim && interim !== lastLoggedInterim) {
+          loggedFinal = finals
+        } else if (!sawFinal && interim && interim !== loggedInterim) {
           pushSttDebug('interim', JSON.stringify(interim))
-          lastLoggedInterim = interim
+          loggedInterim = interim
         }
       },
-      onerror: (event) => {
+      onError: (event) => {
         lastError.value = event.error || 'error'
-        pushSttDebug('error', `${event.error}${event.message ? ' / ' + event.message : ''}`)
+        pushSttDebug('error', event.error + (event.message ? ` / ${event.message}` : ''))
         userStopped = true
-        settle()
+        finish()
       },
-      onend: () => {
-        if (myToken !== token) return
-        pushSttDebug('end', `userStopped=${userStopped} final="${lastFinalText.value}" interim="${interimText.value}"`)
-        settle()
+      onEnd: () => {
+        if (token !== sessionToken) return
+        pushSttDebug('end', `userStopped=${userStopped} final="${lastFinalText.value}"`)
+        finish()
       },
     }
 
-    const tryStart = () => {
-      try {
-        rec.start()
-        resetSilenceTimer()
-        listening.value = true
-      } catch (e) {
-        const msg = (e as Error)?.message || String(e)
-        pushSttDebug('error', `start threw: ${msg}`)
-        // Safari 已在运行中再 start 会抛 "already started" —— 当成上一会话尚未完全收尾，稍等再试
-        if (/already|InvalidState/i.test(msg)) {
-          try { rec.abort() } catch { /* ignore */ }
-          setTimeout(() => {
-            if (myToken !== token) return
-            try {
-              rec.start()
-              resetSilenceTimer()
-              listening.value = true
-              pushSttDebug('start', 'retry ok')
-            } catch (e2) {
-              pushSttDebug('error', `retry failed: ${(e2 as Error)?.message || e2}`)
-              lastError.value = 'start_failed'
-              listening.value = false
-              if (alive) onDone?.('')
-            }
-          }, 150)
-          return
-        }
-        lastError.value = 'start_failed'
-        listening.value = false
-        if (alive) onDone?.('')
-      }
-    }
-
-    // 若上次的 SR 还在 running（来不及收尾），先 abort 再稍等启动
-    if (sharedRecRunning) {
-      pushSttDebug('start', 'waiting for previous session to end')
-      try { rec.abort() } catch { /* ignore */ }
-      setTimeout(tryStart, 120)
+    // 关键分派：空闲直接启，繁忙时挤掉旧会话
+    if (state === 'idle') {
+      runStart(session)
     } else {
-      tryStart()
+      // running / starting / stopping → 终结当前，排队这次
+      queuedSession = session
+      if (state === 'running') safeAbort() // 触发 onend → 从队列启动
+      // starting / stopping 状态自然会走到 onend，也会消化队列
     }
 
-    setUserStopped = () => { userStopped = true }
+    resetSilence()
+    // expose userStopped setter to stopListening closure
+    stopListeningImpl = () => { userStopped = true; requestStop() }
   }
 
-  function stopListening() {
-    setUserStopped()
-    if (!sharedRec) return
-    if (!sharedRecRunning) {
-      // onstart 还没触发，先挂个 pending 信号，等 onstart 自动收尾
-      sharedRecPendingStop = true
-      pushSttDebug('stop', 'pending (start not fired yet)')
-      return
+  let stopListeningImpl: () => void = () => {}
+
+  function requestStop() {
+    if (!rec) return
+    if (state === 'running') {
+      state = 'stopping'
+      safeStop()
+    } else if (state === 'starting') {
+      // onstart 还没到：挂个信号，等它触发自动 stop
+      wantStop = true
+      pushSttDebug('stop', 'pending (starting)')
     }
-    try {
-      sharedRec.stop()
-    } catch {
-      /* ignore */
-    }
+    // idle / stopping：没动作
   }
+
+  function stopListening() { stopListeningImpl() }
 
   function abortListening() {
-    if (!sharedRec) return
-    try { sharedRec.abort() } catch { /* ignore */ }
+    if (rec && state !== 'idle') safeAbort()
   }
 
   onUnmounted(() => {
-    alive = false
-    token++
-    clearSilenceTimer()
-    // 不销毁 sharedRec，留给其他消费者用
-    if (sharedRecRunning) {
-      try { sharedRec?.abort() } catch { /* ignore */ }
-    }
+    sessionToken++
+    clearSilence()
+    // 只关自己的 session，单例不销毁（别的组件可能还要用）
   })
 
   return {
@@ -247,6 +241,5 @@ export function useJaSpeechRecognition() {
     start,
     stopListening,
     abortListening,
-    resetSessionText,
   }
 }
