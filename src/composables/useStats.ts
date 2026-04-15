@@ -56,12 +56,15 @@ export function recordListenTime(seconds: number) {
   saveStats(s)
 }
 
-export function recordReadTime(seconds: number) {
-  if (!seconds || !isFinite(seconds)) return
+/**
+ * 录音按次计（每次松手 +1），不再累加时长。
+ * 字段名仍是 recorded 以保持向后兼容；单位从 "秒" 变成 "次"。
+ */
+export function recordReadTime(_seconds?: number) {
   const s = getStats()
   const d = todayKey()
   if (!s[d]) s[d] = { studied: 0, quizzed: 0, correct: 0, wrong: {} }
-  s[d].recorded = Math.round(((s[d].recorded || 0) + seconds) * 10) / 10
+  s[d].recorded = (s[d].recorded || 0) + 1
   saveStats(s)
 }
 

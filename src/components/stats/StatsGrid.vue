@@ -48,7 +48,7 @@ const masteredCount = computed(() => {
         <svg class="w-4 h-4 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
         <span class="text-xs font-medium opacity-90">{{ t('todayRead') }}</span>
       </div>
-      <div class="text-xl font-bold tabular-nums">{{ formatListenTime(todayData.recorded || 0, t) }}</div>
+      <div class="text-xl font-bold tabular-nums">{{ (todayData.recorded || 0) + t('timesUnit') }}</div>
     </div>
 
     <!-- 练 -->

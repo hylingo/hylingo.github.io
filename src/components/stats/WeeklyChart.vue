@@ -87,7 +87,7 @@ function tipText(day: string) {
   const practice = (dd.studied || 0) + (dd.quizzed || 0)
   const parts: string[] = []
   if (listen > 0) parts.push(t('listenLabel') + ' ' + formatListenTime(listen, t))
-  if (read > 0) parts.push(t('readLabel') + ' ' + formatListenTime(read, t))
+  if (read > 0) parts.push(t('readLabel') + ' ' + read + t('timesUnit'))
   if (practice > 0) parts.push(t('practiceLabel') + ' ' + practice)
   return parts.length ? parts.join('  ') : '-'
 }

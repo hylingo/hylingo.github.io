@@ -5,6 +5,7 @@ import { useQuiz } from '../../composables/useQuiz'
 import { speakWithExample } from '../../composables/useAudio'
 import { useVoiceRecorder } from '../../composables/useVoiceRecorder'
 import { useJaSpeechRecognition } from '../../composables/useJaSpeechRecognition'
+import { recordReadTime } from '../../composables/useStats'
 import { normalizeJpSpeech } from '@/utils/jpSpeechMatch'
 import { isStarred, toggleStar, starredTick } from '@/learning'
 import { useLang, currentLang } from '@/i18n'
@@ -216,6 +217,8 @@ function onRecordDown(e: PointerEvent) {
 function onRecordUp() {
   if (!recordGuard) return
   recordGuard = false
+  // 松开即算一次"录"
+  recordReadTime()
   // 延迟 350ms 再停，给麦克风缓冲和 STT 决策留出尾音时间
   setTimeout(() => {
     if (useMediaRecorder && recording.value) stopRecording()

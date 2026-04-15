@@ -6,7 +6,7 @@ import { useVoiceRecorder } from '../../composables/useVoiceRecorder'
 import { useLang } from '@/i18n'
 import { localMeaning } from '@/utils/helpers'
 import { normalizeJpSpeech } from '@/utils/jpSpeechMatch'
-import { recordFollowComplete } from '@/composables/useStats'
+import { recordFollowComplete, recordReadTime } from '@/composables/useStats'
 import { isStarred, toggleStar, starredTick } from '@/learning'
 import RubyText from '@/components/common/RubyText.vue'
 import ArticleCover from '@/components/common/ArticleCover.vue'
@@ -136,6 +136,7 @@ function onRecordDown(e: PointerEvent) {
 function onRecordUp() {
   if (!recordGuard) return
   recordGuard = false
+  recordReadTime()
   if (recording.value) stopRecording()
   stopListening()
 }
