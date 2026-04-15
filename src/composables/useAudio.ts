@@ -44,14 +44,27 @@ export function speak(word: string, audio?: string) {
   playMainTrack(audioPath(audio))
 }
 
+/**
+ * 单次直接播放：用独立 Audio，不共享 audioEl，不触发 MediaSession／灵动岛。
+ * 练习卡片点击这种短促播放走这条路径即可。
+ */
+let simpleAudio: HTMLAudioElement | null = null
+function playSimple(src: string, onDuration?: (d: number) => void) {
+  if (simpleAudio) { simpleAudio.pause(); simpleAudio.src = '' }
+  const a = new Audio(src)
+  a.setAttribute('playsinline', '')
+  // @ts-expect-error - 非标准属性，部分 WebKit 支持，用来劝退 Now Playing 出现
+  a.disableRemotePlayback = true
+  a.preload = 'auto'
+  simpleAudio = a
+  a.onended = () => { if (onDuration) onDuration(a.duration) }
+  void a.play().catch(() => {})
+}
+
 /** 仅播词条主音频 */
 export function speakWithExample(word: string, audio?: string) {
   if (!audio) { speakTTS(word); return }
-  audioEl.onended = () => {
-    recordListenTime(audioEl.duration)
-    audioEl.onended = null
-  }
-  playMainTrack(audioPath(audio))
+  playSimple(audioPath(audio), (d) => recordListenTime(d))
 }
 
 /** 播放例句音频（单次） */

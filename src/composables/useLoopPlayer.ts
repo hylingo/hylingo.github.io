@@ -428,7 +428,11 @@ function stop() {
   clearLoopScheduling()
   audioEl.onended = null
   audioEl.pause()
-  if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'none'
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.playbackState = 'none'
+    // 清掉 metadata，否则 iOS 灵动岛会残留 Now Playing，单次卡片播放也被绑进去
+    navigator.mediaSession.metadata = null
+  }
   stopSilentKeepAlive()
 }
 
