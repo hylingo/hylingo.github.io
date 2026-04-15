@@ -444,13 +444,13 @@ const progressText = computed(() => {
           <button
             v-if="!isAnswered"
             type="button"
-            class="flex-1 py-2 rounded-[10px] text-sm font-medium cursor-pointer transition-all border theme-surface theme-muted"
+            class="flex-1 py-3.5 rounded-[12px] text-base font-medium cursor-pointer transition-all border theme-surface theme-muted"
             style="border-color: var(--border)"
             @click="onShowAnswer"
           >{{ t('practiceShowAnswer') }}</button>
           <button
             type="button"
-            class="flex-1 py-2 rounded-[10px] text-sm font-medium cursor-pointer transition-all border theme-surface theme-muted"
+            class="flex-1 py-3.5 rounded-[12px] text-base font-medium cursor-pointer transition-all border theme-surface theme-muted"
             style="border-color: var(--border)"
             @click="nextQuestion"
           >{{ t('next') }}</button>
