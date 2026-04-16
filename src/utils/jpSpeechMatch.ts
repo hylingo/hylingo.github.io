@@ -60,6 +60,7 @@ const KANJI_SYNONYMS: [string, string][] = [
   ['引け', '弾け'], ['引き', '弾き'], ['引く', '弾く'],
   ['聞け', '弾け'],
   ['退け', '弾け'],
+  ['装置', 'そっち'],
 ]
 
 function applySynonyms(s: string): string {
