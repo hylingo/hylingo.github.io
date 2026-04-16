@@ -53,8 +53,8 @@ function playSimple(src: string, onDuration?: (d: number) => void) {
   if (simpleAudio) { simpleAudio.pause(); simpleAudio.src = '' }
   const a = new Audio(src)
   a.setAttribute('playsinline', '')
-  // @ts-expect-error - 非标准属性，部分 WebKit 支持，用来劝退 Now Playing 出现
-  a.disableRemotePlayback = true
+  // 非标准属性，部分 WebKit 支持，用来劝退 Now Playing 出现
+  ;(a as any).disableRemotePlayback = true
   a.preload = 'auto'
   simpleAudio = a
   a.onended = () => { if (onDuration) onDuration(a.duration) }
