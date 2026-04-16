@@ -73,6 +73,15 @@ const masteredArticleCount = computed(() => {
   return count
 })
 
+/** 单词总数 */
+const totalWordCount = computed(() => {
+  const data = store.data as Record<string, unknown[]>
+  return (data.nouns?.length || 0) + (data.verbs?.length || 0)
+})
+
+/** 文章总数 */
+const totalArticleCount = computed(() => store.articles.length)
+
 </script>
 
 <template>
@@ -132,11 +141,11 @@ const masteredArticleCount = computed(() => {
     <div class="grid grid-cols-2 gap-2">
       <div class="text-center">
         <div class="text-xl font-bold tabular-nums leading-tight">{{ masteredWordCount }}</div>
-        <div class="text-[10px] font-medium opacity-60 mt-0.5">{{ t('masteredStats') }}</div>
+        <div class="text-[10px] font-medium opacity-60 mt-0.5">{{ t('masteredStats') }} <span class="opacity-70">/ {{ totalWordCount }}</span></div>
       </div>
       <div class="text-center">
         <div class="text-xl font-bold tabular-nums leading-tight">{{ masteredArticleCount }}</div>
-        <div class="text-[10px] font-medium opacity-60 mt-0.5">{{ t('masteredArticles') }}</div>
+        <div class="text-[10px] font-medium opacity-60 mt-0.5">{{ t('masteredArticles') }} <span class="opacity-70">/ {{ totalArticleCount }}</span></div>
       </div>
     </div>
   </div>
