@@ -43,15 +43,12 @@ const effectiveDays = computed(() => {
   return count
 })
 
-/** 累计学习天数：读 10~29 or 练 10~29（不含已算入有效天数的） */
+/** 累计学习天数：读≥10 or 练≥10（包含有效天数） */
 const totalStudyDays = computed(() => {
   let count = 0
   for (const d of Object.values(stats.value)) {
     const practiced = (d.studied || 0) + (d.quizzed || 0)
-    const recorded = d.recorded || 0
-    const isEffective = practiced >= 30 || recorded >= 30
-    if (isEffective) continue
-    if ((practiced >= 10 && practiced < 30) || (recorded >= 10 && recorded < 30)) count++
+    if (practiced >= 10 || (d.recorded || 0) >= 10) count++
   }
   return count
 })
