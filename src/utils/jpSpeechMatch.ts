@@ -61,6 +61,7 @@ const KANJI_SYNONYMS: [string, string][] = [
   ['聞け', '弾け'],
   ['退け', '弾け'],
   ['装置', 'そっち'],
+  ['印象', '一緒'],
 ]
 
 function applySynonyms(s: string): string {

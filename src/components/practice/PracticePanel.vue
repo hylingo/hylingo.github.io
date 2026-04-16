@@ -133,7 +133,6 @@ function onKeydown(e: KeyboardEvent) {
   } else if (e.key === 'ArrowRight') {
     e.preventDefault()
     if (isAnswered.value) nextQuestion()
-    else submitKnown()
   } else if (e.key === 'ArrowLeft') {
     e.preventDefault()
     if (!isAnswered.value) onShowAnswer()
