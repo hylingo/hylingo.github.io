@@ -18,8 +18,8 @@ const starredCount = computed(() => {
 
 const wordCount = computed(() => store.data.nouns.length + store.data.verbs.length)
 
-const essayCount = computed(() => store.articles.filter((a) => a.format === 'essay').length)
-const dialogueCount = computed(() => store.articles.filter((a) => a.format === 'dialogue').length)
+const essayCount = computed(() => store.articles.filter((a) => a.format === 'essay' && !(a as { hidden?: boolean }).hidden).length)
+const dialogueCount = computed(() => store.articles.filter((a) => a.format === 'dialogue' && !(a as { hidden?: boolean }).hidden).length)
 
 
 const categories = computed(() => {
