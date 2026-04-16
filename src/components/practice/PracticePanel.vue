@@ -310,6 +310,13 @@ function onListenSubmit() {
   listenScore.value = score
   listenSubmitted.value = true
   if (score >= LISTEN_PASS) {
+    // 听音满分也标记句子掌握
+    if (score >= 95) {
+      const asArt = item as { _quizSource?: string; _articleId?: string; id?: number }
+      if (asArt._quizSource === 'article' && asArt._articleId && typeof asArt.id === 'number') {
+        markSentencePerfect(asArt._articleId, asArt.id)
+      }
+    }
     submitStudy()
     // 略停顿让用户看到分数再进下一题
     setTimeout(() => {
