@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { VocabItem, CategoryKey } from '../../types'
 import { getListenedCount, getItemCount, itemCountsTick, listenedCountsTick, recordItemListened } from '../../composables/useSpacedRepetition'
 import { speakWithExample, playExampleAudio } from '../../composables/useAudio'
 import { isStarred, toggleStar, starredTick } from '@/learning'
+import { markMastered, milestoneStateTick } from '@/learning/milestones'
 import { useLang } from '@/i18n'
 import { localMeaning, localExampleCn } from '@/utils/helpers'
 import RubyText from '@/components/common/RubyText.vue'
@@ -53,13 +54,74 @@ function onToggleStar(e: Event) {
   e.stopPropagation()
   toggleStar(props.cat, props.item.id)
 }
+
+// ---- 右滑标记掌握 ----
+const swipeX = ref(0)
+const swiping = ref(false)
+const dismissed = ref(false)
+let touchStartX = 0
+let touchStartY = 0
+let isHorizontal: boolean | null = null
+
+function onTouchStart(e: TouchEvent) {
+  touchStartX = e.changedTouches[0].clientX
+  touchStartY = e.changedTouches[0].clientY
+  isHorizontal = null
+  swiping.value = false
+}
+
+function onTouchMove(e: TouchEvent) {
+  const dx = e.changedTouches[0].clientX - touchStartX
+  const dy = e.changedTouches[0].clientY - touchStartY
+  if (isHorizontal === null) {
+    if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+      isHorizontal = Math.abs(dx) > Math.abs(dy)
+    }
+    return
+  }
+  if (!isHorizontal) return
+  if (dx > 0) {
+    swiping.value = true
+    swipeX.value = Math.min(dx, 200)
+    e.preventDefault()
+  }
+}
+
+function onTouchEnd() {
+  if (swipeX.value > 100) {
+    dismissed.value = true
+    swipeX.value = 300
+    setTimeout(() => {
+      markMastered(props.cat, props.item.id)
+      milestoneStateTick.value++
+    }, 250)
+  } else {
+    swipeX.value = 0
+  }
+  swiping.value = false
+}
 </script>
 
 <template>
   <div
-    class="flex flex-col rounded-2xl shadow-[0_2px_16px_rgba(0,0,0,0.06)] overflow-hidden animate-fadeUp theme-surface cursor-pointer active:scale-[0.99] transition-transform border-l-[3px] border-l-[var(--primary)]/30"
-    @click="onSpeak"
+    class="relative rounded-2xl overflow-hidden animate-fadeUp"
+    :class="dismissed ? 'opacity-0 scale-95 pointer-events-none' : ''"
+    :style="{ transition: dismissed ? 'all 0.25s ease' : '' }"
+    @touchstart.passive="onTouchStart"
+    @touchmove="onTouchMove"
+    @touchend.passive="onTouchEnd"
   >
+    <!-- 底层：掌握标记 -->
+    <div
+      class="absolute inset-0 flex items-center pl-5 rounded-2xl text-white font-bold text-sm"
+      :style="{ background: 'linear-gradient(90deg, #4ade80 0%, #22c55e 100%)', opacity: Math.min(swipeX / 100, 1) }"
+    >✓ {{ t('practiceMastered') }}</div>
+    <!-- 卡片本体 -->
+    <div
+      class="flex flex-col rounded-2xl shadow-[0_2px_16px_rgba(0,0,0,0.06)] overflow-hidden theme-surface cursor-pointer active:scale-[0.99] border-l-[3px] border-l-[var(--primary)]/30 relative"
+      :style="{ transform: `translateX(${swipeX}px)`, transition: swiping ? 'none' : 'transform 0.2s ease' }"
+      @click="onSpeak"
+    >
     <div class="flex items-center gap-3 px-4 py-3">
       <div
         class="w-8 h-8 rounded-full theme-soft text-primary flex items-center justify-center text-[11px] font-bold tabular-nums shrink-0"
@@ -109,6 +171,7 @@ function onToggleStar(e: Event) {
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
         </button>
       </div>
+    </div>
     </div>
   </div>
 </template>

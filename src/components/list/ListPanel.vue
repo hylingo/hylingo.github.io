@@ -123,9 +123,13 @@ const filteredItems = computed<VocabItemWithCat[]>(() => {
     })
   }
 
-  milestoneStateTick.value
-  const masteryMap = getMasteryQuizPassedMap()
-  return items.filter(it => !masteryMap[`${it._cat}:${it.id}`])
+  // 搜索时显示已掌握的词（当词典用）；非搜索时过滤掉
+  if (!q) {
+    milestoneStateTick.value
+    const masteryMap = getMasteryQuizPassedMap()
+    items = items.filter(it => !masteryMap[`${it._cat}:${it.id}`])
+  }
+  return items
 })
 
 const canUseRange = computed(() =>
