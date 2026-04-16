@@ -10,7 +10,7 @@ import { normalizeJpSpeech } from '@/utils/jpSpeechMatch'
 import { isStarred, toggleStar, starredTick } from '@/learning'
 import { markSentencePerfect, isSentencePerfect, articlePerfectTick } from '@/learning/articlePerfect'
 import { useLang, currentLang } from '@/i18n'
-import { localMeaning } from '@/utils/helpers'
+import { localMeaning, localExampleCn } from '@/utils/helpers'
 import type { QuizMode } from '@/composables/useQuiz'
 import RubyText from '@/components/common/RubyText.vue'
 import AppIcon from '@/components/common/AppIcon.vue'
@@ -438,7 +438,7 @@ const progressText = computed(() => {
           ><AppIcon name="volume" :size="32" /></button>
         </div>
 
-        <!-- 看答案后展开：补充对照 -->
+        <!-- 看答案后展开：补充对照 + 例句 -->
         <template v-if="isAnswered">
           <div v-if="quizMode === 'word'" class="mt-4 text-xl font-bold text-content-translation">{{ localMeaning(currentItem, lang) }}</div>
           <div v-else-if="quizMode === 'meaning'" class="mt-4 text-2xl font-bold text-content-original">
@@ -449,6 +449,10 @@ const progressText = computed(() => {
             <RubyText v-if="currentItem.ruby" :tokens="currentItem.ruby" />
             <template v-else>{{ currentItem.word }}</template>
             <div class="mt-1 text-base font-bold text-content-translation">{{ localMeaning(currentItem, lang) }}</div>
+          </div>
+          <div v-if="currentItem.example" class="mt-3 text-sm text-content-example leading-relaxed opacity-80">
+            {{ currentItem.example }}
+            <template v-if="localExampleCn(currentItem, lang)"><br />{{ localExampleCn(currentItem, lang) }}</template>
           </div>
         </template>
       </div>
