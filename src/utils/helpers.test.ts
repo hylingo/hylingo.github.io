@@ -27,20 +27,20 @@ describe('formatListenTime', () => {
   // Simple identity translator for unit-friendly assertions
   const t = (k: string) => k
 
-  it('formats sub-minute as seconds', () => {
-    expect(formatListenTime(0, t)).toBe('0sec')
-    expect(formatListenTime(45, t)).toBe('45sec')
-    expect(formatListenTime(59.4, t)).toBe('59sec')
+  it('formats sub-minute as 0min', () => {
+    expect(formatListenTime(0, t)).toBe('0min')
+    expect(formatListenTime(45, t)).toBe('0min')
+    expect(formatListenTime(59.4, t)).toBe('0min')
   })
 
   it('rounds seconds before formatting', () => {
     expect(formatListenTime(59.6, t)).toBe('1min')
   })
 
-  it('formats minutes (<60) with optional seconds tail', () => {
+  it('formats minutes (<60) without seconds', () => {
     expect(formatListenTime(60, t)).toBe('1min')
-    expect(formatListenTime(75, t)).toBe('1min15sec')
-    expect(formatListenTime(3599, t)).toBe('59min59sec')
+    expect(formatListenTime(75, t)).toBe('1min')
+    expect(formatListenTime(3599, t)).toBe('59min')
   })
 
   it('formats hours and remaining minutes for >=1h', () => {
@@ -49,8 +49,8 @@ describe('formatListenTime', () => {
     expect(formatListenTime(7325, t)).toBe('2hour2min')
   })
 
-  it('treats falsy/invalid input as 0', () => {
-    expect(formatListenTime(0, t)).toBe('0sec')
-    expect(formatListenTime(NaN, t)).toBe('0sec')
+  it('treats falsy/invalid input as 0min', () => {
+    expect(formatListenTime(0, t)).toBe('0min')
+    expect(formatListenTime(NaN, t)).toBe('0min')
   })
 })

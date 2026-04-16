@@ -293,8 +293,8 @@ function onSttDone(text: string) {
   sttScore.value = score
   // 念对了才算练过一次
   if (score >= READ_PASS) submitStudy()
-  // 满分（100）且是文章精读题：打印记
-  if (score >= 100) {
+  // 高分（≥95）且是文章精读题：打印记（容许 STT 轻微误差）
+  if (score >= 95) {
     const asArt = item as { _quizSource?: string; _articleId?: string; id?: number }
     if (asArt._quizSource === 'article' && asArt._articleId && typeof asArt.id === 'number') {
       markSentencePerfect(asArt._articleId, asArt.id)

@@ -44,10 +44,9 @@ export function localExampleCn(
 
 export function formatListenTime(sec: number, t: (k: string) => string): string {
   sec = Math.round(sec || 0)
-  if (sec < 60) return sec + t('sec')
+  if (sec < 60) return '0' + t('min')
   const m = Math.floor(sec / 60)
-  const s = sec % 60
-  if (m < 60) return m + t('min') + (s > 0 ? s + t('sec') : '')
+  if (m < 60) return m + t('min')
   const h = Math.floor(m / 60)
   return h + t('hour') + (m % 60) + t('min')
 }

@@ -44,12 +44,13 @@ export function getPerfectSentencesOf(articleId: string): Record<string, true> {
   return read()[articleId] ?? {}
 }
 
-/** 全部句子都满分过（需传入实际句数）*/
+/** ≥80% 句子满分即算整篇掌握（容许 STT 对个别句子的顽固误判）*/
 export function isArticleFullyPerfect(articleId: string, totalSentences: number): boolean {
   if (totalSentences <= 0) return false
   const set = read()[articleId] ?? {}
+  let perfected = 0
   for (let i = 0; i < totalSentences; i++) {
-    if (!set[String(i)]) return false
+    if (set[String(i)]) perfected++
   }
-  return true
+  return perfected / totalSentences >= 0.8
 }
