@@ -9,6 +9,7 @@ import ArticleCover from '@/components/common/ArticleCover.vue'
 import { useFirebase } from '@/composables/useFirebase'
 import { useArticlePrefs } from '@/composables/useArticlePrefs'
 import { useArticlePlayback } from '@/composables/useArticlePlayback'
+import { getPerfectSentencesOf, isArticleFullyPerfect, articlePerfectTick } from '@/learning/articlePerfect'
 
 const props = defineProps<{ article: ArticleItem }>()
 const emit = defineEmits<{ back: []; select: [id: string] }>()
@@ -62,6 +63,22 @@ function openCounterpart() {
   invalidateArticlePlayback()
   stopLoop()
   emit('select', counterpart.value.id)
+}
+
+// 每篇已满分的句索引集合；UI 用于在每句旁显示 💯
+const perfectSet = computed(() => {
+  articlePerfectTick.value
+  return getPerfectSentencesOf(props.article.id)
+})
+
+// 整篇满分 → 标题旁显示 👑
+const articleFullyPerfect = computed(() => {
+  articlePerfectTick.value
+  return isArticleFullyPerfect(props.article.id, flatSentences.value.length)
+})
+
+function isSegPerfect(idx: number): boolean {
+  return !!perfectSet.value[String(idx)]
 }
 
 const articleGrammar = computed((): GrammarPoint[] => {
@@ -149,9 +166,13 @@ function back() {
         class="mb-4"
       />
       <h1 v-if="showReading && article.titleRuby" class="text-xl font-bold text-content-original">
+        <span v-if="articleFullyPerfect" class="mr-1.5 align-middle" title="全篇已满分" aria-label="全篇已满分">👑</span>
         <RubyText :tokens="article.titleRuby" />
       </h1>
-      <h1 v-else class="text-xl font-bold text-content-original leading-snug">{{ article.titleWord }}</h1>
+      <h1 v-else class="text-xl font-bold text-content-original leading-snug">
+        <span v-if="articleFullyPerfect" class="mr-1.5 align-middle" title="全篇已满分" aria-label="全篇已满分">👑</span>
+        {{ article.titleWord }}
+      </h1>
       <template v-if="showTranslation">
         <p v-if="currentLang === 'zh'" class="mt-2 text-base text-content-translation">{{ article.titleZh }}</p>
         <p v-else-if="currentLang === 'ja'" class="mt-2 text-base text-content-translation opacity-90">{{ article.titleJp ?? article.titleZh }}</p>
@@ -261,6 +282,12 @@ function back() {
         class="relative rounded-2xl theme-surface p-4 md:p-5 shadow-[0_2px_16px_rgba(0,0,0,0.06)] transition"
         :class="linePlaying(i) ? 'ring-2 ring-primary/40' : 'ring-0'"
       >
+        <span
+          v-if="isSegPerfect(i)"
+          class="pointer-events-none absolute top-2 right-2 text-sm leading-none select-none"
+          title="已满分"
+          aria-label="已满分"
+        >💯</span>
         <div class="flex items-start gap-3">
           <div class="flex-1 min-w-0">
             <div v-if="seg.speaker" class="text-xs font-bold mb-1" style="color: var(--primary)">{{ seg.speaker }}</div>

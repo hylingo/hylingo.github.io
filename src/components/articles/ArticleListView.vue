@@ -6,6 +6,8 @@ import type { ArticleItem, ArticleEssay, ArticleDialogue } from '@/types'
 import AppIcon from '@/components/common/AppIcon.vue'
 import ArticleCover from '@/components/common/ArticleCover.vue'
 import { getAllArticleProgress, type ArticleProgressEntry } from '@/learning/articleProgress'
+import { isArticleFullyPerfect, articlePerfectTick } from '@/learning/articlePerfect'
+import { flatArticleSegments } from '@/utils/articleQuiz'
 
 const props = defineProps<{ filterFormat: 'essay' | 'dialogue' }>()
 const emit = defineEmits<{ select: [id: string] }>()
@@ -80,6 +82,12 @@ const searchResults = computed<{ article: ArticleItem; matches: string[] }[] | n
   }
   return results
 })
+
+function isFullyPerfect(it: ArticleItem): boolean {
+  articlePerfectTick.value
+  const total = flatArticleSegments(it).length
+  return isArticleFullyPerfect(it.id, total)
+}
 
 function formatLabel(it: ArticleItem) {
   const kind = it.format === 'essay' ? t('articleKindEssay') : t('articleKindDialogue')
@@ -169,7 +177,10 @@ function openItem(id: string) {
           />
           <div class="min-w-0 flex-1">
             <div class="text-[11px] font-medium theme-muted mb-1.5 tracking-wide">{{ formatLabel(it) }}</div>
-            <div class="text-base font-bold text-content-original leading-snug">{{ it.titleWord }}</div>
+            <div class="text-base font-bold text-content-original leading-snug">
+              <span v-if="isFullyPerfect(it)" class="mr-1 align-middle" title="全篇已满分" aria-label="全篇已满分">👑</span>
+              {{ it.titleWord }}
+            </div>
             <div v-if="currentLang === 'zh'" class="text-sm mt-1 text-content-translation">{{ it.titleZh }}</div>
             <div v-else-if="currentLang === 'en'" class="text-sm mt-1 text-content-translation opacity-90">{{ it.titleEn }}</div>
             <div v-else class="text-sm mt-1 text-content-translation opacity-90">{{ it.titleJp ?? it.titleZh }}</div>

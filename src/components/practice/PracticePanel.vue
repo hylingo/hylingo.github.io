@@ -8,6 +8,7 @@ import { useJaSpeechRecognition } from '../../composables/useJaSpeechRecognition
 import { recordReadTime } from '../../composables/useStats'
 import { normalizeJpSpeech } from '@/utils/jpSpeechMatch'
 import { isStarred, toggleStar, starredTick } from '@/learning'
+import { markSentencePerfect, isSentencePerfect, articlePerfectTick } from '@/learning/articlePerfect'
 import { useLang, currentLang } from '@/i18n'
 import { localMeaning } from '@/utils/helpers'
 import type { QuizMode } from '@/composables/useQuiz'
@@ -28,7 +29,7 @@ const QUIZ_MODES: { key: QuizMode; labelKey: string }[] = [
 const {
   quizItems, quizIndex, isAnswered,
   articleBlockJustCompleted,
-  showAnswer, hideAnswer, submitStudy, submitMastered, nextQuestion,
+  showAnswer, hideAnswer, submitStudy, submitSkip, submitMastered, nextQuestion,
   dismissArticleBlockComplete,
 } = useQuiz()
 
@@ -66,6 +67,14 @@ const currentStarred = computed(() => {
   if (!it) return false
   const cat = it._cat || store.currentCat
   return isStarred(cat, it.id)
+})
+
+// 文章精读题：当前句是否已满分过
+const currentSentencePerfected = computed(() => {
+  articlePerfectTick.value
+  const it = currentItem.value as { _quizSource?: string; _articleId?: string; id?: number } | null
+  if (!it || it._quizSource !== 'article' || !it._articleId || typeof it.id !== 'number') return false
+  return isSentencePerfect(it._articleId, it.id)
 })
 
 function onToggleStar() {
@@ -284,6 +293,13 @@ function onSttDone(text: string) {
   sttScore.value = score
   // 念对了才算练过一次
   if (score >= READ_PASS) submitStudy()
+  // 满分（100）且是文章精读题：打印记
+  if (score >= 100) {
+    const asArt = item as { _quizSource?: string; _articleId?: string; id?: number }
+    if (asArt._quizSource === 'article' && asArt._articleId && typeof asArt.id === 'number') {
+      markSentencePerfect(asArt._articleId, asArt.id)
+    }
+  }
 }
 
 // === 听音模式：提交输入 ===
@@ -306,8 +322,8 @@ function onListenSubmit() {
 function onShowAnswer() {
   showAnswer()
   playCurrentAudio()
-  // 主动看答案也算练过一次
-  submitStudy()
+  // 主动看答案 = 没记住：counts 回退 + 近期重排
+  submitSkip()
 }
 
 function onMastered() {
@@ -385,6 +401,17 @@ const progressText = computed(() => {
         :class="{ 'cursor-pointer hover:bg-black/[0.03] active:scale-[0.98] dark:hover:bg-white/[0.05]': isAnswered }"
         @click="isAnswered && playCurrentAudio()"
       >
+        <span
+          v-if="currentItem.level"
+          class="pointer-events-none absolute top-3 left-4 z-[1] text-[10px] font-medium tabular-nums leading-none theme-muted opacity-40"
+          aria-hidden="true"
+        >{{ currentItem.level }}</span>
+        <span
+          v-if="currentSentencePerfected"
+          class="pointer-events-none absolute top-2.5 right-10 z-[1] text-base leading-none select-none"
+          :title="'已满分'"
+          aria-label="已满分"
+        >💯</span>
         <button
           type="button"
           class="absolute top-3 right-3 w-7 h-7 flex items-center justify-center cursor-pointer bg-transparent border-none outline-none active:scale-90 transition-transform"

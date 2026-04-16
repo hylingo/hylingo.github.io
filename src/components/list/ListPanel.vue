@@ -10,17 +10,16 @@ import {
   getStarredMap,
 } from '@/learning'
 import { useQuiz } from '@/composables/useQuiz'
-import ListToolbar from './ListToolbar.vue'
+import ListToolbar, { type ListReviewFilter } from './ListToolbar.vue'
 import ListContainer from './ListContainer.vue'
 import PaginationBar from '../common/PaginationBar.vue'
-import TopicChips from './TopicChips.vue'
+import { getDelays, getQuizProgressSnapshot } from '@/composables/useSpacedRepetition'
 import { list as listThresholds } from '@/config/thresholds'
 
 const store = useAppStore()
 const router = useRouter()
 const route = useRoute()
 const { setQuizLevels } = useQuiz()
-const isWordsCat = computed(() => store.currentCat === 'nouns' || store.currentCat === 'verbs')
 
 const PAGE_SIZE = listThresholds.pageSize
 
@@ -60,8 +59,11 @@ function setQuery(patch: Record<string, string | number | string[] | undefined>)
 
 // 仅 UI 临时态
 const isSpeaking = ref(false)
+// 听模式新筛选：三段 + ⭐收藏
+const reviewFilter = ref<ListReviewFilter>('all')
+const showStarredOnly = ref(false)
 
-// 同步级别筛选到练习模式
+// 同步级别筛选到练习模式（URL `?lv=` 仍然生效，保留以免误伤练习）
 watch(selectedLevels, (v) => setQuizLevels(v), { immediate: true })
 
 const emit = defineEmits<{
@@ -69,53 +71,25 @@ const emit = defineEmits<{
   stop: []
 }>()
 
+// 听模式：永远合并名词 + 动词，不再按 currentCat 分；收藏交给 ⭐ 按钮
 const allItems = computed<VocabItemWithCat[]>(() => {
-  if (store.currentCat === 'mix' || store.currentCat === 'starred') {
-    const all = [
-      ...store.data.nouns.map(it => ({ ...it, _cat: 'nouns' as const })),
-      ...store.data.verbs.map(it => ({ ...it, _cat: 'verbs' as const })),
-    ]
-    if (store.currentCat === 'starred') {
-      starredTick.value
-      const map = getStarredMap()
-      return all.filter(it => !!map[it._cat + ':' + it.id])
-    }
-    return all
+  const all: VocabItemWithCat[] = [
+    ...store.data.nouns.map(it => ({ ...it, _cat: 'nouns' as const })),
+    ...store.data.verbs.map(it => ({ ...it, _cat: 'verbs' as const })),
+  ]
+  if (showStarredOnly.value) {
+    starredTick.value
+    const map = getStarredMap()
+    return all.filter(it => !!map[it._cat + ':' + it.id])
   }
-  const cat = store.currentCat as 'nouns' | 'verbs'
-  return (store.data[cat] || []).map(it => ({ ...it, _cat: cat }))
-})
-
-const topics = computed(() => {
-  const counts: Record<string, number> = {}
-  for (const it of allItems.value) {
-    if (it.topic) counts[it.topic] = (counts[it.topic] || 0) + 1
-  }
-  return Object.entries(counts)
-    .sort((a, b) => b[1] - a[1])
-    .map(([topic, count]) => ({ topic, count }))
-})
-
-const levels = computed(() => {
-  const set = new Set<string>()
-  for (const it of allItems.value) {
-    if (it.level) set.add(it.level)
-  }
-  return [...set].sort((a, b) => {
-    const na = parseInt(a.replace(/\D/g, '')) || 0
-    const nb = parseInt(b.replace(/\D/g, '')) || 0
-    return nb - na // N5 first
-  })
+  return all
 })
 
 const filteredItems = computed<VocabItemWithCat[]>(() => {
   milestoneStateTick.value // 触发重计算
   let items = allItems.value
 
-  if (selectedTopic.value) {
-    items = items.filter(it => it.topic === selectedTopic.value)
-  }
-
+  // URL 级别过滤仍保留（方便练习模式通过 URL 携带）
   if (selectedLevels.value.length > 0) {
     items = items.filter(it => it.level && selectedLevels.value.includes(it.level))
   }
@@ -133,12 +107,33 @@ const filteredItems = computed<VocabItemWithCat[]>(() => {
     )
   }
 
+  // 三段筛选：复习（count>0 且今日到期）/ 未学过（count===0）/ 全部
+  if (reviewFilter.value !== 'all') {
+    const today = new Date().toISOString().slice(0, 10)
+    const counts = getQuizProgressSnapshot().counts
+    const delays = reviewFilter.value === 'review' ? getDelays() : null
+    items = items.filter(it => {
+      const k = `${it._cat}:${it.id}`
+      const c = counts[k] || 0
+      if (reviewFilter.value === 'new') return c === 0
+      // review
+      if (c <= 0) return false
+      const due = delays![k]
+      return !due || due <= today
+    })
+  }
+
   milestoneStateTick.value
   const masteryMap = getMasteryQuizPassedMap()
   return items.filter(it => !masteryMap[`${it._cat}:${it.id}`])
 })
 
-const canUseRange = computed(() => selectedTopic.value === '' && selectedLevels.value.length === 0)
+const canUseRange = computed(() =>
+  selectedTopic.value === '' &&
+  selectedLevels.value.length === 0 &&
+  reviewFilter.value === 'all' &&
+  !showStarredOnly.value,
+)
 
 const totalPages = computed(() => Math.ceil(filteredItems.value.length / PAGE_SIZE))
 
@@ -149,20 +144,6 @@ const pagedItems = computed(() => {
 
 function onSearch(q: string) {
   setQuery({ q, page: undefined })
-}
-
-function onTopicSelect(topic: string) {
-  setQuery({ topic, page: undefined })
-}
-
-function onLevelToggle(level: string) {
-  const cur = selectedLevels.value
-  const next = cur.includes(level) ? cur.filter((l) => l !== level) : [...cur, level]
-  setQuery({ lv: next, page: undefined })
-}
-
-function onLevelClear() {
-  setQuery({ lv: undefined, page: undefined })
 }
 
 function onPageChange(dir: number) {
@@ -200,19 +181,6 @@ defineExpose({ stopSpeaking: () => { isSpeaking.value = false } })
 
 <template>
   <div>
-    <!-- 筛选按钮 Teleport 到 CategoryTabs 子 tab 行（仅单词分类有子 tab 行） -->
-    <Teleport v-if="isWordsCat" to="#sub-tab-right-slot">
-      <TopicChips
-        v-if="topics.length > 0 || levels.length > 0"
-        :topics="topics"
-        :selected="selectedTopic"
-        :levels="levels"
-        :selected-levels="selectedLevels"
-        @select="onTopicSelect"
-        @toggle-level="onLevelToggle"
-        @clear-levels="onLevelClear"
-      />
-    </Teleport>
     <div class="mb-2 px-4 md:mb-3 md:px-10">
       <div class="list-controls-panel pb-3 md:pb-4">
         <div>
@@ -221,9 +189,13 @@ defineExpose({ stopSpeaking: () => { isSpeaking.value = false } })
             :is-speaking="isSpeaking"
             :can-use-range="canUseRange"
             :query="searchQuery"
+            :review-filter="reviewFilter"
+            :show-starred-only="showStarredOnly"
             @search="onSearch"
             @speak="onSpeak"
             @stop="onStop"
+            @update:review-filter="(v) => (reviewFilter = v)"
+            @update:show-starred-only="(v) => (showStarredOnly = v)"
           />
         </div>
       </div>

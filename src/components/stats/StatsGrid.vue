@@ -31,6 +31,16 @@ const totalData = computed(() => {
   return { listened, recorded, studied, quizzed }
 })
 
+/** 有效学习天数：练>10 or 读>10 or 听>10min */
+const effectiveDays = computed(() => {
+  let count = 0
+  for (const d of Object.values(stats.value)) {
+    const practiced = (d.studied || 0) + (d.quizzed || 0)
+    if (practiced > 10 || (d.recorded || 0) > 10 || (d.listened || 0) >= 600) count++
+  }
+  return count
+})
+
 /** 已掌握词数 */
 const masteredCount = computed(() => {
   milestoneStateTick.value
@@ -76,14 +86,23 @@ const masteredCount = computed(() => {
     </div>
   </div>
 
-  <!-- 已掌握 -->
-  <div
-    class="mt-3 rounded-xl p-3 text-center text-white stat-card stat-card--mastered cursor-pointer active:scale-[0.97] transition-transform"
-    @click="emit('mastered')"
-  >
-    <div class="flex items-center justify-center gap-2">
-      <svg class="w-4 h-4 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-      <span class="text-xs font-medium opacity-90">{{ t('masteredStats') }}</span>
+  <!-- 有效学习天数 + 已掌握 -->
+  <div class="mt-3 grid grid-cols-2 gap-3">
+    <div class="rounded-xl p-3 text-center text-white stat-card stat-card--mastered">
+      <div class="flex items-center justify-center gap-1.5 mb-1">
+        <svg class="w-4 h-4 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="text-xs font-medium opacity-90">{{ t('effectiveDays') }}</span>
+      </div>
+      <span class="text-lg font-bold tabular-nums">{{ effectiveDays }}</span>
+    </div>
+    <div
+      class="rounded-xl p-3 text-center text-white stat-card stat-card--mastered cursor-pointer active:scale-[0.97] transition-transform"
+      @click="emit('mastered')"
+    >
+      <div class="flex items-center justify-center gap-1.5 mb-1">
+        <svg class="w-4 h-4 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span class="text-xs font-medium opacity-90">{{ t('masteredStats') }}</span>
+      </div>
       <span class="text-lg font-bold tabular-nums">{{ masteredCount }}</span>
     </div>
   </div>

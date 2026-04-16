@@ -3,6 +3,7 @@ import { useAppStore, type DataItem } from '../stores/app'
 import { recordQuiz } from './useStats'
 import {
   recordStudy,
+  recordSkip,
   markMastered,
   milestoneStateTick,
   hasMasteryQuizPassed,
@@ -55,8 +56,10 @@ const W_NEW = 70
 const W_NOT_DUE = 30
 
 /** 新词按难度加权：没选级别筛选时，简单的权重更高，让新词优先从 N5 起步 */
+// 强偏置：N5 新词权重 ~= N4 的 6 倍，N3 的 20 倍。
+// 效果：新词几乎只抽 N5，偶尔冒一个 N4，N5 抽完后才大量过渡到 N4/N3。
 const LEVEL_EASY_BIAS: Record<string, number> = {
-  N5: 2.0, N4: 1.5, N3: 1.0, N2: 0.6, N1: 0.35,
+  N5: 5.0, N4: 0.8, N3: 0.25, N2: 0.08, N1: 0.03,
 }
 function newWeightByLevel(level?: string): number {
   if (!level) return W_NEW
@@ -179,6 +182,17 @@ function submitStudy() {
   recordQuiz(it, true, cat)
 }
 
+/** 主动看答案 / 跳过：算作"没记住"，counts 回退 + 临近重排 */
+function submitSkip() {
+  const store = useAppStore()
+  const it = quizItems.value[quizIndex.value]
+  if (!it) return
+  if (isArticleQuizItem(it)) return
+  const cat = it._cat || store.currentCat
+  recordSkip(cat, it.id)
+  recordQuiz(it, false, cat)
+}
+
 /** 用户点「掌握了」：标记掌握并进入下一题 */
 function submitMastered() {
   const store = useAppStore()
@@ -285,6 +299,7 @@ export function useQuiz() {
     showAnswer,
     hideAnswer,
     submitStudy,
+    submitSkip,
     submitMastered,
     nextQuestion,
     dismissArticleBlockComplete,

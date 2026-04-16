@@ -13,7 +13,7 @@
  */
 import { makeItemKey } from './itemKey'
 import { milestoneStateTick } from './milestoneTick'
-import { recordItemSeen, delayItem, getItemCount } from '@/composables/useSpacedRepetition'
+import { recordItemSeen, delayItem, getItemCount, setItemCount, clearDelay } from '@/composables/useSpacedRepetition'
 import { useFirebase } from '@/composables/useFirebase'
 import { readSyncedJson, writeSyncedJson } from '@/learning/learnStorage'
 import { useAppStore } from '@/stores/app'
@@ -78,8 +78,33 @@ export function clearMilestoneCache() {
 export function recordStudy(cat: string, id: number): void {
   recordItemSeen(cat, id)
   const next = getItemCount(cat, id) // recordItemSeen 内部已 +1，这里读到的是新值
+  // 首次学完（count=1）：不设 delay，保留"当天可抽"状态。
+  // Ebbinghaus 实验：学完 20 分钟遗忘 42%，当天内再见 1–2 次能把遗忘率压到 20%。
+  // 配合 useQuiz 的池子耗尽自动 startQuiz，当前 session 里该词会再被抽到。
+  // 从 count=2 起进入正常 SRS 曲线（2→4→7→14…）。
+  if (next === 1) {
+    clearDelay(cat, id) // 清掉任何旧 delay，防止历史状态影响
+    return
+  }
   const days = srsIntervalDays(next)
   if (days > 0) delayItem(cat, id, days)
+}
+
+/**
+ * 主动看答案 / 跳过：算作"没记住"，counts 回退 2 档（最低 1），按回退后的档位重排间隔。
+ * 真正的未学过词（counts=0）仅设 1 天后重来，不提升档位。
+ */
+export function recordSkip(cat: string, id: number): void {
+  const curr = getItemCount(cat, id)
+  if (curr <= 0) {
+    delayItem(cat, id, 1)
+    return
+  }
+  const back = Math.max(1, curr - 2)
+  setItemCount(cat, id, back)
+  const days = srsIntervalDays(back)
+  if (days > 0) delayItem(cat, id, days)
+  else clearDelay(cat, id)
 }
 
 // --- 掌握 ---

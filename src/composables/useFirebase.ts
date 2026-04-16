@@ -166,7 +166,23 @@ function mergeLangBundle(local: LangBundle, cloud: LangBundle): LangBundle {
       (local.practiceStreak || {}) as NumMap,
       (cloud.practiceStreak || {}) as NumMap,
     ),
+    articlePerfect: mergeArticlePerfect(
+      (local.articlePerfect || {}) as Record<string, Record<string, true>>,
+      (cloud.articlePerfect || {}) as Record<string, Record<string, true>>,
+    ),
   }
+}
+
+function mergeArticlePerfect(
+  a: Record<string, Record<string, true>>,
+  b: Record<string, Record<string, true>>,
+): Record<string, Record<string, true>> {
+  const out: Record<string, Record<string, true>> = {}
+  const keys = new Set([...Object.keys(a), ...Object.keys(b)])
+  for (const k of keys) {
+    out[k] = { ...(a[k] || {}), ...(b[k] || {}) }
+  }
+  return out
 }
 
 function langBundleHasAny(b: LangBundle): boolean {

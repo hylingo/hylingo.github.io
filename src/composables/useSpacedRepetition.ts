@@ -89,6 +89,25 @@ export function getItemCount(cat: string, id: number): number {
   return c[cat + ':' + id] || 0
 }
 
+/** 直接设置学习次数（用于"看答案/跳过"时的降档） */
+export function setItemCount(cat: string, id: number, n: number): void {
+  const c = getItemCounts()
+  const key = cat + ':' + id
+  if (n <= 0) delete c[key]
+  else c[key] = n
+  saveItemCounts(c)
+  itemCountsTick.value++
+}
+
+/** 清除推迟复习标记，让该词立即可抽 */
+export function clearDelay(cat: string, id: number): void {
+  const d = getDelays()
+  const key = cat + ':' + id
+  if (!(key in d)) return
+  delete d[key]
+  saveDelays(d)
+}
+
 export function getDelays(): Record<string, string> {
   return readSyncedJson(useAppStore().studyLang, 'delays') as Record<string, string>
 }

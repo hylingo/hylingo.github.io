@@ -129,9 +129,9 @@ const wordSubTabs = computed(() => {
       </button>
     </div>
 
-    <!-- 单词子 tab：名词 / 动词 / 收藏 + 筛选 -->
+    <!-- 单词子 tab：名词 / 动词 / 收藏 + 筛选（听模式下隐藏：听模式用独立的 全部/复习/未学过 + ⭐ 工具栏） -->
     <div
-      v-show="isWordsCat"
+      v-show="isWordsCat && store.currentMode !== 'list'"
       class="mt-1.5 flex items-center gap-1"
       role="tablist"
       :aria-label="t('catWords')"

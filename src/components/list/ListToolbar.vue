@@ -5,12 +5,16 @@ import { enableListSpeakSequenceRange } from '@/config/features'
 
 const { t } = useLang()
 
+export type ListReviewFilter = 'all' | 'review' | 'new'
+
 const props = defineProps<{
   totalItems: number
   isSpeaking: boolean
   canUseRange: boolean
   /** 受控搜索词：父组件从 URL query 派生 */
   query?: string
+  reviewFilter: ListReviewFilter
+  showStarredOnly: boolean
 }>()
 
 const emit = defineEmits<{
@@ -18,6 +22,8 @@ const emit = defineEmits<{
   speak: [from: number, to: number]
   stop: []
   'update:query': [query: string]
+  'update:reviewFilter': [v: ListReviewFilter]
+  'update:showStarredOnly': [v: boolean]
 }>()
 
 // 受控输入：v-model 绑到 computed，写入即 emit 给父
@@ -60,6 +66,37 @@ function onSpeakRange() {
 
 <template>
   <div class="flex flex-col gap-2.5">
+    <!-- 状态筛选：全部 / 复习 / 未学过 + ⭐收藏切换 -->
+    <div class="flex items-center gap-1.5">
+      <div
+        class="inline-flex items-center rounded-full border border-[var(--border)] p-0.5 text-[12px] font-medium cursor-pointer select-none"
+        role="tablist"
+      >
+        <button
+          v-for="opt in (['all','review','new'] as const)"
+          :key="opt"
+          type="button"
+          role="tab"
+          :aria-selected="reviewFilter === opt"
+          class="px-2.5 py-1 rounded-full transition-colors border-0 bg-transparent cursor-pointer"
+          :class="reviewFilter === opt ? 'bg-primary/15 text-primary-dark' : 'theme-muted'"
+          @click="emit('update:reviewFilter', opt)"
+        >{{ opt === 'all' ? t('listFilterAll') : opt === 'review' ? t('listFilterReview') : t('listFilterNew') }}</button>
+      </div>
+      <button
+        type="button"
+        :aria-pressed="showStarredOnly"
+        :aria-label="t('catStarred')"
+        :title="t('catStarred')"
+        class="inline-flex items-center justify-center w-8 h-8 rounded-full border cursor-pointer transition-colors"
+        :class="showStarredOnly ? 'bg-primary/15 border-primary/40' : 'border-[var(--border)] bg-transparent'"
+        @click="emit('update:showStarredOnly', !showStarredOnly)"
+      >
+        <svg v-if="showStarredOnly" class="w-4 h-4 text-[#e8a44c]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg v-else class="w-4 h-4 theme-muted opacity-55" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </button>
+    </div>
+
     <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
       <div class="relative min-w-0 flex-1">
         <input
