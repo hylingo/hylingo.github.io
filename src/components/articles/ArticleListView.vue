@@ -36,7 +36,7 @@ function levelSortKey(level: string): number {
 
 const list = computed(() =>
   store.articles
-    .filter((a) => a.format === props.filterFormat)
+    .filter((a) => a.format === props.filterFormat && !(a as { hidden?: boolean }).hidden)
     .slice()
     .sort((a, b) => levelSortKey(a.level) - levelSortKey(b.level)),
 )
@@ -47,6 +47,7 @@ const searchResults = computed<{ article: ArticleItem; matches: string[] }[] | n
   if (!q) return null
   const results: { article: ArticleItem; matches: string[] }[] = []
   for (const a of store.articles) {
+    if ((a as { hidden?: boolean }).hidden) continue
     const hits: string[] = []
     if (a.format === 'essay') {
       for (const s of (a as ArticleEssay).segments ?? []) {
