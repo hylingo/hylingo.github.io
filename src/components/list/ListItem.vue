@@ -55,24 +55,28 @@ function onToggleStar(e: Event) {
   toggleStar(props.cat, props.item.id)
 }
 
-// ---- 右滑标记掌握 ----
+// ---- 右滑标记掌握（触摸 + 鼠标） ----
 const swipeX = ref(0)
 const swiping = ref(false)
 const dismissed = ref(false)
-let touchStartX = 0
-let touchStartY = 0
+let startX = 0
+let startY = 0
 let isHorizontal: boolean | null = null
+let pointerDown = false
 
-function onTouchStart(e: TouchEvent) {
-  touchStartX = e.changedTouches[0].clientX
-  touchStartY = e.changedTouches[0].clientY
+function onPointerDown(e: PointerEvent) {
+  startX = e.clientX
+  startY = e.clientY
   isHorizontal = null
+  pointerDown = true
   swiping.value = false
+  ;(e.currentTarget as HTMLElement)?.setPointerCapture(e.pointerId)
 }
 
-function onTouchMove(e: TouchEvent) {
-  const dx = e.changedTouches[0].clientX - touchStartX
-  const dy = e.changedTouches[0].clientY - touchStartY
+function onPointerMove(e: PointerEvent) {
+  if (!pointerDown) return
+  const dx = e.clientX - startX
+  const dy = e.clientY - startY
   if (isHorizontal === null) {
     if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
       isHorizontal = Math.abs(dx) > Math.abs(dy)
@@ -87,7 +91,9 @@ function onTouchMove(e: TouchEvent) {
   }
 }
 
-function onTouchEnd() {
+function onPointerUp() {
+  if (!pointerDown) return
+  pointerDown = false
   if (swipeX.value > 100) {
     dismissed.value = true
     swipeX.value = 300
@@ -107,9 +113,10 @@ function onTouchEnd() {
     class="relative rounded-2xl overflow-hidden animate-fadeUp"
     :class="dismissed ? 'opacity-0 scale-95 pointer-events-none' : ''"
     :style="{ transition: dismissed ? 'all 0.25s ease' : '' }"
-    @touchstart.passive="onTouchStart"
-    @touchmove="onTouchMove"
-    @touchend.passive="onTouchEnd"
+    @pointerdown="onPointerDown"
+    @pointermove="onPointerMove"
+    @pointerup="onPointerUp"
+    @pointercancel="onPointerUp"
   >
     <!-- 底层：掌握标记 -->
     <div
