@@ -52,14 +52,33 @@ export function toHiragana(s: string): string {
   return out
 }
 
-/** 口述比对：去空白、标点、汉数字归一、片假名 → 平假名 */
+/**
+ * STT 同音误识别映射：同じ読みで STT が別の漢字を返すケース。
+ * key=STT が返す表記, value=正解側の表記
+ */
+const KANJI_SYNONYMS: [string, string][] = [
+  ['引け', '弾け'], ['引き', '弾き'], ['引く', '弾く'],
+  ['聞け', '弾け'],
+  ['退け', '弾け'],
+]
+
+function applySynonyms(s: string): string {
+  for (const [from, to] of KANJI_SYNONYMS) {
+    if (s.includes(from)) s = s.replaceAll(from, to)
+  }
+  return s
+}
+
+/** 口述比对：去空白、标点、汉数字归一、片假名 → 平假名、同音漢字归一 */
 export function normalizeJpSpeech(s: string): string {
   return toHiragana(
-    normalizeNumbers(
-      s
-        .trim()
-        .replace(/[\s\u3000]+/g, '')
-        .replace(/[。．、，,.]/g, ''),
+    applySynonyms(
+      normalizeNumbers(
+        s
+          .trim()
+          .replace(/[\s\u3000]+/g, '')
+          .replace(/[。．、，,.]/g, ''),
+      ),
     ),
   )
 }
