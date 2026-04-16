@@ -7,6 +7,7 @@ import { useLang } from '@/i18n'
 import { localMeaning } from '@/utils/helpers'
 import { normalizeJpSpeech } from '@/utils/jpSpeechMatch'
 import { recordFollowComplete, recordReadTime } from '@/composables/useStats'
+import { markSentencePerfect } from '@/learning/articlePerfect'
 import { isStarred, toggleStar, starredTick } from '@/learning'
 import RubyText from '@/components/common/RubyText.vue'
 import ArticleCover from '@/components/common/ArticleCover.vue'
@@ -126,6 +127,13 @@ function onRecordDown(e: PointerEvent) {
           if (!allPassed.value && readPassedSet.value.size >= loopPlaylist.value.length) {
             allPassed.value = true
             recordFollowComplete(loopPlaylist.value.length)
+          }
+        }
+        // 高分（≥95）且是文章句子：打满分印记，贡献整篇掌握进度
+        if (score >= 95) {
+          const it = currentItem.value as { _articleId?: string; id?: number }
+          if (it._articleId && typeof it.id === 'number') {
+            markSentencePerfect(it._articleId, it.id)
           }
         }
       }

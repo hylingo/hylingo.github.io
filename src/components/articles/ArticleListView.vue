@@ -6,7 +6,7 @@ import type { ArticleItem, ArticleEssay, ArticleDialogue } from '@/types'
 import AppIcon from '@/components/common/AppIcon.vue'
 import ArticleCover from '@/components/common/ArticleCover.vue'
 import { getAllArticleProgress, type ArticleProgressEntry } from '@/learning/articleProgress'
-import { isArticleFullyPerfect, articlePerfectTick } from '@/learning/articlePerfect'
+import { isArticleFullyPerfect, getPerfectSentencesOf, articlePerfectTick } from '@/learning/articlePerfect'
 import { flatArticleSegments } from '@/utils/articleQuiz'
 
 const props = defineProps<{ filterFormat: 'essay' | 'dialogue' }>()
@@ -26,6 +26,20 @@ onMounted(refreshProgressMap)
 watch(() => store.studyLang, refreshProgressMap)
 // 父组件回到列表时也刷新一次（通过暴露的方法）
 defineExpose({ refreshProgressMap })
+
+/** 每篇文章的满分句数 / 总句数 */
+function sentenceProgress(articleId: string): { perfected: number; total: number } {
+  articlePerfectTick.value
+  const art = store.articles.find((a) => a.id === articleId)
+  if (!art) return { perfected: 0, total: 0 }
+  const total = flatArticleSegments(art).length
+  const set = getPerfectSentencesOf(articleId)
+  let perfected = 0
+  for (let i = 0; i < total; i++) {
+    if (set[String(i)]) perfected++
+  }
+  return { perfected, total }
+}
 
 const levelOrder: Record<string, number> = { N5: 0, N4: 1, N3: 2, N2: 3, N1: 4 }
 function levelSortKey(level: string): number {
@@ -163,10 +177,10 @@ function openItem(id: string) {
       >
         <span
           class="absolute top-2.5 right-3 flex items-center gap-1.5 text-[10px] tabular-nums theme-muted"
-          :class="progressMap[it.id]?.listen || progressMap[it.id]?.shadow ? 'opacity-70' : 'opacity-35'"
+          :class="sentenceProgress(it.id).perfected > 0 ? 'opacity-70' : 'opacity-35'"
         >
-          <span :title="t('articleListenCount')">{{ t('articleListenShort') }}{{ progressMap[it.id]?.listen ?? 0 }}</span>
-          <span :title="t('articleShadowCount')">{{ t('articleShadowShort') }}{{ progressMap[it.id]?.shadow ?? 0 }}</span>
+          <span>{{ sentenceProgress(it.id).perfected }}/{{ sentenceProgress(it.id).total }}</span>
+          <span v-if="isArticleFullyPerfect(it.id, sentenceProgress(it.id).total)" style="color: var(--primary)">✓</span>
         </span>
         <div class="flex items-start gap-3">
           <ArticleCover
