@@ -26,6 +26,8 @@ const quizItems = ref<DataItem[]>([])
 const quizIndex = ref(0)
 const isAnswered = ref(false)
 const quizLevels = ref<string[]>([])
+/** 本轮已"认识"的 item key，到达队尾时只保留未过关的重来 */
+const passedKeys = new Set<string>()
 
 /** 本篇逐句练习刚跑完，供练页展示完成态 */
 export const articleBlockJustCompleted = ref<{ title: string; sentenceCount: number } | null>(null)
@@ -149,6 +151,7 @@ function startQuiz() {
   quizItems.value = weightedSample(pool, POOL_SIZE)
   quizIndex.value = 0
   isAnswered.value = false
+  passedKeys.clear()
 }
 
 /** 同一事件环内多次触发（如同时改 practiceArticleId + mode）合并为一次抽题 */
@@ -191,6 +194,22 @@ function submitSkip() {
   const cat = it._cat || store.currentCat
   recordSkip(cat, it.id)
   recordQuiz(it, false, cat)
+}
+
+/** 用户点「认识了」：本轮过关，不再重复；记 submitStudy + 标记 passedKeys */
+function submitKnown() {
+  const store = useAppStore()
+  const it = quizItems.value[quizIndex.value]
+  if (!it) return
+  if (isArticleQuizItem(it)) {
+    advanceIndex()
+    return
+  }
+  const cat = it._cat || store.currentCat
+  passedKeys.add(`${cat}:${it.id}`)
+  recordStudy(cat, it.id)
+  recordQuiz(it, true, cat)
+  advanceIndex()
 }
 
 /** 用户点「掌握了」：标记掌握并进入下一题 */
@@ -241,8 +260,19 @@ function advanceIndex() {
       quizIndex.value = 0
       return
     }
-    quizIndex.value = 0
-    startQuiz() // 重新加载池
+    // 把未"认识"的题目留下，重新排列继续练
+    const remaining = quizItems.value.filter((it) => {
+      const cat = it._cat || store.currentCat
+      return !passedKeys.has(`${cat}:${it.id}`)
+    })
+    if (remaining.length > 0) {
+      quizItems.value = remaining
+      quizIndex.value = 0
+      isAnswered.value = false
+    } else {
+      // 本轮全过了，抽新的一批
+      startQuiz()
+    }
   }
 }
 
@@ -300,6 +330,7 @@ export function useQuiz() {
     hideAnswer,
     submitStudy,
     submitSkip,
+    submitKnown,
     submitMastered,
     nextQuestion,
     dismissArticleBlockComplete,

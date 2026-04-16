@@ -29,7 +29,7 @@ const QUIZ_MODES: { key: QuizMode; labelKey: string }[] = [
 const {
   quizItems, quizIndex, isAnswered,
   articleBlockJustCompleted,
-  showAnswer, hideAnswer, submitStudy, submitSkip, submitMastered, nextQuestion,
+  showAnswer, hideAnswer, submitStudy, submitSkip, submitKnown, submitMastered, nextQuestion,
   dismissArticleBlockComplete,
 } = useQuiz()
 
@@ -132,7 +132,11 @@ function onKeydown(e: KeyboardEvent) {
     if (!isAnswered.value) onShowAnswer()
   } else if (e.key === 'ArrowRight') {
     e.preventDefault()
-    nextQuestion()
+    if (isAnswered.value) nextQuestion()
+    else submitKnown()
+  } else if (e.key === 'ArrowLeft') {
+    e.preventDefault()
+    if (!isAnswered.value) onShowAnswer()
   } else if (e.key === 'ArrowUp' && !e.repeat && !e.metaKey && !e.ctrlKey) {
     if (recKeyHeld) return
     recKeyHeld = true
@@ -272,8 +276,6 @@ function onRecordDown(e: PointerEvent) {
   if (sttSupported.value) startStt(onSttDone)
 }
 
-const READ_PASS = 60
-
 function onRecordUp() {
   if (!recordGuard) return
   recordGuard = false
@@ -291,8 +293,6 @@ function onSttDone(text: string) {
   if (!item) return
   const score = text ? calcScore(text, item, sttAlternatives.value) : 0
   sttScore.value = score
-  // 念对了才算练过一次
-  if (score >= READ_PASS) submitStudy()
   // 高分（≥95）且是文章精读题：打印记（容许 STT 轻微误差）
   if (score >= 95) {
     const asArt = item as { _quizSource?: string; _articleId?: string; id?: number }
@@ -521,17 +521,25 @@ const progressText = computed(() => {
         </template>
       </div>
 
-      <!-- 底部按钮：看答案 + 下一个（未揭晓时并排）/ 下一个（已揭晓时独占） -->
+      <!-- 底部按钮：翻开前 认识了|看答案，翻开后 下一个 -->
       <div class="flex flex-col items-center gap-7 w-full max-w-[400px] mt-1">
         <div class="flex items-center gap-2 w-full">
+          <template v-if="!isAnswered">
+            <button
+              type="button"
+              class="flex-1 py-3.5 rounded-[12px] text-base font-medium cursor-pointer transition-all border theme-surface"
+              style="border-color: var(--primary); color: var(--primary)"
+              @click="submitKnown"
+            >{{ t('practiceKnown') }}</button>
+            <button
+              type="button"
+              class="flex-1 py-3.5 rounded-[12px] text-base font-medium cursor-pointer transition-all border theme-surface theme-muted"
+              style="border-color: var(--border)"
+              @click="onShowAnswer"
+            >{{ t('practiceShowAnswer') }}</button>
+          </template>
           <button
-            v-if="!isAnswered"
-            type="button"
-            class="flex-1 py-3.5 rounded-[12px] text-base font-medium cursor-pointer transition-all border theme-surface theme-muted"
-            style="border-color: var(--border)"
-            @click="onShowAnswer"
-          >{{ t('practiceShowAnswer') }}</button>
-          <button
+            v-else
             type="button"
             class="flex-1 py-3.5 rounded-[12px] text-base font-medium cursor-pointer transition-all border theme-surface theme-muted"
             style="border-color: var(--border)"
