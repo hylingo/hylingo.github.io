@@ -142,13 +142,40 @@ function startQuiz() {
     }
   }
 
-  // 宽松 SRS：分桶加权随机。没选级别筛选时，新词按 N5→N1 降权，优先抽简单的。
-  const noLevelFilter = quizLevels.value.length === 0
-  const pool = collectPool(cat, noLevelFilter).filter((e) => {
-    if (noLevelFilter) return true
-    return !!e.it.level && quizLevels.value.includes(e.it.level)
-  })
-  quizItems.value = weightedSample(pool, POOL_SIZE)
+  // 顺序出题：按词表原始顺序取下一批，30 个一组。
+  // 跳过已掌握的 + 已学但还没到复习日的（delay > today）。
+  // 保留：新词（counts=0）+ 到期复习词（counts>0 且 delay<=today）。
+  // 全部点「认识了」后才出下一批（由 advanceIndex 的 passedKeys 循环控制）。
+  const mastery = getMasteryQuizPassedMap()
+  const delays = getDelays()
+  const today = new Date().toISOString().slice(0, 10)
+  const snap = getQuizProgressSnapshot()
+  const counts = snap.counts
+  const pickCats: string[] =
+    cat === 'mix' || cat === 'starred'
+      ? (['nouns', 'verbs'] as string[])
+      : [cat]
+  const starred = cat === 'starred' ? getStarredMap() : null
+
+  const allItems: (DataItem & { _cat?: string })[] = []
+  for (const c of pickCats) {
+    const arr = (store.data as Record<string, DataItem[]>)[c]
+    if (!Array.isArray(arr)) continue
+    for (const it of arr) {
+      const k = makeItemKey(c, it.id)
+      if (mastery[k]) continue
+      if (starred && !starred[k]) continue
+      // 已学但未到期 → 跳过（等到期再出现）
+      const cnt = counts[`${c}:${it.id}`] || 0
+      if (cnt > 0) {
+        const due = delays[k]
+        if (due && due > today) continue
+      }
+      allItems.push({ ...it, _cat: c })
+    }
+  }
+
+  quizItems.value = allItems.slice(0, POOL_SIZE)
   quizIndex.value = 0
   isAnswered.value = false
   passedKeys.clear()
