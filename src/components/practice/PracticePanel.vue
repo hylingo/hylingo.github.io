@@ -3,8 +3,7 @@ import { computed, watch, ref, onMounted, onUnmounted } from 'vue'
 import { useAppStore } from '../../stores/app'
 import { useQuiz } from '../../composables/useQuiz'
 import { speakWithExample } from '../../composables/useAudio'
-import { useVoiceRecorder } from '../../composables/useVoiceRecorder'
-import { useJaSpeechRecognition } from '../../composables/useJaSpeechRecognition'
+import { useStt } from '../../composables/useStt'
 import { recordReadTime } from '../../composables/useStats'
 import { normalizeJpSpeech } from '@/utils/jpSpeechMatch'
 import { isStarred, toggleStar, starredTick } from '@/learning'
@@ -84,40 +83,10 @@ function onToggleStar() {
   toggleStar(cat, it.id)
 }
 
-// 录音 & 语音识别
-const { recording, audioUrl, startRecording, stopRecording, clearRecording } = useVoiceRecorder()
-
-// 回放录音
-const playbackAudio = ref<HTMLAudioElement | null>(null)
-const isPlayingBack = ref(false)
-const playbackProgress = ref(0)
-let playbackRaf = 0
-
-function togglePlayback() {
-  if (!audioUrl.value) return
-  if (isPlayingBack.value) { stopPlayback(); return }
-  const a = new Audio(audioUrl.value)
-  playbackAudio.value = a
-  isPlayingBack.value = true
-  playbackProgress.value = 0
-  a.onended = () => { isPlayingBack.value = false; playbackProgress.value = 100 }
-  a.play()
-  function tick() {
-    if (!isPlayingBack.value) return
-    if (a.duration > 0) playbackProgress.value = (a.currentTime / a.duration) * 100
-    playbackRaf = requestAnimationFrame(tick)
-  }
-  tick()
-}
-
-function stopPlayback() {
-  if (playbackAudio.value) { playbackAudio.value.pause(); playbackAudio.value = null }
-  isPlayingBack.value = false
-  playbackProgress.value = 0
-  cancelAnimationFrame(playbackRaf)
-}
-
-onUnmounted(() => stopPlayback())
+// 语音识别（极简）
+const { supported: sttSupported, listening: recording, start: startStt, abort: abortStt, alternatives: sttAlternatives } = useStt()
+const sttResult = ref('')
+const sttScore = ref<number | null>(null)
 
 // === 键盘快捷键：↓ 看答案 / → 下一个 / Space 按住录音 ===
 let recKeyHeld = false
@@ -143,9 +112,6 @@ function onKeydown(e: KeyboardEvent) {
     recordGuard = true
     sttResult.value = ''
     sttScore.value = null
-    stopPlayback()
-    clearRecording()
-    if (useMediaRecorder) startRecording()
     if (sttSupported.value) startStt(onSttDone)
   }
 }
@@ -164,10 +130,6 @@ onUnmounted(() => {
   window.removeEventListener('keydown', onKeydown)
   window.removeEventListener('keyup', onKeyup)
 })
-
-const { supported: sttSupported, listening: sttListening, start: startStt, stopListening: stopStt, alternatives: sttAlternatives } = useJaSpeechRecognition()
-const sttResult = ref('')
-const sttScore = ref<number | null>(null)
 
 function lcsLen(a: string, b: string): number {
   const m = a.length, n = b.length
@@ -249,41 +211,26 @@ function resetInteractionState() {
   listenInput.value = ''
   listenScore.value = null
   listenSubmitted.value = false
-  stopPlayback()
-  clearRecording()
+  abortStt()
   hideAnswer()
 }
 
 // === 录音（按住录音按钮）===
 let recordGuard = false
-// Android 和 iOS 都会让 MediaRecorder 与 SpeechRecognition 抢麦：
-//   Android Chrome → SR 立即 aborted
-//   iOS Safari     → SR 只收到静音，反复 "No speech detected"
-// 移动端统一只跑 STT，放弃回放录音。
-const UA = typeof navigator !== 'undefined' ? navigator.userAgent : ''
-const IS_MOBILE = /Android/i.test(UA) || /iPhone|iPad|iPod/i.test(UA)
-const useMediaRecorder = !IS_MOBILE
 
 function onRecordDown(e: PointerEvent) {
   ;(e.target as HTMLElement)?.setPointerCapture?.(e.pointerId)
   recordGuard = true
   sttResult.value = ''
   sttScore.value = null
-  stopPlayback()
-  clearRecording()
-  if (useMediaRecorder) startRecording()
   if (sttSupported.value) startStt(onSttDone)
 }
 
 function onRecordUp() {
   if (!recordGuard) return
   recordGuard = false
-  // 松开即算一次"录"（无论识别好坏）
   recordReadTime()
-  setTimeout(() => {
-    if (useMediaRecorder && recording.value) stopRecording()
-    if (sttListening.value) stopStt()
-  }, 350)
+  abortStt()
 }
 
 function onSttDone(text: string) {
@@ -367,7 +314,7 @@ const progressText = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center gap-2 pt-2 pb-6" :class="{ 'no-select-while-hold': recording || sttListening }">
+  <div class="flex flex-col items-center gap-2 pt-2 pb-6" :class="{ 'no-select-while-hold': recording }">
     <!-- 本篇练完 -->
     <template v-if="articleBlockJustCompleted">
       <div class="w-full max-w-[400px] mx-auto rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.10)] theme-surface p-8 text-center space-y-3">
@@ -471,24 +418,6 @@ const progressText = computed(() => {
           <div class="flex items-center justify-center gap-2 w-full min-w-0 h-7" :style="{ visibility: sttScore !== null ? 'visible' : 'hidden' }">
             <span v-if="sttScore !== null" class="text-lg font-bold tabular-nums shrink-0" :style="{ color: scoreColor(sttScore) }">{{ sttScore }}</span>
             <span v-if="sttResult" class="text-sm theme-text truncate min-w-0">{{ sttResult }}</span>
-          </div>
-
-          <!-- 回放条 -->
-          <div
-            class="relative h-9 rounded-xl overflow-hidden w-full"
-            :class="audioUrl ? (recording ? 'opacity-40 pointer-events-none' : 'cursor-pointer') : 'opacity-0 pointer-events-none'"
-            style="background: color-mix(in srgb, var(--text) 8%, transparent)"
-            @click="togglePlayback"
-          >
-            <div
-              class="absolute inset-y-0 left-0 rounded-xl transition-[width] duration-100"
-              :style="{ width: playbackProgress + '%', background: (sttScore !== null ? scoreColor(sttScore) : 'var(--primary)') + '20' }"
-            />
-            <div class="relative flex items-center justify-center gap-2 h-full px-4">
-              <svg v-if="!isPlayingBack" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" :style="{ color: sttScore !== null ? scoreColor(sttScore) : 'var(--primary)' }"><polygon points="8,6 18,12 8,18" /></svg>
-              <svg v-else width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" :style="{ color: sttScore !== null ? scoreColor(sttScore) : 'var(--primary)' }"><line x1="9" y1="6" x2="9" y2="18" /><line x1="15" y1="6" x2="15" y2="18" /></svg>
-              <span class="text-[11px] font-medium" :style="{ color: sttScore !== null ? scoreColor(sttScore) : 'var(--primary)' }">{{ isPlayingBack ? t('followPlaying') : t('followPlayback') }}</span>
-            </div>
           </div>
 
           <!-- 录音按钮 -->

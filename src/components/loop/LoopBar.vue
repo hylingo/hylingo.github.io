@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, watch, onUnmounted } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useLoopPlayer } from '../../composables/useLoopPlayer'
-import { useJaSpeechRecognition } from '../../composables/useJaSpeechRecognition'
-import { useVoiceRecorder } from '../../composables/useVoiceRecorder'
+import { useStt } from '../../composables/useStt'
 import { useLang } from '@/i18n'
 import { localMeaning } from '@/utils/helpers'
 import { normalizeJpSpeech } from '@/utils/jpSpeechMatch'
@@ -21,8 +20,7 @@ const {
   exportLoopDebugLogs, clearLoopDebugLogs,
 } = useLoopPlayer()
 
-const { supported: sttSupported, start: startStt, stopListening, abortListening } = useJaSpeechRecognition()
-const { recording, audioUrl, startRecording, stopRecording, clearRecording } = useVoiceRecorder()
+const { supported: sttSupported, listening: recording, start: startStt, abort: abortStt } = useStt()
 
 const visible = computed(() => loopPlaying.value || loopPaused.value)
 const currentItem = computed(() => loopPlaylist.value[loopIndex.value])
@@ -35,20 +33,12 @@ const sttScore = ref<number | null>(null)
 const readPassedSet = ref(new Set<number>())
 const allPassed = ref(false)
 
-// 回放
-const playbackAudio = ref<HTMLAudioElement | null>(null)
-const isPlayingBack = ref(false)
-const playbackProgress = ref(0)
-let playbackRaf = 0
-
 const readProgress = computed(() => `${readPassedSet.value.size}/${loopPlaylist.value.length}`)
 const currentPassed = computed(() => readPassedSet.value.has(loopIndex.value))
 
 watch(loopIndex, () => {
   sttResult.value = ''
   sttScore.value = null
-  stopPlayback()
-  clearRecording()
 })
 
 // 显隐切换：展开时取消折叠；隐藏时清掉跟读相关瞬时状态
@@ -62,8 +52,6 @@ watch(visible, (v) => {
   allPassed.value = false
   sttResult.value = ''
   sttScore.value = null
-  stopPlayback()
-  clearRecording()
 })
 
 function lcsLen(a: string, b: string): number {
@@ -92,9 +80,7 @@ function onFollowToggle() {
     // 进入跟读：暂停播放
     if (!loopPaused.value) togglePlay()
   } else {
-    abortListening()
-    if (recording.value) stopRecording()
-    stopPlayback()
+    abortStt()
     sttResult.value = ''
     sttScore.value = null
   }
@@ -108,21 +94,16 @@ function playOriginal() {
 let recordGuard = false
 
 function onRecordDown(e: PointerEvent) {
-  // 锁定 pointer 防止 pointerleave 误触发
   ;(e.target as HTMLElement)?.setPointerCapture?.(e.pointerId)
   recordGuard = true
   sttResult.value = ''
   sttScore.value = null
-  stopPlayback()
-  clearRecording()
-  startRecording()
   if (sttSupported.value) {
     startStt((text: string) => {
       sttResult.value = text || ''
       if (currentItem.value) {
         const score = text ? calcScore(text, currentItem.value) : 0
         sttScore.value = score
-        // 通过门槛与文章掌握一致（≥95）：既算整段通过，又打满分印记
         if (score >= 95) {
           readPassedSet.value.add(loopIndex.value)
           if (!allPassed.value && readPassedSet.value.size >= loopPlaylist.value.length) {
@@ -143,44 +124,8 @@ function onRecordUp() {
   if (!recordGuard) return
   recordGuard = false
   recordReadTime()
-  if (recording.value) stopRecording()
-  stopListening()
+  abortStt()
 }
-
-// 回放控制
-function togglePlayback() {
-  if (!audioUrl.value) return
-  if (isPlayingBack.value) {
-    stopPlayback()
-    return
-  }
-  const a = new window.Audio(audioUrl.value)
-  playbackAudio.value = a
-  isPlayingBack.value = true
-  playbackProgress.value = 0
-
-  a.onended = () => { isPlayingBack.value = false; playbackProgress.value = 100 }
-  a.play()
-
-  function tick() {
-    if (!isPlayingBack.value) return
-    if (a.duration > 0) playbackProgress.value = (a.currentTime / a.duration) * 100
-    playbackRaf = requestAnimationFrame(tick)
-  }
-  tick()
-}
-
-function stopPlayback() {
-  if (playbackAudio.value) {
-    playbackAudio.value.pause()
-    playbackAudio.value = null
-  }
-  isPlayingBack.value = false
-  playbackProgress.value = 0
-  cancelAnimationFrame(playbackRaf)
-}
-
-onUnmounted(() => { stopPlayback() })
 
 function scoreColor(score: number) {
   if (score >= 80) return '#4f8a6f'
@@ -326,25 +271,12 @@ function onCardMainClick() {
           <!-- 结果区域（固定高度，在录音按钮上方） -->
           <div class="h-[100px] flex flex-col items-center justify-center w-full">
             <!-- 有结果 -->
-            <template v-if="audioUrl && sttScore !== null && !recording">
+            <template v-if="sttScore !== null && !recording">
               <div class="flex items-center justify-center gap-2 mb-1">
                 <span class="text-2xl font-bold" :style="{ color: scoreColor(sttScore) }">{{ scoreLabel(sttScore) }}</span>
                 <span class="text-lg font-bold tabular-nums" :style="{ color: scoreColor(sttScore) }">{{ sttScore }}</span>
               </div>
               <div v-if="sttResult" class="text-base theme-text mb-2 leading-relaxed px-2">{{ sttResult }}</div>
-              <!-- 回放条 -->
-              <div
-                class="relative h-9 rounded-xl overflow-hidden cursor-pointer w-full max-w-[260px]"
-                style="background: color-mix(in srgb, var(--text) 8%, transparent)"
-                @click="togglePlayback"
-              >
-                <div class="absolute inset-y-0 left-0 rounded-xl transition-[width] duration-100" :style="{ width: playbackProgress + '%', background: scoreColor(sttScore) + '20' }" />
-                <div class="relative flex items-center justify-center gap-2 h-full px-4">
-                  <svg v-if="!isPlayingBack" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" :style="{ color: scoreColor(sttScore) }"><polygon points="8,6 18,12 8,18" /></svg>
-                  <svg v-else width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" :style="{ color: scoreColor(sttScore) }"><line x1="9" y1="6" x2="9" y2="18" /><line x1="15" y1="6" x2="15" y2="18" /></svg>
-                  <span class="text-[11px] font-medium" :style="{ color: scoreColor(sttScore) }">{{ isPlayingBack ? t('followPlaying') : t('followPlayback') }}</span>
-                </div>
-              </div>
             </template>
 
             <!-- 已通过 -->

@@ -71,6 +71,8 @@ function newWeightByLevel(level?: string): number {
 
 type PoolEntry = { it: DataItem & { _cat?: string }; weight: number }
 
+// @ts-expect-error 保留作为未来加权抽题的备份，当前未使用
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function collectPool(cat: string, applyEasyBias: boolean): PoolEntry[] {
   const store = useAppStore()
   const delays = getDelays()
@@ -111,6 +113,8 @@ function collectPool(cat: string, applyEasyBias: boolean): PoolEntry[] {
 }
 
 /** 加权随机抽 N 条（无放回），key = -log(U) / w */
+// @ts-expect-error 保留作为未来加权抽题的备份，当前未使用
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function weightedSample(pool: PoolEntry[], n: number): (DataItem & { _cat?: string })[] {
   if (pool.length === 0) return []
   const keyed = pool.map((e) => {
