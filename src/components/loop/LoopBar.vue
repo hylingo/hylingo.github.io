@@ -122,15 +122,13 @@ function onRecordDown(e: PointerEvent) {
       if (currentItem.value) {
         const score = text ? calcScore(text, currentItem.value) : 0
         sttScore.value = score
-        if (score >= 80) {
+        // 通过门槛与文章掌握一致（≥95）：既算整段通过，又打满分印记
+        if (score >= 95) {
           readPassedSet.value.add(loopIndex.value)
           if (!allPassed.value && readPassedSet.value.size >= loopPlaylist.value.length) {
             allPassed.value = true
             recordFollowComplete(loopPlaylist.value.length)
           }
-        }
-        // 高分（≥95）且是文章句子：打满分印记，贡献整篇掌握进度
-        if (score >= 95) {
           const it = currentItem.value as { _articleId?: string; id?: number }
           if (it._articleId && typeof it.id === 'number') {
             markSentencePerfect(it._articleId, it.id)
