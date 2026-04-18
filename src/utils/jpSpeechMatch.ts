@@ -63,6 +63,10 @@ const KANJI_SYNONYMS: [string, string][] = [
   ['装置', 'そっち'],
   ['印象', '一緒'],
   ['携帯で', '着て'],
+  ['御飯', 'ご飯'],
+  ['美味しい', 'おいしい'],
+  ['美味しく', 'おいしく'],
+  ['美味しかっ', 'おいしかっ'],
 ]
 
 function applySynonyms(s: string): string {
