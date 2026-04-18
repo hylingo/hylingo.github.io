@@ -88,4 +88,15 @@ export default defineConfig({
   },
   base: '/',
   publicDir: 'public',
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/firebase') || id.includes('node_modules/@firebase')) {
+            return 'firebase'
+          }
+        },
+      },
+    },
+  },
 })
