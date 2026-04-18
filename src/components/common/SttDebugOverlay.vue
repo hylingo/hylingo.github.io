@@ -67,11 +67,13 @@ async function copyAll() {
   display: flex; align-items: flex-end; justify-content: center;
 }
 .stt-debug-card {
-  width: 100%; max-width: 720px; max-height: 80vh;
+  width: 100%; max-width: 720px; height: 80vh; max-height: 80vh;
   background: #fff; border-radius: 12px 12px 0 0;
-  display: flex; flex-direction: column;
+  display: flex; flex-direction: column; min-height: 0;
   box-shadow: 0 -4px 20px rgba(0,0,0,.2);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
+header { flex-shrink: 0; }
 header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 10px 14px; border-bottom: 1px solid #eee;
@@ -82,7 +84,9 @@ header button {
   border-radius: 6px; font-size: 13px; cursor: pointer;
 }
 .log {
-  flex: 1; overflow-y: auto; padding: 8px 12px;
+  flex: 1 1 auto; min-height: 0;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: 8px 12px;
   font: 12px/1.5 ui-monospace, Menlo, Consolas, monospace;
 }
 .empty { color: #999; padding: 12px; text-align: center; }
