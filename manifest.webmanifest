@@ -1,0 +1,20 @@
+{
+  "name": "日本語学習",
+  "short_name": "日本語学習",
+  "description": "免费在线日语学习工具，单词、句子、50音图，循环播放 + 间隔重复练习",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fbf7f0",
+  "theme_color": "#f0cd51",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
