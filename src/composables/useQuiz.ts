@@ -250,6 +250,11 @@ function submitMastered() {
   }
   const cat = it._cat || store.currentCat
   markMastered(cat, it.id)
+  // 把当前队列里剩余的同一条目一并剔除，避免本轮队列内重复出现
+  const curIdx = quizIndex.value
+  quizItems.value = quizItems.value.filter(
+    (q, i) => i <= curIdx || !(q.id === it.id && (q._cat || store.currentCat) === cat),
+  )
   advanceIndex()
 }
 
