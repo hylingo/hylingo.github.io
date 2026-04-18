@@ -62,6 +62,7 @@ const KANJI_SYNONYMS: [string, string][] = [
   ['退け', '弾け'],
   ['装置', 'そっち'],
   ['印象', '一緒'],
+  ['携帯で', '着て'],
 ]
 
 function applySynonyms(s: string): string {
