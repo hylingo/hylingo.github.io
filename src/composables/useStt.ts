@@ -1,6 +1,11 @@
 /**
- * 极简 Web Speech API 包装：按下 new、松开 abort、无单例、无状态机、无队列。
+ * 极简 Web Speech API 包装 + iOS Chrome 音频会话唤醒。
  * 仅支持 Chrome（桌面 / Android / iOS Chrome）。
+ *
+ * iOS Chrome 会话泄漏缓解策略：
+ *   1. 每次 start 前 getUserMedia 抓一下麦克风再立刻 release，强制刷新音频会话
+ *   2. 结束后 abort + 200ms 冷却，让底层有时间释放
+ *   3. 冷却期内再次 start 会等冷却结束
  */
 import { ref, onUnmounted } from 'vue'
 import { pushSttDebug } from '@/utils/sttDebug'
@@ -13,6 +18,18 @@ function getCtor(): SpeechRecCtor | null {
 }
 
 const IS_ANDROID = typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent)
+const COOLDOWN_MS = 200
+
+/** 唤醒 iOS Chrome 音频会话：抓一下麦克风立即释放 */
+async function wakeAudio() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    stream.getTracks().forEach((t) => t.stop())
+    pushSttDebug('wake', 'ok')
+  } catch (err) {
+    pushSttDebug('wake-fail', String((err as Error)?.message || err))
+  }
+}
 
 export function useStt() {
   const supported = ref(!!getCtor())
@@ -25,6 +42,7 @@ export function useStt() {
   let token = 0
   let currentOnDone: ((text: string) => void) | null = null
   let settled = false
+  let lastEndAt = 0
 
   function cleanup() {
     if (!rec) return
@@ -34,6 +52,13 @@ export function useStt() {
     rec = null
   }
 
+  function hardAbort() {
+    if (!rec) return
+    try { rec.abort() } catch { /* ignore */ }
+    cleanup()
+    lastEndAt = Date.now()
+  }
+
   function finish() {
     if (settled) return
     settled = true
@@ -41,19 +66,27 @@ export function useStt() {
     const text = (finalText.value + interimText.value).trim()
     const cb = currentOnDone
     currentOnDone = null
-    cleanup()
+    // 结束时额外再 abort 一次，确保底层实例被彻底回收
+    hardAbort()
     cb?.(text)
   }
 
-  function start(onDone: (text: string) => void) {
+  async function start(onDone: (text: string) => void) {
     const Ctor = getCtor()
     if (!Ctor) { onDone(''); return }
 
-    // 若上一个会话还在，先强制清理（本地层面，底层由 new 覆盖）
-    if (rec) {
-      try { rec.abort() } catch { /* ignore */ }
-      cleanup()
+    // 若上一个会话还在，先强制杀掉
+    if (rec) hardAbort()
+
+    // 冷却：距离上次结束不足 COOLDOWN_MS 就等等
+    const wait = COOLDOWN_MS - (Date.now() - lastEndAt)
+    if (wait > 0) {
+      pushSttDebug('cooldown', `${wait}ms`)
+      await new Promise((r) => setTimeout(r, wait))
     }
+
+    // 唤醒音频会话（iOS Chrome 关键）
+    await wakeAudio()
 
     token++
     const myToken = token
@@ -118,17 +151,15 @@ export function useStt() {
   }
 
   function abort() {
-    if (!rec) return
-    try { rec.abort() } catch { /* ignore */ }
+    if (rec) {
+      try { rec.abort() } catch { /* ignore */ }
+    }
     finish()
   }
 
   onUnmounted(() => {
     token++
-    if (rec) {
-      try { rec.abort() } catch { /* ignore */ }
-      cleanup()
-    }
+    hardAbort()
   })
 
   return { supported, listening, interimText, finalText, alternatives, start, stop, abort }
