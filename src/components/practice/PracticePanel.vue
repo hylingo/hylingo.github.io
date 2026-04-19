@@ -5,7 +5,7 @@ import { useQuiz } from '../../composables/useQuiz'
 import { speakWithExample } from '../../composables/useAudio'
 import { useStt } from '../../composables/useStt'
 import { recordReadTime } from '../../composables/useStats'
-import { normalizeJpSpeech } from '@/utils/jpSpeechMatch'
+import { normalizeJpSpeech, homophoneAliases } from '@/utils/jpSpeechMatch'
 import { isStarred, toggleStar, starredTick } from '@/learning'
 import { markSentencePerfect, isSentencePerfect, articlePerfectTick } from '@/learning/articlePerfect'
 import { useLang, currentLang } from '@/i18n'
@@ -148,8 +148,9 @@ function calcScore(transcript: string, item: { word: string; reading: string }, 
   const w = normalizeJpSpeech(item.word)
   const r = normalizeJpSpeech(item.reading)
   if (!w.length && !r.length) return 0
-  const candidates = [transcript, ...alts].map(normalizeJpSpeech).filter(Boolean)
-  if (!candidates.length) return 0
+  const base = [transcript, ...alts].map(normalizeJpSpeech).filter(Boolean)
+  if (!base.length) return 0
+  const candidates = [...base, ...base.flatMap((tr) => homophoneAliases(tr, r))]
   let best = 0
   for (const tr of candidates) {
     const sW = w.length ? lcsLen(tr, w) / Math.max(tr.length, w.length) : 0

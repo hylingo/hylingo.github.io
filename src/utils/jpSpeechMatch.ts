@@ -90,6 +90,24 @@ export function normalizeJpSpeech(s: string): string {
   )
 }
 
+/**
+ * STT 同音兜底：当目标读音命中 key 时，transcript 出现任一 alias 就补一个等同于 key 的候选。
+ * 例：きゃく 常被 Google STT 听成 ひゃく 并转成 "100"。
+ * 注意 alias 已是经过 normalizeJpSpeech 后的形态。
+ */
+const READING_ALIASES: Record<string, string[]> = {
+  きゃく: ['ひゃく', '100'],
+}
+
+/** 针对目标读音/表记生成 transcript 同音兜底候选（已 normalize 过的字符串） */
+export function homophoneAliases(normalizedTranscript: string, normalizedReading: string): string[] {
+  const aliases = READING_ALIASES[normalizedReading]
+  if (!aliases) return []
+  return aliases.some((a) => normalizedTranscript === a || normalizedTranscript.includes(a))
+    ? [normalizedReading]
+    : []
+}
+
 function singleMatch(t: string, w: string, r: string): boolean {
   if (t.length < 1) return false
   if (t === w || t === r) return true
@@ -97,6 +115,7 @@ function singleMatch(t: string, w: string, r: string): boolean {
   if (r.length >= 2 && t.includes(r)) return true
   if (w.length === 1 && t === w) return true
   if (r.length === 1 && t === r) return true
+  if (homophoneAliases(t, r).length > 0) return true
   return false
 }
 

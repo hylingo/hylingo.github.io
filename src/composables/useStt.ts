@@ -43,6 +43,8 @@ export function useStt() {
   let currentOnDone: ((text: string) => void) | null = null
   let settled = false
   let lastEndAt = 0
+  /** 用户是否还按着录音键。true = onend 时自动重启续录；false = 结束并回调 */
+  let userHolding = false
 
   function cleanup() {
     if (!rec) return
@@ -62,6 +64,7 @@ export function useStt() {
   function finish() {
     if (settled) return
     settled = true
+    userHolding = false
     listening.value = false
     const text = (finalText.value + interimText.value).trim()
     const cb = currentOnDone
@@ -71,35 +74,10 @@ export function useStt() {
     cb?.(text)
   }
 
-  async function start(onDone: (text: string) => void) {
+  /** 创建并启动一个识别实例；finals/interim 的累积由闭包 ref 持有，重启不会丢 */
+  function spawnRec(myToken: number) {
     const Ctor = getCtor()
-    if (!Ctor) { onDone(''); return }
-
-    // 若上一个会话还在，先强制杀掉
-    if (rec) hardAbort()
-
-    // 提前占 token：async 流程中若被 abort()，token 会再 ++，下面流程全部跳过
-    token++
-    const myToken = token
-    settled = false
-    currentOnDone = onDone
-    interimText.value = ''
-    finalText.value = ''
-    alternatives.value = []
-    listening.value = true
-
-    // 冷却：距离上次结束不足 COOLDOWN_MS 就等等
-    const wait = COOLDOWN_MS - (Date.now() - lastEndAt)
-    if (wait > 0) {
-      pushSttDebug('cooldown', `${wait}ms`)
-      await new Promise((r) => setTimeout(r, wait))
-    }
-    if (myToken !== token) return
-
-    // 唤醒音频会话（iOS Chrome 关键）
-    await wakeAudio()
-    if (myToken !== token) return
-
+    if (!Ctor) return
     const r = new Ctor()
     r.lang = 'ja-JP'
     r.continuous = !IS_ANDROID
@@ -132,11 +110,22 @@ export function useStt() {
     r.onerror = (e: SpeechRecognitionErrorEvent) => {
       if (myToken !== token) return
       pushSttDebug('error', e.error || '')
+      // no-speech / aborted 等错误：若用户还按着，也要续录
+      if (userHolding && e.error !== 'not-allowed' && e.error !== 'service-not-allowed') return
       finish()
     }
     r.onend = () => {
       if (myToken !== token) return
-      pushSttDebug('end', `final="${finalText.value}"`)
+      pushSttDebug('end', `final="${finalText.value}" holding=${userHolding}`)
+      cleanup()
+      if (userHolding) {
+        // 用户还按着录音键，自动续录（finalText 已保留）
+        try { spawnRec(myToken) } catch (err) {
+          pushSttDebug('respawn-throw', String((err as Error)?.message || err))
+          finish()
+        }
+        return
+      }
       finish()
     }
 
@@ -148,12 +137,47 @@ export function useStt() {
     }
   }
 
+  async function start(onDone: (text: string) => void) {
+    const Ctor = getCtor()
+    if (!Ctor) { onDone(''); return }
+
+    // 若上一个会话还在，先强制杀掉
+    if (rec) hardAbort()
+
+    // 提前占 token：async 流程中若被 abort()，token 会再 ++，下面流程全部跳过
+    token++
+    const myToken = token
+    settled = false
+    currentOnDone = onDone
+    interimText.value = ''
+    finalText.value = ''
+    alternatives.value = []
+    listening.value = true
+    userHolding = true
+
+    // 冷却：距离上次结束不足 COOLDOWN_MS 就等等
+    const wait = COOLDOWN_MS - (Date.now() - lastEndAt)
+    if (wait > 0) {
+      pushSttDebug('cooldown', `${wait}ms`)
+      await new Promise((r) => setTimeout(r, wait))
+    }
+    if (myToken !== token) return
+
+    // 唤醒音频会话（iOS Chrome 关键）
+    await wakeAudio()
+    if (myToken !== token) return
+
+    spawnRec(myToken)
+  }
+
   function stop() {
+    userHolding = false
     if (!rec) return
     try { rec.stop() } catch { /* ignore */ }
   }
 
   function abort() {
+    userHolding = false
     token++ // 作废任何进行中的 async start
     if (rec) {
       try { rec.abort() } catch { /* ignore */ }
@@ -162,6 +186,7 @@ export function useStt() {
   }
 
   onUnmounted(() => {
+    userHolding = false
     token++
     hardAbort()
   })
