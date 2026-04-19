@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useLoopPlayer } from '../../composables/useLoopPlayer'
-import { useStt } from '../../composables/useStt'
+import { useSpeechRecognizer } from '../../composables/useSpeechRecognizer'
 import { useLang } from '@/i18n'
 import { localMeaning } from '@/utils/helpers'
 import { normalizeJpSpeech } from '@/utils/jpSpeechMatch'
@@ -20,7 +20,7 @@ const {
   exportLoopDebugLogs, clearLoopDebugLogs,
 } = useLoopPlayer()
 
-const { supported: sttSupported, listening: recording, start: startStt, abort: abortStt } = useStt()
+const { supported: sttSupported, listening: recording, start: startStt, stop: stopStt, abort: abortStt } = useSpeechRecognizer()
 
 const visible = computed(() => loopPlaying.value || loopPaused.value)
 const currentItem = computed(() => loopPlaylist.value[loopIndex.value])
@@ -124,7 +124,7 @@ function onRecordUp() {
   if (!recordGuard) return
   recordGuard = false
   recordReadTime()
-  abortStt()
+  stopStt()
 }
 
 function scoreColor(score: number) {

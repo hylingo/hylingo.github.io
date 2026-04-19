@@ -27,6 +27,8 @@ export const LS = {
   LOOP_DEBUG: 'loop_debug_logs_v1',
   /** LS schema 版本（用于将来迁移） */
   SCHEMA_VERSION: 'hylingo_schema_version',
+  /** 本地 whisper.cpp 服务器地址（可选）。设置后 STT 走本地而非 Web Speech API */
+  LOCAL_STT_URL: 'local_stt_url',
 } as const
 
 // ---- 动态 key builder ----

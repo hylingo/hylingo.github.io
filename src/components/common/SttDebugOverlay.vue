@@ -1,8 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { sttDebugLog, sttDebugVisible, clearSttDebug, formatSttDebug } from '@/utils/sttDebug'
+import { safeGet, safeSet, safeRemove } from '@/storage/safeLS'
+import { LS } from '@/storage/keys'
 
 const copied = ref(false)
+const localSttUrl = ref(safeGet(LS.LOCAL_STT_URL) || '')
+const savedHint = ref('')
+
+function saveLocalSttUrl() {
+  const v = localSttUrl.value.trim()
+  if (v) safeSet(LS.LOCAL_STT_URL, v)
+  else safeRemove(LS.LOCAL_STT_URL)
+  savedHint.value = '已保存，刷新后生效'
+  setTimeout(() => (savedHint.value = ''), 2000)
+}
 
 async function copyAll() {
   const text = formatSttDebug()
@@ -32,6 +44,20 @@ async function copyAll() {
           <button @click="sttDebugVisible = false">×</button>
         </div>
       </header>
+      <div class="local-stt-setting">
+        <label>本地 whisper 服务器</label>
+        <div class="row-form">
+          <input
+            v-model="localSttUrl"
+            type="text"
+            placeholder="http://localhost:8080/inference（留空=用 Web Speech）"
+            spellcheck="false"
+            autocapitalize="off"
+          />
+          <button @click="saveLocalSttUrl">保存</button>
+        </div>
+        <div v-if="savedHint" class="hint">{{ savedHint }}</div>
+      </div>
       <div class="log">
         <div v-if="!sttDebugLog.length" class="empty">(暂无日志)</div>
         <div v-for="(e, i) in sttDebugLog" :key="i" class="row">
@@ -97,5 +123,29 @@ header button {
 .tag[data-tag="end"] { color: #c49a3c; }
 .fallback {
   position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0;
+}
+.local-stt-setting {
+  flex-shrink: 0;
+  padding: 10px 14px;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
+}
+.local-stt-setting label {
+  display: block; color: #555; margin-bottom: 4px; font-size: 12px;
+}
+.local-stt-setting .row-form {
+  display: flex; gap: 6px;
+}
+.local-stt-setting input {
+  flex: 1; min-width: 0;
+  padding: 6px 8px; border: 1px solid #ccc; border-radius: 6px;
+  font: 12px ui-monospace, Menlo, monospace;
+}
+.local-stt-setting button {
+  padding: 6px 12px; border: 1px solid #ccc; background: #f7f3ec;
+  border-radius: 6px; font-size: 13px; cursor: pointer;
+}
+.local-stt-setting .hint {
+  margin-top: 4px; color: #4f8a6f; font-size: 11px;
 }
 </style>

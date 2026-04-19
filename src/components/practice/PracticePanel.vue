@@ -3,7 +3,7 @@ import { computed, watch, ref, onMounted, onUnmounted } from 'vue'
 import { useAppStore } from '../../stores/app'
 import { useQuiz } from '../../composables/useQuiz'
 import { speakWithExample } from '../../composables/useAudio'
-import { useStt } from '../../composables/useStt'
+import { useSpeechRecognizer } from '../../composables/useSpeechRecognizer'
 import { recordReadTime } from '../../composables/useStats'
 import { normalizeJpSpeech, homophoneAliases } from '@/utils/jpSpeechMatch'
 import { isStarred, toggleStar, starredTick } from '@/learning'
@@ -83,8 +83,8 @@ function onToggleStar() {
   toggleStar(cat, it.id)
 }
 
-// 语音识别（极简）
-const { supported: sttSupported, listening: recording, start: startStt, abort: abortStt, alternatives: sttAlternatives } = useStt()
+// 语音识别（Web Speech 或本地 whisper.cpp，由 LOCAL_STT_URL 决定）
+const { supported: sttSupported, listening: recording, start: startStt, stop: stopStt, abort: abortStt, alternatives: sttAlternatives } = useSpeechRecognizer()
 const sttResult = ref('')
 const sttScore = ref<number | null>(null)
 
@@ -231,7 +231,7 @@ function onRecordUp() {
   if (!recordGuard) return
   recordGuard = false
   recordReadTime()
-  abortStt()
+  stopStt()
 }
 
 function onSttDone(text: string) {
