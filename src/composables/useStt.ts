@@ -78,16 +78,7 @@ export function useStt() {
     // 若上一个会话还在，先强制杀掉
     if (rec) hardAbort()
 
-    // 冷却：距离上次结束不足 COOLDOWN_MS 就等等
-    const wait = COOLDOWN_MS - (Date.now() - lastEndAt)
-    if (wait > 0) {
-      pushSttDebug('cooldown', `${wait}ms`)
-      await new Promise((r) => setTimeout(r, wait))
-    }
-
-    // 唤醒音频会话（iOS Chrome 关键）
-    await wakeAudio()
-
+    // 提前占 token：async 流程中若被 abort()，token 会再 ++，下面流程全部跳过
     token++
     const myToken = token
     settled = false
@@ -96,6 +87,18 @@ export function useStt() {
     finalText.value = ''
     alternatives.value = []
     listening.value = true
+
+    // 冷却：距离上次结束不足 COOLDOWN_MS 就等等
+    const wait = COOLDOWN_MS - (Date.now() - lastEndAt)
+    if (wait > 0) {
+      pushSttDebug('cooldown', `${wait}ms`)
+      await new Promise((r) => setTimeout(r, wait))
+    }
+    if (myToken !== token) return
+
+    // 唤醒音频会话（iOS Chrome 关键）
+    await wakeAudio()
+    if (myToken !== token) return
 
     const r = new Ctor()
     r.lang = 'ja-JP'
@@ -151,6 +154,7 @@ export function useStt() {
   }
 
   function abort() {
+    token++ // 作废任何进行中的 async start
     if (rec) {
       try { rec.abort() } catch { /* ignore */ }
     }
