@@ -50,6 +50,18 @@ export function getStarredMap(): Record<string, true> {
   return readMap()
 }
 
+/** 仅统计当前词库中仍存在的收藏项，忽略因词条删除残留的幽灵键 */
 export function getStarredCount(): number {
-  return Object.keys(readMap()).length
+  const map = readMap()
+  const store = useAppStore()
+  const data = store.data as Record<string, { id: number }[]>
+  let n = 0
+  for (const c of ['nouns', 'verbs']) {
+    const arr = data[c]
+    if (!Array.isArray(arr)) continue
+    for (const it of arr) {
+      if (map[makeItemKey(c, it.id)]) n++
+    }
+  }
+  return n
 }
